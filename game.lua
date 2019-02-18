@@ -74,7 +74,9 @@ end
 
 function update_cursor(s)
   s.animt = s.animt + delta_time
-  s.x, s.y = mouse_pos()
+  local x, y = mouse_pos() 
+  s.x = x + cam.x
+  s.y = y + cam.y
   
   if mouse_btnp(0) then
     add_shake(4)
@@ -82,7 +84,7 @@ function update_cursor(s)
 end
 
 function draw_cursor(s)
-  circfill(s.x, s.y, 2, 3)
+  circfill(s.x - cam.x, s.y - cam.y, 2, 3)
 end
 
 function create_cursor()

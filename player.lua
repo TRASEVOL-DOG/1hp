@@ -4,9 +4,11 @@ require("input")
 function create_player()
   local s = {
     animt               = 0,
+    anim_state          = "idle"
     update              = update_player,
     draw                = draw_player,
     regs                = {"to_update", "to_draw1"},
+    
     alive               = true,
     fire_cooldown       = 1, -- max cooldown (seconds)  for bullet fire
     fire_cooldown_left  = 1, -- cooldown (seconds) left for bullet fire
@@ -83,10 +85,7 @@ function update_player(s)
   s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
   
   -- move cam
-  -- cam.follow = {x = (s.x + cursor.x + cam.x)/2, y = (s.y + cursor.y + cam.y)/2}
-  cam.follow = {x = lerp(s.x, cursor.x + cam.x, .25), y = lerp(s.y, cursor.y + cam.y, .25)}
-  -- w,h = screen_size()
-  -- cam.follow = {x = s.x + lerp(0, 50, ((s.x + cursor.x + cam.x)/2)/w ), y = s.y + lerp(0, 50, ((s.y + cursor.y + cam.y)/2)/h)}
+  cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
   
   -- translate vector to position according to delta (30 fps)
   s.x = s.x + s.v.x * delta_time * 10
@@ -96,7 +95,5 @@ end
 
 function draw_player(s)
   line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
-  -- circfill(s.x, s.y, 2, 3)
-  -- rectfill(s.x - s.w/2, s.y-s.w/2, s.x + s.w/2, s.y + s.h/2)
   spr(0, s.x, s.y)
 end
