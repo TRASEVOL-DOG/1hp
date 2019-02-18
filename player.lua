@@ -4,14 +4,14 @@ require("input")
 function create_player()
   local s = {
     animt               = 0,
-    anim_state          = "idle"
+    anim_state          = "idle",
     update              = update_player,
     draw                = draw_player,
     regs                = {"to_update", "to_draw1"},
     
     alive               = true,
-    fire_cooldown       = 1, -- max cooldown (seconds)  for bullet fire
-    fire_cooldown_left  = 1, -- cooldown (seconds) left for bullet fire
+    time_fire           = 1, -- max cooldown (seconds)  for bullet fire
+    timer_fire          = 1, -- cooldown (seconds) left for bullet fire
     v                   = { x = 0, y = 0},
     angle               = 0,
     max_speed           = 2*6,
@@ -36,7 +36,7 @@ function update_player(s)
   local dec = s.deceleration * delta_time * 10
 
   -- cooldown firing gun
-  s.fire_cooldown_left = s.fire_cooldown_left - delta_time
+  s.timer_fire = s.timer_fire - delta_time
   
   -- left   = 0
   -- right  = 1
@@ -91,6 +91,11 @@ function update_player(s)
   s.x = s.x + s.v.x * delta_time * 10
   s.y = s.y + s.v.y * delta_time * 10
   
+  -- create bullet
+  if mouse_btn(0) and s.timer_fire < 0 then
+    create_bullet(s)
+    s.timer_fire = s.time_fire
+  end
 end
 
 function draw_player(s)
