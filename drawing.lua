@@ -7,7 +7,7 @@ require("shader")
 c_drk = {[0]=0, 0, 1, 2, 3, 8, 5, 6, 2, 8, 9, 14, 11, 12, 1, 14, 15, 14, 17, 18, 1, 20, 21, 22}
 c_lit = {[0]=1, 20, 3, 4, 7, 6, 7, 23, 9, 10, 23, 12, 13, 23, 15, 16, 23, 18, 19, 10, 21, 22, 23, 23}
 
-function init_graphics(w,h)
+function init_graphics(w,h, window_title)
   local fonts={
     small={"EffortsPro.ttf",16},
     big={"Marksman.ttf",16}
@@ -27,7 +27,7 @@ function init_graphics(w,h)
   render_canvas=love.graphics.newCanvas(w,h)
   render_canvas:setFilter("nearest","nearest")
   
-  love.window.setTitle("~ Bot Juice?? ~")
+  love.window.setTitle(window_title or "~ Untitled ~")
   
   init_palette()
   

@@ -106,7 +106,7 @@ end
 function love.load()
   castle_print("Starting client init...")
 
-  init_graphics(256, 144)
+  init_graphics(256, 144, ". 1HP .")
   init_audio()
   init_shader_mgr()
   init_input_mgr()
