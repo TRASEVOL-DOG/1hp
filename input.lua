@@ -11,26 +11,21 @@ input.mosbtn_state=   {false, false, false, false, false, false, false, false, f
 input.mosbtn_press=   {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}
 input.mosbtn_release= {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}
 
+input.layout={
+  left=0,
+  right=1,
+  up=2,
+  down=3,
+  z=4,
+  x=5,
+  p=6,
+  escape=7,
+  ["return"]=8,
+  v=9,
+  lshift=10
+}
+
 function init_input_mgr()
-  input={}
-  input.btn_state={}
-  input.btn_press={}
-  input.btn_release={}
-  
-  input.layout={
-    left=0,
-    right=1,
-    up=2,
-    down=3,
-    z=4,
-    x=5,
-    p=6,
-    escape=7,
-    ["return"]=8,
-    v=9,
-    lshift=10
-  }
-  
   input.btn_count=0
   for _,_ in pairs(input.layout) do
     input.btn_count = input.btn_count + 1
@@ -59,7 +54,6 @@ end
 function btn(k) return input.btn_state[k] end
 function btnp(k) return input.btn_press[k] end
 function btnr(k) return input.btn_release[k] end
-
 
 function mouse_pos() return input.mosx,input.mosy end
 

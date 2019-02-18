@@ -52,7 +52,7 @@ function _update(dt)
 end
 
 
-debuggg = ""
+
 function _draw()
   cls(0)
   camera(0,0)
@@ -73,7 +73,6 @@ end
 function update_cursor(s)
   s.animt = s.animt + delta_time
   s.x, s.y = mouse_pos()
-
 end
 
 function draw_cursor(s)
@@ -96,7 +95,7 @@ function create_cursor()
 end
 
 
-
+debuggg = ""
 function draw_debug()
   local scrnw, scrnh = screen_size()
   
