@@ -11,9 +11,10 @@ function create_player()
     fire_cooldown       = 1, -- max cooldown (seconds)  for bullet fire
     fire_cooldown_left  = 1, -- cooldown (seconds) left for bullet fire
     v                   = { x = 0, y = 0},
-    max_speed           = 2,
-    deceleration        = .2,
-    acceleration        = .6
+    angle               = 0,
+    max_speed           = 2*3,
+    deceleration        = .2*3,
+    acceleration        = .6*3
   }
   
   x, y = screen_size()
@@ -25,10 +26,9 @@ function create_player()
 end
 
 function update_player(s)
-  -- if btn(0) then
-    -- s.x = s.x + cos(t)
-  -- end
-  -- s.y = s.y + sin(t/2)
+
+  local acc = s.acceleration * delta_time * 10
+  local dec = s.deceleration * delta_time * 10
 
   s.fire_cooldown_left = s.fire_cooldown_left - delta_time
   
@@ -38,30 +38,30 @@ function update_player(s)
   -- down   = 3
   
   if btn(0) then
-    s.v.x = s.v.x - s.acceleration
+    s.v.x = s.v.x - acc
   end
   if btn(1) then
-    s.v.x = s.v.x + s.acceleration
+    s.v.x = s.v.x + acc
   end
   if btn(2) then
-    s.v.y = s.v.y - s.acceleration
+    s.v.y = s.v.y - acc
   end
   if btn(3) then
-    s.v.y = s.v.y + s.acceleration  
+    s.v.y = s.v.y + acc
   end
   
-  if s.v.x > s.deceleration*1.3 then
-    s.v.x = s.v.x - s.deceleration
-  elseif s.v.x < -s.deceleration*1.3 then
-    s.v.x = s.v.x + s.deceleration
+  if s.v.x > dec*1.3 then
+    s.v.x = s.v.x - dec
+  elseif s.v.x < - dec * 1.3 then
+    s.v.x = s.v.x + dec
   else
     s.v.x = 0
   end
   
-  if s.v.y > s.deceleration*1.3 then
-    s.v.y = s.v.y - s.deceleration
-  elseif s.v.y < -s.deceleration*1.3 then
-    s.v.y = s.v.y + s.deceleration
+  if s.v.y > dec * 1.3 then
+    s.v.y = s.v.y - dec
+  elseif s.v.y < - dec * 1.3 then
+    s.v.y = s.v.y + dec
   else
     s.v.y = 0
   end
@@ -70,11 +70,9 @@ function update_player(s)
   s.v.x = max(s.v.x, -s.max_speed)
   s.v.y = min(s.v.y, s.max_speed)
   s.v.y = max(s.v.y, -s.max_speed)
-  
-  
-  
-  s.x = s.x + s.v.x
-  s.y = s.y + s.v.y
+    
+  s.x = s.x + s.v.x * delta_time * 10
+  s.y = s.y + s.v.y * delta_time * 10
   
 end
 
