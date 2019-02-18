@@ -131,15 +131,15 @@ end
 
 function create_camera(x, y)
   local s = {
-    x = x or 0,
-    y = y or 0,
-    shkx = 0,
-    shky = 0,
-    shkt = 0,
-    shkp = 100,
+    x      = x or 0,
+    y      = y or 0,
+    shkx   = 0,
+    shky   = 0,
+    shkt   = 0,
+    shkp   = 100,
     follow = nil,
     update = update_camera,
-    regs = {"to_update"}
+    regs   = {"to_update"}
   }
   
   register_object(s)
