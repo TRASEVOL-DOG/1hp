@@ -128,6 +128,11 @@ end
 delta_time = 0
 dt30f = 0
 function love.update(dt)
+  if dt > 1/30 then
+    love.timer.sleep(1/30-dt)
+    dt = 1/30
+  end
+
   delta_time = dt
   dt30f = dt*30
  
