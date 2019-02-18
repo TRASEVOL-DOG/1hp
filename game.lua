@@ -14,6 +14,9 @@ require("menu")
 
 require("fx")
 
+require("player")
+require("bullet")
+
 
 
 function _init()
@@ -105,7 +108,7 @@ end
 
 
 function init_game()
-
+  create_player()
 end
 
 
