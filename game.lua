@@ -14,6 +14,7 @@ require("menu")
 
 require("fx")
 
+require("map")
 require("player")
 require("bullet")
 
@@ -31,8 +32,10 @@ function _init()
   
   if not server_only then
     cursor = create_cursor()
-    cam = create_camera()
+    cam = create_camera(256,256)
   end
+  
+  init_map()
   
   init_game()
 end
@@ -49,6 +52,8 @@ end
 
 function _draw()
   cls(0)
+  camera()
+  draw_map()
   
   apply_camera()
 
