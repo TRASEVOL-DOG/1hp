@@ -9,26 +9,29 @@ files={
   sprites = "assets/spritesheet.png"
 }
 
-anim_info={
-  ship={
-    rotate={
-      sheet="sprites",
-      dt=1/14,
-      sprites={19,18,17,16,16,17,18,19,18,17,16,16,17,18}
+anim_info = {
+  player = {
+    idle = {
+      sheet = "sprites",
+      dt = 0.05,
+      sprites = {0,1,2,3}
     },
-    fire={
+    run = {
       sheet="sprites",
-      dt=0.02,
-      sprites={256, 257, 258, 259},
-      cx=7,
-      cy=3.5
+      dt = 0.035,
+      sprites = {8,9,10,11,12,13,14,15},
     },
-    bfire={
-      sheet="sprites",
-      dt=0.02,
-      sprites={260, 261, 262, 263, 264, 265},
-      cx=7,
-      cy=3.5
+    hurt = {
+      sheet = "sprites",
+      dt = 0.035,
+      sprites = {6,5,5,5,6,6}
+    }
+  },
+  wind = {
+    a = {
+      sheet = "sprites",
+      dt = 0.5,
+      sprites = {64,65,66,67,68,69,70,71,72,73,74,75,76,78,79,79}
     }
   }
 }
