@@ -9,7 +9,8 @@ function create_bullet(player)
     regs                = {"to_update", "to_draw2"},
     speed               = 14, -- per second
     v                   = { x = 0, y = 0}, -- movement vector 
-    timer_despawn       = 0.5, -- seconds remaining before despawn
+    time_despawn        = 0.5, -- seconds a bullet would have at spawn before despawn
+    timer_despawn       = 0, -- seconds remaining before despawn
     despawn             = false
   }
   
@@ -28,6 +29,7 @@ function create_bullet(player)
   s.w = 8
   s.h = 8
   
+  s.timer_despawn = s.time_despawn
   register_object(s)
   
   return s
@@ -36,11 +38,12 @@ end
 function update_bullet(s)
   s.timer_despawn = s.timer_despawn - delta_time
   
-  s.x = s.x + s.v.x * s.speed * delta_time
-  s.y = s.y + s.v.y * s.speed * delta_time
   
-  if( s.timer_despawn < 0 ) then kill_bullet(s) end
-  
+  if( s.timer_despawn < 0 ) then kill_bullet(s)
+  elseif( s.timer_despawn > 0.1  and  s.timer_despawn <  s.time_despawn - 0.05 ) then
+    s.x = s.x + s.v.x * s.speed * delta_time
+    s.y = s.y + s.v.y * s.speed * delta_time
+  end
   --Collisions
   local player = collide_objgroup(s,"player")
   if(player) then
@@ -58,10 +61,9 @@ function update_bullet(s)
 end
 
 function draw_bullet(s)
-  if s.timer_despawn > .5 * 9 / 10 then
+  if s.timer_despawn > s.time_despawn - 0.05 then
     spr(56, s.x, s.y-2, 1, 1, atan2(s.v.x, s.v.y))
-  
-  elseif s.timer_despawn < .5* 2/ 10 then
+  elseif s.timer_despawn < 0.1 then
     spr(59, s.x, s.y-2, 1, 1, atan2(s.v.x, s.v.y))
   else
     spr(57, s.x, s.y-2, 2, 1, atan2(s.v.x, s.v.y))
