@@ -5,7 +5,7 @@ else
 end
 server = cs.server
 
-server.maxClients = 4
+server.maxClients = 16
 
 if USE_CASTLE_CONFIG then
   server.useCastleConfig()

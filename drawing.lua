@@ -14,6 +14,7 @@ function init_graphics(w,h, window_title)
   }
   
   local ww,hh
+  local ow,oh = w,h
   local scx,scy
   if castle or network then
     ww,hh = love.graphics.getDimensions()
@@ -47,8 +48,8 @@ function init_graphics(w,h, window_title)
   graphics.scrn_h = h
   graphics.scrn_scalex = scx
   graphics.scrn_scaley = scy
-  graphics.scrn_setw = w
-  graphics.scrn_seth = h
+  graphics.scrn_setw = ow
+  graphics.scrn_seth = oh
   graphics.camx = 0
   graphics.camy = 0
   graphics.collock = false

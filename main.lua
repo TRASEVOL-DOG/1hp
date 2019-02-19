@@ -34,7 +34,7 @@ require("shader")
 require("maths")
 require("audio")
 
---require("nnetwork")
+require("nnetwork")
 
 ROLE = nil
 USE_CASTLE_CONFIG = (castle ~= nil)
@@ -50,138 +50,138 @@ if not castle then
 end
 
 
---if not USE_CASTLE_CONFIG then
---  function love.load(args)
---    if castle then
---      init_graphics(400,300)
---      init_audio()
---      init_shader_mgr()
---      init_input_mgr()
---      font("big")
---      pal()
---      color(23)
---    end
---  
---    if args[1] == "server" then
---      start_server()
---    elseif args[1] == "client" then
---      start_client()
---    end
---  end
---
---  function love.draw()
---    if ROLE then
-----      font("big")
-----      color(23)
---      love.graphics.print("Running server.", 32, 32)
---      
---      if not castle then
---        local y = 48
---        local n = #castle_log
---        while n > 0 do
---          love.graphics.print(castle_log[n], 48, y)
---          n = n-1
---          y = y+16
---        end
---      end
---    else
---      love.graphics.print("Press 1 to launch local server.", 32, 32)
---      love.graphics.print("Press 2 to launch local client.", 32, 64)
---    end
---  end
---  
---  function love.keyreleased(key)
---    if key == '1' then
---      love.keyreleased = nil
---      start_server()
---    elseif key == '2' then
---      love.keyreleased = nil
---      start_client()
---    end
---  end
---end
-
-
-
-function love.load()
-  castle_print("Starting client init...")
-
-  init_graphics(256, 144, ". 1HP .")
-  init_audio()
-  init_shader_mgr()
-  init_input_mgr()
-  font("small")
-  pal()
+if not USE_CASTLE_CONFIG then
+  function love.load(args)
+    if castle then
+      init_graphics(256, 144, ". 1HP .")
+      init_audio()
+      init_shader_mgr()
+      init_input_mgr()
+      font("big")
+      pal()
+      color(23)
+    end
   
-  predraw()
-  _init()
-  afterdraw()
-  
-  love.keyboard.setKeyRepeat(true)
-  love.keyboard.setTextInput(false)
-  
-  client_init = true
-  castle_print("Client init done!")
-end
-
-
-delta_time = 0
-dt30f = 0
-function love.update(dt)
---  if dt > 1/30 then
---    love.timer.sleep(1/30-dt)
---    dt = 1/30
---  end
-
-  delta_time = dt
-  dt30f = dt*30
- 
-  _update(dt)
-  update_input_mgr()
-end
-
-function love.draw()
-  if not client_init then
-    castle_print("no init.")
-    return
+    if args[1] == "server" then
+      start_server()
+    elseif args[1] == "client" then
+      start_client()
+    end
   end
 
-  predraw()
-  _draw()
-  afterdraw()
-end
-
-
-function love.resize(w,h)
-  render_canvas=love.graphics.newCanvas(w,h)
-  render_canvas:setFilter("nearest","nearest")
-  local scx,scy=screen_scale()
+  function love.draw()
+    if ROLE then
+--      font("big")
+--      color(23)
+      love.graphics.print("Running server.", 32, 32)
+      
+      if not castle then
+        local y = 48
+        local n = #castle_log
+        while n > 0 do
+          love.graphics.print(castle_log[n], 48, y)
+          n = n-1
+          y = y+16
+        end
+      end
+    else
+      love.graphics.print("Press 1 to launch local server.", 32, 32)
+      love.graphics.print("Press 2 to launch local client.", 32, 64)
+    end
+  end
   
-  graphics.wind_w=w
-  graphics.wind_h=h
-  graphics.scrn_w=flr(w/scy)
-  graphics.scrn_h=flr(h/scx)
+  function love.keyreleased(key)
+    if key == '1' then
+      love.keyreleased = nil
+      start_server()
+    elseif key == '2' then
+      love.keyreleased = nil
+      start_client()
+    end
+  end
 end
 
-function love.textinput(text)
-  menu_textinput(text)
-end
 
-function love.keypressed(key)
-  input_keypressed(key)
-end
 
-function love.keyreleased(key)
-  input_keyreleased(key)
-end
-
-function love.mousepressed(x,y,k,istouch)
-  input_mousepressed(x,y,k,istouch)
-end
-
-function love.mousereleased(x,y,k,istouch)
-  input_mousereleased(x,y,k,istouch)
-end
+--function love.load()
+--  castle_print("Starting client init...")
+--
+--  init_graphics(256, 144, ". 1HP .")
+--  init_audio()
+--  init_shader_mgr()
+--  init_input_mgr()
+--  font("small")
+--  pal()
+--  
+--  predraw()
+--  _init()
+--  afterdraw()
+--  
+--  love.keyboard.setKeyRepeat(true)
+--  love.keyboard.setTextInput(false)
+--  
+--  client_init = true
+--  castle_print("Client init done!")
+--end
+--
+--
+--delta_time = 0
+--dt30f = 0
+--function love.update(dt)
+----  if dt > 1/30 then
+----    love.timer.sleep(1/30-dt)
+----    dt = 1/30
+----  end
+--
+--  delta_time = dt
+--  dt30f = dt*30
+-- 
+--  _update(dt)
+--  update_input_mgr()
+--end
+--
+--function love.draw()
+--  if not client_init then
+--    castle_print("no init.")
+--    return
+--  end
+--
+--  predraw()
+--  _draw()
+--  afterdraw()
+--end
+--
+--
+--function love.resize(w,h)
+--  render_canvas=love.graphics.newCanvas(w,h)
+--  render_canvas:setFilter("nearest","nearest")
+--  local scx,scy=screen_scale()
+--  
+--  graphics.wind_w=w
+--  graphics.wind_h=h
+--  graphics.scrn_w=flr(w/scy)
+--  graphics.scrn_h=flr(h/scx)
+--end
+--
+--function love.textinput(text)
+--  menu_textinput(text)
+--end
+--
+--function love.keypressed(key)
+--  input_keypressed(key)
+--end
+--
+--function love.keyreleased(key)
+--  input_keyreleased(key)
+--end
+--
+--function love.mousepressed(x,y,k,istouch)
+--  input_mousepressed(x,y,k,istouch)
+--end
+--
+--function love.mousereleased(x,y,k,istouch)
+--  input_mousereleased(x,y,k,istouch)
+--end
 
 
 
