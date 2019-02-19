@@ -21,8 +21,8 @@ end
 
 
 --collision stuff
-function collide_objgroup(obj,group)
-  for obj2 in all(objs[group]) do
+function collide_objgroup(obj,groupname)
+  for obj2 in group(groupname) do
     if obj2~=obj then
       local bl=collide_objobj(obj,obj2)
       if bl then
@@ -32,6 +32,17 @@ function collide_objgroup(obj,group)
   end
   
   return false
+end
+
+function all_collide_objgroup(obj,groupname)
+ local list={}
+ for obj2 in group(groupname) do
+  if obj2~=obj and collide_objobj(obj,obj2) then
+   add(list,obj2)
+  end
+ end
+ 
+ return list
 end
 
 function collide_objobj(obj1,obj2)

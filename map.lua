@@ -7,7 +7,8 @@ MAP_W = 128
 MAP_H = 72
 
 map = nil
- 
+
+local walls = {2,1,3,4}
 local map_data = {
 [0]={[0]=2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
     {[0]=2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
@@ -95,6 +96,13 @@ function init_map()
       end
     end
   end
+  
+  local owalls = walls
+  walls = {}
+  for _,i in ipairs(owalls) do
+    walls[i] = true
+  end
+  
   gen_mapsurf()
 end
 
@@ -103,6 +111,32 @@ function draw_map()
   local x,y = cam.x, cam.y
   
   draw_surface(mapsurf, 0, 0, x, y, scrnw, scrnh)
+end
+
+function check_mapcol(s,x,y)
+  local sx = x or s.x
+  local sy = y or s.y
+ 
+  local dirs = {{-1,-1},{1,-1},{-1,1},{1,1}}
+  nirs=dirs
+  
+  local res,b={0,0}
+ 
+  for k,d in pairs(dirs) do
+    local x = sx+s.w*0.5*d[1]
+    local y = sy+s.h*0.5*d[2]
+    
+    if walls[map_data[flr(y/8)][flr(x/8)]] then
+      res[1] = res[1] + d[1]
+      res[2] = res[2] + d[2]
+      b=true
+    end
+  end
+  
+  if res[1]~=0 then res[1] = sgn(res[1]) end
+  if res[2]~=0 then res[2] = sgn(res[2]) end
+  
+  return b and {dir_x = res[1], dir_y = res[2]}
 end
 
 mapsurf = nil

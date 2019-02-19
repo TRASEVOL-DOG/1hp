@@ -24,8 +24,8 @@ function create_player()
   q = pick(spawn_players)
   s.x = q.x
   s.y = q.y
-  s.w = 8
-  s.h = 8
+  s.w = 6
+  s.h = 4
   
   register_object(s)
   
@@ -91,8 +91,9 @@ function update_player(s)
   cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
   
   -- translate vector to position according to delta (30 fps)
-  s.x = s.x + s.v.x * delta_time * 10
-  s.y = s.y + s.v.y * delta_time * 10
+  --s.x = s.x + s.v.x * delta_time * 10
+  --s.y = s.y + s.v.y * delta_time * 10
+  update_move(s)
   
   -- create bullet
   if mouse_btn(0) and s.timer_fire < 0 then
@@ -102,7 +103,29 @@ function update_player(s)
   end
 end
 
+function update_move(s)
+  local nx = s.x + s.v.x * delta_time * 10
+  local col = check_mapcol(s,nx)
+  if col then
+    local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
+    s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
+    s.v.y = s.v.y - 0.6* col.dir_y * s.acceleration * delta_time * 10
+  else
+    s.x=nx
+  end
+  
+  local ny = s.y + s.v.y * delta_time * 10
+  local col = check_mapcol(s,s.x,ny)
+  if col then
+    local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
+    s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
+    s.v.x = s.v.x - 0.6* col.dir_x * s.acceleration * delta_time * 10
+  else
+    s.y = ny
+  end
+end
+
 function draw_player(s)
   line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
-  spr(0, s.x, s.y)
+  spr(0, s.x, s.y-2)
 end

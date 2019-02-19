@@ -87,8 +87,9 @@ end
 
 function draw_cursor(s)
   local sp = 130+ceil(s.sprite_t)*2
-
-  spr(sp, s.x, s.y, 2, 2)
+  local camx, camy = cam.x, cam.y
+  
+  spr(sp, s.x-camx, s.y-camy, 2, 2)
 end
 
 function create_cursor()
