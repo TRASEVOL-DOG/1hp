@@ -94,10 +94,27 @@ function update_player(s)
       s.v.x = s.v.x / d * s.max_speed
       s.v.y = s.v.y / d * s.max_speed
     end
+       
+    -- COLLISIONS
     
-    -- make player collide with wall           send position
-    if(check_collide(s))
+      -- make player collide with wall           send position
+      check_collide(s)
       
+      other_player = collide_objgroup(s,"player")
+      if(other_player) then
+        s.v.x = sign(player.x - other_player.x) * 10
+      end
+      
+      
+      collide_objgroup(s,"enemy_bullets")
+      collide_objgroup(s,"destroyables")
+      
+      -- make player collide with player         collide_objgroup
+      -- make player collide with ennemy_bullet  collide_objgroup
+      -- make player collide with misc           collide_objgroup
+      
+    -- END COLLISIONS
+  
     -- translate vector to position according to delta (30 fps)
     -- s.x = s.x + s.v.x * delta_time * 10
     -- s.y = s.y + s.v.y * delta_time * 10
@@ -110,17 +127,7 @@ function update_player(s)
   
   -- move cam
   cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
-  
-  -- COLLISIONS
     
-    
-    -- make player collide with player         collide_objgroup
-    -- make player collide with ennemy_bullet  collide_objgroup
-    -- make player collide with misc           collide_objgroup
-    
-  -- END COLLISIONS
-  
-  
   -- create bullet
   if mouse_btnp(0) and s.timer_fire < 0 then
     create_bullet(s)
