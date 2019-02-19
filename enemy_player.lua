@@ -15,7 +15,6 @@ function create_player()
     update              = update_player,
     draw                = draw_player,
     regs                = {"to_update", "to_draw1"},
-    is_enemy            = false,
     
     alive               = true,
     time_fire           = .1, -- max cooldown (seconds)  for bullet fire
@@ -40,7 +39,7 @@ function create_player()
 end
 
 function update_player(s)
-
+  --[[
   -- cooldown firing gun
   s.timer_fire = s.timer_fire - delta_time
   
@@ -96,21 +95,35 @@ function update_player(s)
       s.v.y = s.v.y / d * s.max_speed
     end
        
-    -- Collisions
-          
-    local other_player = collide_objgroup(s,"player")
-    if(other_player) then
-      s.v.x = sign(x.x - other_player.x) * 10
-    end
-    local destroyable = collide_objgroup(s,"destroyable")
-    if(destroyable) then
-      s.v.x = sign(s.x - destroyable.x) * 10
-    end
+    -- COLLISIONS
+    
+      -- make player collide with wall           send position
+      
+      players = collide_objgroup(s,"player")
+      if(player) then
+        s.v.x = sign(x.x - other_player.x) * 10
+      end
+            
+      if(collide_objgroup(s,"enemy_bullet")) then s.alive = false end
+      
+      destroyable = collide_objgroup(s,"destroyable")
+      if(destroyable) then
+        s.v.x = sign(s.x - destroyable.x) * 10
+      end
+      
+      
+      
+      -- make player collide with player         collide_objgroup
+      -- make player collide with ennemy_bullet  collide_objgroup
+      -- make player collide with misc           collide_objgroup
+      
+    -- END COLLISIONS
   
     -- translate vector to position according to delta (30 fps)
     update_move(s)
     
   -- END MOVEMENT
+  
   
   -- gets angle
   s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
@@ -120,8 +133,7 @@ function update_player(s)
 
   -- create bullet
   if mouse_btnp(0) and s.timer_fire < 0 then
-    local p = create_bullet(s)
-    
+    create_bullet(s)
     s.timer_fire = s.time_fire
     add_shake()
   end
@@ -147,13 +159,10 @@ function update_move(s)
   else
     s.y = ny
   end
+  --]]
 end
 
 function draw_player(s)
-  line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
+  --line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
   spr(0, s.x, s.y-2)
-  -- spr(0, s.x, s.y-2, 2, 1, atan2(s.v.x, s.v.y))
-end
-
-function kill_player(s)
 end

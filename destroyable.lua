@@ -6,8 +6,10 @@ function create_destroyable()
     draw                = draw_destroyable,
     regs                = {"to_update", "to_draw2"},
     alive               = 0,
-    skin                = 0
+    skin                = 0 -- 48 ~ 48 + 3 and 54 -- 48 + 4 ~ 48 + 6 and 55
   }
+  
+  s.skin = 47 + irnd(6)
   
   q = pick_and_remove(spawn_points)
   
@@ -24,5 +26,9 @@ function update_destroyable(s)
   
 end
 function draw_destroyable(s)
-  circfill(s.x, s.y, 3, 0)
+  spr(s.skin, s.x, s.y-2)
+end
+
+function kill_destroyable(s)
+  s.skin = 53 + irnd(2)
 end
