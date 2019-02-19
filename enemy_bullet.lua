@@ -1,11 +1,10 @@
-
-function create_bullet(player)
+function create_enemy_bullet(player)
   local s = {
     id                  = 0,
     animt               = 0,
     anim_state          = "idle",
-    update              = update_bullet,
-    draw                = draw_bullet,
+    update              = update_enemy_bullet,
+    draw                = draw_enemy_bullet,
     regs                = {"to_update", "to_draw2"},
     speed               = 20, -- per second
     v                   = { x = 0, y = 0},
@@ -15,9 +14,8 @@ function create_bullet(player)
   
   
   -- get vector
-  local angle = player.angle - .015 + rnd(.03)
-  s.v.x = cos(angle) * s.speed
-  s.v.y = sin(angle) * s.speed
+  s.v.x = cos(player.angle) * s.speed
+  s.v.y = sin(player.angle) * s.speed
   
   --spawn according to vector
   
@@ -32,7 +30,7 @@ function create_bullet(player)
   
   return s
 end
-function update_bullet(s)
+function update_enemy_bullet(s)
   s.timer_despawn = s.timer_despawn - delta_time
   
   s.x = s.x + s.v.x * s.speed * delta_time
@@ -42,6 +40,6 @@ function update_bullet(s)
   
   
 end
-function draw_bullet(s)
+function draw_enemy_bullet(s)
   circfill(s.x, s.y, 3, 3)
 end

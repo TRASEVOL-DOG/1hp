@@ -26,7 +26,7 @@ function create_player()
     acceleration        = .9*6
   }
   
-  q = pick(spawn_points)
+  q = pick_and_remove(spawn_points)
   
   s.x = q.x
   s.y = q.y
@@ -98,16 +98,20 @@ function update_player(s)
     -- COLLISIONS
     
       -- make player collide with wall           send position
-      check_collide(s)
       
-      other_player = collide_objgroup(s,"player")
-      if(other_player) then
-        s.v.x = sign(player.x - other_player.x) * 10
+      players = collide_objgroup(s,"player")
+      if(player) then
+        s.v.x = sign(x.x - other_player.x) * 10
+      end
+            
+      if(collide_objgroup(s,"enemy_bullet")) then s.alive = false end
+      
+      destroyable = collide_objgroup(s,"destroyable")
+      if(destroyable) then
+        s.v.x = sign(s.x - destroyable.x) * 10
       end
       
       
-      collide_objgroup(s,"enemy_bullets")
-      collide_objgroup(s,"destroyables")
       
       -- make player collide with player         collide_objgroup
       -- make player collide with ennemy_bullet  collide_objgroup

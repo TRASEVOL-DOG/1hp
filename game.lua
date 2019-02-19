@@ -16,6 +16,8 @@ require("fx")
 
 require("map")
 require("player")
+require("destroyable")
+require("enemy_bullet")
 require("bullet")
 
 
@@ -25,7 +27,10 @@ function _init()
   init_menu_system()
   
   init_object_mgr(
-    "player"
+    "player",
+    "bullet",
+    "enemy_bullet",
+    "destroyable"
   )
 
   t = 0
@@ -178,6 +183,9 @@ end
 
 function init_game()
   create_player()
+  create_destroyable()
+  create_destroyable()
+  create_destroyable()
 end
 
 function define_menus()

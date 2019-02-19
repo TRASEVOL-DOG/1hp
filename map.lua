@@ -8,7 +8,7 @@ MAP_H = 72
 
 map = nil
 
-spawn_point = {}
+spawn_points = {}
 
 local walls = {2,1,3,4}
 local map_data = {
@@ -92,7 +92,7 @@ function init_map()
   for i = 0,  (MAP_H-1) do
     for j = 0,  (MAP_W-1) do
       if map_data[i][j] == 8 then
-        add(spawn_point, {x = j*8+4, y = i*8+4})
+        add(spawn_points, {x = j*8+4, y = i*8+4})
       end
     end
   end
