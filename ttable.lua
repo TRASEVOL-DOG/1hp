@@ -28,6 +28,13 @@ function del(ar,val) for i,v in ipairs(ar) do if v==val then delat(ar,i) return 
 
 function pick(ar) return ar[irnd(#ar)] end
 
+function pick_and_remove(ar) 
+  index = irnd(#ar)
+  temp = ar[index]
+  delat(ar,index)
+  return temp
+end
+
 function copy_table(ar, deep) -- /!\ be cautious with deep copy: avoid double-linked tables!
   local arr = {}
   

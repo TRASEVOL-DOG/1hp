@@ -1,6 +1,8 @@
+servaddbullet
 
 function create_bullet(player)
   local s = {
+    id                  = 0,
     animt               = 0,
     anim_state          = "idle",
     update              = update_bullet,
