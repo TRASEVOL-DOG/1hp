@@ -30,11 +30,35 @@ anim_info = {
   wind = {
     a = {
       sheet = "sprites",
-      dt = 0.5,
-      sprites = {64,65,66,67,68,69,70,71,72,73,74,75,76,78,79,79}
+      dt = 0.06,
+      sprites = {64,65,66,67,68,69,70,71,72,73,74,75,76,78}
+    },
+    b = {
+      sheet = "sprites",
+      dt = 0.06,
+      sprites = {80,81,82,83,84,85,86,87,88,89}
+    },
+    c = {
+      sheet = "sprites",
+      dt = 0.06,
+      sprites = {96,97,98,99,100,101,102,103,104,105}
+    }
+  },
+  shine = {
+    a = {
+      sheet = "sprites",
+      dt = 0.03,
+      sprites = {90,91,92,93,94}
+    },
+    b = {
+      sheet = "sprites",
+      dt = 0.03,
+      sprites = {106,107,108,109,110}
     }
   }
 }
+
+
 
 function init_sprite_mgr()
   sprite={}
@@ -56,6 +80,7 @@ function init_sprite_mgr()
   sprite_tilesize(8,8)
   spritesheet("sprites")
 end
+
 
 
 function refresh_spritesheets()
@@ -144,6 +169,8 @@ function sspr(sx,sy,sw,sh,dx,dy,dw,dh,r,cx,cy)
   set_shader()
 end
 
+
+
 function draw_anim(x,y,object,state,t,r,flipx,flipy)
   local state=state or "only"
   local flipx=flipx and -1 or 1
@@ -197,6 +224,18 @@ function draw_anim_outlined(x,y,object,state,t,outline_c,r,flipx,flipy)
   love.graphics.draw(info.sheet,quad,x,y,r*2*math.pi,flipx,flipy,info.cx,info.cy)
 end
 
+function anim_step(o)
+ local state=o.state or "only"
+ local info=anim_info[o.name][state]
+ 
+ local v=flr(o.animt/info.dt%#info.sprites)
+ local k=flr((o.animt/info.dt)/#info.sprites)
+ 
+ return v,(o.animt%info.dt<0.01),k
+end
+
+
+
 function draw_frame(s, xa, ya, xb, yb, stretch)
   local tw,th,nw,nh = sprite_tilesize()
 
@@ -239,6 +278,7 @@ function draw_frame(s, xa, ya, xb, yb, stretch)
 --  spr(s+nw*2,   xa,    yb-th, 1, 1, 0, false, false, 0, 0)
 --  spr(s+nw*2+2, xb-tw, yb-th, 1, 1, 0, false, false, 0, 0)
 end
+
 
 
 function init_spritesheets(files)
