@@ -74,22 +74,30 @@ end
 
 function update_cursor(s)
   s.animt = s.animt + delta_time
+  s.sprite_t = max(s.sprite_t - dt30f, 0)
+  
   local x, y = mouse_pos() 
   s.x = x + cam.x
   s.y = y + cam.y
   
+  if mouse_btnp(0) then
+    s.sprite_t = 4
+  end
 end
 
 function draw_cursor(s)
-  circfill(s.x - cam.x, s.y - cam.y, 2, 3)
+  local sp = 130+ceil(s.sprite_t)*2
+
+  spr(sp, s.x, s.y, 2, 2)
 end
 
 function create_cursor()
   local s = {
-    animt   = 0,
-    update  = update_cursor,
-    draw    = draw_cursor,
-    regs    = {"to_update"}
+    animt    = 0,
+    sprite_t = 0,
+    update   = update_cursor,
+    draw     = draw_cursor,
+    regs     = {"to_update"}
   }
   
   s.x, s.y = mouse_pos()
