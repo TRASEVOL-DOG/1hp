@@ -1,7 +1,9 @@
 
 require("input")
+spawn_players={{x = 0, y = 0}}
 
 function create_player()
+  
   local s = {
     animt               = 0,
     anim_state          = "idle",
@@ -19,8 +21,9 @@ function create_player()
     acceleration        = .9*6
   }
   
-  x, y = screen_size()
-  s.x, s.y = x/2 , y/2
+  q = pick(spawn_players)
+  s.x = q.x
+  s.y = q.y
   s.w = 8
   s.h = 8
   
@@ -95,6 +98,7 @@ function update_player(s)
   if mouse_btn(0) and s.timer_fire < 0 then
     create_bullet(s)
     s.timer_fire = s.time_fire
+    add_shake(4)
   end
 end
 

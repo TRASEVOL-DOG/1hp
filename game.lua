@@ -78,9 +78,6 @@ function update_cursor(s)
   s.x = x + cam.x
   s.y = y + cam.y
   
-  if mouse_btnp(0) then
-    add_shake(4)
-  end
 end
 
 function draw_cursor(s)
