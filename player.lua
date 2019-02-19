@@ -14,9 +14,9 @@ function create_player()
     timer_fire          = 1, -- cooldown (seconds) left for bullet fire
     v                   = { x = 0, y = 0},
     angle               = 0,
-    max_speed           = 2*6,
-    deceleration        = .2*6,
-    acceleration        = .6*6
+    max_speed           = 1.4*6,
+    deceleration        = .5*6,
+    acceleration        = .9*6
   }
   
   x, y = screen_size()
