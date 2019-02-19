@@ -1,6 +1,6 @@
 
 require("input")
-spawn_players={{x = 0, y = 0}}
+-- spawn_players={{x = 0, y = 0}}
 
 function create_player()
   
