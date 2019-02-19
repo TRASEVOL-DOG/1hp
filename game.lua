@@ -30,6 +30,7 @@ function _init()
     "player",
     "bullet",
     "enemy_bullet",
+    "enemy_player",
     "destroyable"
   )
 
@@ -182,7 +183,9 @@ function draw_debug()
 end
 
 function init_game()
-  create_player()
+
+  local p = create_player()
+  
   create_destroyable()
   create_destroyable()
   create_destroyable()

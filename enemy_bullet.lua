@@ -7,7 +7,7 @@ function create_enemy_bullet(player)
     draw                = draw_enemy_bullet,
     regs                = {"to_update", "to_draw2"},
     speed               = 20, -- per second
-    v                   = { x = 0, y = 0},
+    v                   = { x = 0, y = 0},-- movement vector 
     timer_despawn       = 2, -- seconds remaining before despawn
     despawn             = false
   }
