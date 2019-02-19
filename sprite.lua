@@ -18,7 +18,7 @@ anim_info = {
     },
     run = {
       sheet="sprites",
-      dt = 0.035,
+      dt = 0.04,
       sprites = {8,9,10,11,12,13,14,15},
     },
     hurt = {
@@ -170,6 +170,56 @@ function sspr(sx,sy,sw,sh,dx,dy,dw,dh,r,cx,cy)
 end
 
 
+function draw_spr_outline(s,x,y,w,h,outline_c,r,flipx,flipy,cx,cy)
+  local w=w or 1
+  local h=h or 1
+  local r=r or 0
+  local flipx=flipx and -1 or 1
+  local flipy=flipy and -1 or 1
+  local cx=(cx or 0.5)*w*sprite.tw
+  local cy=(cy or 0.5)*h*sprite.th
+  
+  local sx=s%sprite.nw*sprite.tw
+  local sy=flr(s/sprite.nw)*sprite.th
+  
+  local quad=love.graphics.newQuad(sx,sy,w*8,h*8,sprite.sheet:getDimensions())
+  
+  all_colors_to(outline_c)
+  plt_shader()
+  love.graphics.draw(sprite.sheet,quad,x-1,y,r*2*math.pi,flipx,flipy,cx,cy)
+  love.graphics.draw(sprite.sheet,quad,x+1,y,r*2*math.pi,flipx,flipy,cx,cy)
+  love.graphics.draw(sprite.sheet,quad,x,y-1,r*2*math.pi,flipx,flipy,cx,cy)
+  love.graphics.draw(sprite.sheet,quad,x,y+1,r*2*math.pi,flipx,flipy,cx,cy)
+  set_shader()
+  all_colors_to()
+end
+
+function draw_spr_outlined(s,x,y,w,h,outline_c,r,flipx,flipy,cx,cy)
+  local w=w or 1
+  local h=h or 1
+  local r=r or 0
+  local flipx=flipx and -1 or 1
+  local flipy=flipy and -1 or 1
+  local cx=(cx or 0.5)*w*sprite.tw
+  local cy=(cy or 0.5)*h*sprite.th
+  
+  local sx=s%sprite.nw*sprite.tw
+  local sy=flr(s/sprite.nw)*sprite.th
+  
+  local quad=love.graphics.newQuad(sx,sy,w*8,h*8,sprite.sheet:getDimensions())
+  
+  all_colors_to(outline_c)
+  plt_shader()
+  love.graphics.draw(sprite.sheet,quad,x-1,y,r*2*math.pi,flipx,flipy,cx,cy)
+  love.graphics.draw(sprite.sheet,quad,x+1,y,r*2*math.pi,flipx,flipy,cx,cy)
+  love.graphics.draw(sprite.sheet,quad,x,y-1,r*2*math.pi,flipx,flipy,cx,cy)
+  love.graphics.draw(sprite.sheet,quad,x,y+1,r*2*math.pi,flipx,flipy,cx,cy)
+  set_shader()
+  all_colors_to()
+  plt_shader()
+  love.graphics.draw(sprite.sheet,quad,x,y,r*2*math.pi,flipx,flipy,cx,cy)
+  set_shader()
+end
 
 function draw_anim(x,y,object,state,t,r,flipx,flipy)
   local state=state or "only"
@@ -221,7 +271,9 @@ function draw_anim_outlined(x,y,object,state,t,outline_c,r,flipx,flipy)
   love.graphics.draw(info.sheet,quad,x,y+1,r*2*math.pi,flipx,flipy,info.cx,info.cy)
   set_shader()
   all_colors_to()
+  plt_shader()
   love.graphics.draw(info.sheet,quad,x,y,r*2*math.pi,flipx,flipy,info.cx,info.cy)
+  set_shader()
 end
 
 function anim_step(o)

@@ -22,11 +22,21 @@ function create_destroyable()
   
   return s
 end
+
 function update_destroyable(s)
   
 end
+
 function draw_destroyable(s)
+  all_colors_to(0)
+  spr(s.skin, s.x-1, s.y-2)
+  spr(s.skin, s.x+1, s.y-2)
+  spr(s.skin, s.x, s.y-3)
+  all_colors_to()
   spr(s.skin, s.x, s.y-2)
+
+--  draw_spr_outlined(s.skin, s.x, s.y-2, 1, 1, 0)
+--  spr(s.skin, s.x, s.y-2)
 end
 
 function kill_destroyable(s)

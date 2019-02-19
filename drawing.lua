@@ -339,11 +339,11 @@ end
 
 function all_colors_to(c)
   if c then
-    for i=0,#palette-1 do
+    for i=0,#palette do
       pal(i,c)
     end
   else
-    for i=0,#palette-1 do
+    for i=0,#palette do
       pal(i,i)
     end
   end

@@ -151,8 +151,8 @@ end
 
 function draw_player(s)
   line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
-  spr(0, s.x, s.y-2)
-  -- spr(0, s.x, s.y-2, 2, 1, atan2(s.v.x, s.v.y))
+
+  draw_anim_outlined(s.x, s.y-2, "player", "run", s.animt, 0, 0, s.v.x < 0)
 end
 
 function kill_player(s)
