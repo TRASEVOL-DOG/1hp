@@ -107,7 +107,13 @@ function apply_camera()
   camera(cam.x+cam.shkx*shk, cam.y+cam.shky*shk)
 end
 
+function get_camera_pos()
+  local shk = cam.shkp/100
+  return cam.x+cam.shkx*shk, cam.y+cam.shky*shk
+end
+
 function add_shake(p)
+  p = p or 3
   local a = rnd(1)
   cam.shkx = p*cos(a)
   cam.shky = p*sin(a)
