@@ -31,7 +31,7 @@ function create_wind()
   end
   
   s.flipx = windgoright
-  s.flipy = irnd(2) - 1
+  s.flipy = chance(50)
   state = anim_info["wind"][s.anim_state]
   s.a_t = state.dt * #state.sprites
   
@@ -41,9 +41,8 @@ function create_wind()
 end
 
 function update_wind(s)
-
   s.animt = s.animt + delta_time
-  
+
   if s.animt > s.a_t then
     deregister_object(s)  
   end
@@ -57,5 +56,7 @@ function draw_wind(s)
   -- all_colors_to()
   -- spr(s.skin, s.x, s.y-2)
 
-  draw_anim_outlined(s.x, s.y-2, "wind", s.anim_state, s.animt, 0, 0, s.flipx == true, s.flipy == 1)
+  local step = anim_step("wind", s.anim_state, s.animt)
+  local x = s.x + step*(s.flipx and -1 or 1) -- makes it move
+  draw_anim(x, s.y-2, "wind", s.anim_state, s.animt, 0, s.flipx, s.flipy)
 end
