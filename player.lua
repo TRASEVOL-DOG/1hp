@@ -15,16 +15,24 @@ function create_player()
     update              = update_player,
     draw                = draw_player,
     regs                = {"to_update", "to_draw1"},
-    is_enemy            = false,
-    
+    is_enemy            = false,    
     alive               = true,
+    
     time_fire           = .1, -- max cooldown (seconds)  for bullet fire
     timer_fire          = 0, -- cooldown (seconds) left for bullet fire
+    
     v                   = { x = 0, y = 0},-- movement vector 
     angle               = 0,
     max_speed           = 1.4*6,
     deceleration        = .5*6,
-    acceleration        = .9*6
+    acceleration        = .9*6,
+    
+    --network stuff
+    dx_input            = 0,
+    dy_input            = 0,
+    shot_input          = 0    
+    --
+    
   }
   
   q = pick_and_remove(spawn_points)
@@ -48,30 +56,66 @@ function update_player(s)
   s.animt = s.animt + delta_time
   
   -- MOVEMENT
-    
+  
     -- locals to clear code
     local acc = s.acceleration * delta_time * 10
     local dec = s.deceleration * delta_time * 10
     
-    -- left   = 0
-    -- right  = 1
-    -- up     = 2
-    -- down   = 3
+    if server_only then
     
-    -- add speed to vector according to button pushed
-    if btn(0) then
-      s.v.x = s.v.x - acc
-    end
-    if btn(1) then
-      s.v.x = s.v.x + acc
-    end
-    if btn(2) then
-      s.v.y = s.v.y - acc
-    end
-    if btn(3) then
-      s.v.y = s.v.y + acc
-    end
+        s.v.x = s.v.x + acc * s.dx_input
+        s.v.y = s.v.y + acc * s.dy_input
     
+      if s.shot_input and s.timer_fire < 0 --[[ and counter check ]]then
+      
+        local p = create_bullet(s)
+        s.timer_fire = s.time_fire    
+        
+      end
+    else
+    
+      -- gets angle
+      s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
+      -- move cam
+      cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
+
+      -- create bullet    
+      s.shot_input = false
+      if mouse_btnp(0) and s.timer_fire < 0 then
+        local p = create_bullet(s)
+        s.timer_fire = s.time_fire
+        add_shake()
+        
+        s.shot_input = true
+      end
+    
+      -- left   = 0
+      -- right  = 1
+      -- up     = 2
+      -- down   = 3
+      
+      -- add speed to vector according to button pushed
+      
+      s.dx_input = 0
+      s.dy_input = 0
+      
+      if btn(0) then
+        s.dx_input = -1
+        s.v.x = s.v.x - acc
+      end
+      if btn(1) then
+        s.dx_input = 1
+        s.v.x = s.v.x + acc
+      end
+      if btn(2) then
+        s.dy_input = -1
+        s.v.y = s.v.y - acc
+      end
+      if btn(3) then
+        s.dy_input = 1
+        s.v.y = s.v.y + acc
+      end
+    end
     -- decelerate speed every frame
     if s.v.x > dec*1.3 then
       s.v.x = s.v.x - dec
@@ -100,7 +144,7 @@ function update_player(s)
           
     local other_player = collide_objgroup(s,"player")
     if(other_player) then
-      s.v.x = sign(x.x - other_player.x) * 10
+      s.v.x = sign(s.x - other_player.x) * 10
     end
     local destroyable = collide_objgroup(s,"destroyable")
     if(destroyable) then
@@ -112,19 +156,6 @@ function update_player(s)
     
   -- END MOVEMENT
   
-  -- gets angle
-  s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
-  
-  -- move cam
-  cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
-
-  -- create bullet
-  if mouse_btnp(0) and s.timer_fire < 0 then
-    local p = create_bullet(s)
-    
-    s.timer_fire = s.time_fire
-    add_shake()
-  end
 end
 
 function update_move_player(s)

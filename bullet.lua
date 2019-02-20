@@ -1,7 +1,8 @@
 
 function create_bullet(player)
   local s = {
-    id                  = 0,
+    id                  = 0, -- bullet id
+    -- from                = 0, -- player id
     animt               = 0,
     anim_state          = "idle",
     update              = update_bullet,
@@ -15,7 +16,7 @@ function create_bullet(player)
     despawn             = false
   }
   
-  
+  -- s.from = player.id
   -- get vector
   local angle = player.angle - .015 + rnd(.03)
   s.v.x = cos(angle)
@@ -42,8 +43,6 @@ function update_bullet(s)
   
   if( s.timer_despawn < 0 ) then kill_bullet(s)
   elseif( s.timer_despawn > 0.1  and  s.timer_despawn <  s.time_despawn - 0.05 ) then
-    -- s.x = s.x + s.v.x * s.speed * delta_time
-    -- s.y = s.y + s.v.y * s.speed * delta_time
     update_move_bullet(s)
   end
   --Collisions
