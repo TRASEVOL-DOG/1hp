@@ -108,7 +108,7 @@ function update_player(s)
     end
   
     -- translate vector to position according to delta (30 fps)
-    update_move(s)
+    update_move_player(s)
     
   -- END MOVEMENT
   
@@ -127,7 +127,7 @@ function update_player(s)
   end
 end
 
-function update_move(s)
+function update_move_player(s)
   local nx = s.x + s.v.x * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
