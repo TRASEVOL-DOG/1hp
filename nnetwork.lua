@@ -108,19 +108,25 @@ function sync_players(player_data)
     end
     local p = player_list[id]
     
-    if id ~= my_id then
-      p.v.x = p_d[3]
-      p.v.y = p_d[4]
-    end
-    
     local x = p_d[1] + delay * p_d[3]
     local y = p_d[2] + delay * p_d[4]
     
-    p.diff_x = p.x - x
-    p.diff_y = p.y - y
-    
-    p.x = x
-    p.y = y
+    if id == my_id then
+      p.rx = x
+      p.ry = y
+    else
+      p.v.x = p_d[3]
+      p.v.y = p_d[4]
+      
+      local x = p_d[1] + delay * p_d[3]
+      local y = p_d[2] + delay * p_d[4]
+      
+      p.diff_x = p.x - x
+      p.diff_y = p.y - y
+      
+      p.x = x
+      p.y = y
+    end
     
     if p.alive and not p_d[5] then
       kill_player(p)
@@ -151,6 +157,8 @@ function sync_bullets(bullet_data)
     
     local x = b_d[1] + delay*b.v.x
     local y = b_d[2] + delay*b.v.y
+    b.diff_x = b.x - x
+    b.diff_y = b.y - y
     b.x = x
     b.y = y
   end
