@@ -16,13 +16,7 @@ function create_bullet(player)
     despawn             = false
   }
   
-  -- s.from = player.id
-  -- get vector
-  
-  
   --spawn according to vector
-  
-  -- , s.y = x/2 , y/2
   
   local angle = player.angle - .015 + rnd(.03)
   
@@ -33,6 +27,8 @@ function create_bullet(player)
   s.v.x = cos(angle)
   s.v.y = sin(angle)
     
+  -- check if in wall
+  
   local col = check_mapcol(s,s.x,s.y)
   if col then
     if (angle > .25 or angle < .75) then

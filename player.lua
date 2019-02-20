@@ -190,7 +190,8 @@ function draw_player(s)
   if s.speed > 0 then
     state = "run"
   end
-  draw_anim_outlined(s.x, s.y-2, "player", state, s.animt, 0, 0, s.v.x < 0)
+  local a = cos(s.angle) < 0
+  draw_anim_outlined(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
   
 end
 

@@ -15,8 +15,14 @@ function create_wind()
   }
   
   local q = pick(ground)
-  s.x = q.x
-  s.y = q.y
+  local found = false
+  while not found do
+    s.x = irnd(MAP_W) -1
+    s.y = irnd(MAP_H) -1
+    found = (get_maptile(s.x, s.y) == 0)
+  end
+  s.x = s.x * 8 + 4
+  s.y = s.y * 8 + 4
   
   local state = irnd(3)
   if state == 3 then
