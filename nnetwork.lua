@@ -4,7 +4,6 @@ delay = 0
 my_id = nil
 
 local shot_id, shot_ids
-local my_player
 
 function init_network()
   if server_only then
@@ -49,8 +48,6 @@ function client_input(diff)
   sync_players(client.share[2])
   sync_bullets(client.share[3])
   sync_destroyables(client.share[4])
-
-  
 end
 
 function client_output()
@@ -60,6 +57,7 @@ function client_output()
   
   client.home[1] = love.timer.getTime()
   
+  local my_player = player_list[client.id]
   if my_player then
     client.home[2] = my_player.dx_input --(btn(0) and -1) + (btn(1) and 1)
     client.home[3] = my_player.dy_input --(btn(2) and -1) + (btn(3) and 1)
@@ -75,6 +73,8 @@ end
 
 function client_connect()
   castle_print("Connected to server!")
+  
+  my_id = client.id
 end
 
 function client_disconnect()

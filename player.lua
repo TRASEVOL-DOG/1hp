@@ -41,6 +41,10 @@ function create_player(id,x,y)
     --
   }
   
+  if not id then
+    castle_print("/!\\ Creating a player with no id.")
+  end
+  
   player_list[s.id or 0] = s
   
   

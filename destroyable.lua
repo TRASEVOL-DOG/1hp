@@ -1,9 +1,12 @@
 
 destroyable_list = {} -- { id : destroyable }
+local destroyable_nextid = 1
 
-function create_destroyable()
+function create_destroyable(id, x, y)
   local s = {
     id                  = 0,
+    w                   = 6,  -- Remy was here: moved w and h and lowered them both
+    h                   = 6,
     update              = update_destroyable,
     draw                = draw_destroyable,
     regs                = {"to_update", "to_draw0", "destroyable"},
@@ -13,14 +16,33 @@ function create_destroyable()
   
   s.skin = 47 + irnd(6)
   
-  q = pick_and_remove(spawn_points)
-  if q == nil then
-    return
+  -- setting position
+  if x and y then  -- position is provided by server
+    s.x = x
+    s.y = y
+  else             -- seeking position
+    q = pick_and_remove(spawn_points)
+    if q == nil then
+      return
+    end
+    s.x = q.x
+    s.y = q.y
   end
-  s.x = q.x
-  s.y = q.y
-  s.w = 8
-  s.h = 8
+  
+  -- setting id
+  if id then -- assigned by server
+    if destroyable_list[id] then
+      deregister_object(destroyable_list[id])
+    end
+  
+    s.id = id
+    destroyable_nextid = max(destroyable_nextid, id + 1)
+    
+  else       -- assigning id now - probably running server
+    s.id = destroyable_nextid
+    destroyable_nextid = destroyable_nextid + 1
+  end
+  
   
   register_object(s)
   

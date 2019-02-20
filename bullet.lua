@@ -1,7 +1,8 @@
 
 bullet_list = {} -- { id : bullet }
+local bullet_nextid = 1
 
-function create_bullet(player)
+function create_bullet(player, id)
   local s = {
     id                  = 0, -- bullet id
     -- from                = 0, -- player id
@@ -17,6 +18,21 @@ function create_bullet(player)
     timer_despawn       = 0, -- seconds remaining before despawn
     despawn             = false
   }
+  
+  -- setting id
+  
+  if id then -- assigned by server
+    if bullet_list[id] then
+      deregister_object(bullet_list[id])
+    end
+  
+    s.id = id
+    bullet_nextid = max(bullet_nextid, id + 1)
+    
+  else       -- assigning id now - probably running server
+    s.id = bullet_nextid
+    bullet_nextid = bullet_nextid + 1
+  end
   
   --spawn according to vector
   
