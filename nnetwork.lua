@@ -13,6 +13,7 @@ function init_network()
     server.share[4] = {} -- destroyables
   else
     shot_id = 0
+    client.home[4] = shot_id
   end
 end
 
@@ -37,6 +38,7 @@ function client_input(diff)
 --  if not (client and client.connected) then
 --    return
 --  end
+  my_id = client.id
   
   if client.share[1] then
     local timestamp = client.share[1][client.id]
@@ -46,8 +48,8 @@ function client_input(diff)
   end
   
   sync_players(client.share[2])
-  sync_bullets(client.share[3])
-  sync_destroyables(client.share[4])
+--  sync_bullets(client.share[3])
+--  sync_destroyables(client.share[4])
 end
 
 function client_output()
@@ -95,15 +97,20 @@ function sync_players(player_data)
   for id,p_d in pairs(player_data) do  -- syncing players with server data
     if not player_list[id] then
       castle_print("New player: id="..id)
+      debuggg = "New player: id="..id
       create_player(id, p_d[1], p_d[2])
     end
     local p = player_list[id]
     
-    p.vx = p_d[3]
-    p.vy = p_d[4]
+    p.v.x = p_d[3]
+    p.v.y = p_d[4]
     
-    local x = p_d[1] + delay*p.vx
-    local y = p_d[2] + delay*p.vy
+    local x = p_d[1] + delay*p.v.x
+    local y = p_d[2] + delay*p.v.y
+    
+    p.diff_x = p.x - x
+    p.diff_y = p.y - y
+    
     p.x = x
     p.y = y
     
@@ -131,8 +138,8 @@ function sync_bullets(bullet_data)
     end
     local b = bullet_list[id]
     
-    b.vx = b_d[3]
-    b.vy = b_d[4]
+    b.v.x = b_d[3]
+    b.v.y = b_d[4]
     
     local x = b_d[1] + delay*b.vx
     local y = b_d[2] + delay*b.vy
@@ -165,11 +172,11 @@ function server_input()
   for id,ho in pairs(server.homes) do
     local player = player_list[id]
     if player then
-      player.dx_input = ho[2]
-      player.dy_input = ho[3]
-      player.shot_input = (ho[4] > shot_ids[id])
-      shot_ids[id] = ho[4]
-      player.angle = ho[5]
+      player.dx_input = ho[2] or 0
+      player.dy_input = ho[3] or 0
+      player.shot_input = ((ho[4] or 0) > shot_ids[id])
+      shot_ids[id] = ho[4] or 0
+      player.angle = ho[5] or 0
     end
   end
 end
@@ -183,12 +190,12 @@ function server_output()
   for id,ho in pairs(server.homes) do
     server.share[1][id] = ho[1]
   end
-
+  
   local player_data = server.share[2]
   for id,p in pairs(player_list) do
     player_data[id] = {
       p.x, p.y,
-      p.vx, p.vy,
+      p.v.x, p.v.y,
       p.alive,
       p.angle,
       p.score
@@ -199,7 +206,7 @@ function server_output()
   for id,b in pairs(bullet_list) do
     bullet_data[id] = {
       b.x, b.y,
-      b.vx, b.vy,
+      b.v.x, b.v.y,
       b.from
     }
   end
@@ -217,17 +224,18 @@ function server_new_client(id)
   castle_print("New client: #"..id)
   
   create_player(id)
+  shot_ids[id] = 0
 end
 
 function server_lost_client(id)
   castle_print("Client #"..id.." disconnected.")
   
-  local player = player_list[s.id]
+  local player = player_list[id]
   if player then
     kill_player(player)
-    deregister_player(player)
-    player_list[s.id] = nil
-    server.share[2][s.id] = nil
+    deregister_object(player)
+    player_list[id] = nil
+    server.share[2][id] = nil
   end
 end
 

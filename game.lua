@@ -24,6 +24,8 @@ require("wind")
 function _init()
   eventpump()
   
+  init_network()
+  
   init_menu_system()
   
   init_object_mgr(
@@ -184,12 +186,15 @@ function draw_debug()
   
   font("small")
   draw_text("debug: "..debuggg, scrnw, scrnh-8, 2, 3)
+  
+  draw_text(client.connected and ("Connected as #"..client.id) or "Not Connected", scrnw, 2, 2, 3)
+  draw_text(client.connected and ("Ping: "..client.getPing()) or "", scrnw, 10, 2, 3)
 end
 
 function init_game()
 
-  local p = create_player()
-  p.is_enemy = false
+--  local p = create_player()
+
   -- for i = 0, 4 do
   -- local p = create_player()
     -- p.is_enemy = true

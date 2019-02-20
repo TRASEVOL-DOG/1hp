@@ -18,7 +18,6 @@ function create_player(id,x,y)
     update              = update_player,
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
-    is_enemy            = false,    
     alive               = true,
     
     w                   = 6,
@@ -31,13 +30,15 @@ function create_player(id,x,y)
     angle               = 0,
     speed               = 0,
     max_speed           = 1.4*6,
-    deceleration        = .5*6,
-    acceleration        = .9*6,
+    deceleration        = .5*6*2,
+    acceleration        = .9*6*2,
     
     --network stuff
     dx_input            = 0,
     dy_input            = 0,
-    shot_input          = 0    
+    shot_input          = 0,
+    diff_x              = 0,
+    diff_y              = 0
     --
   }
   
@@ -73,7 +74,12 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt + delta_time
   
-  if(s.is_enemy == false) then
+  if not server_only then
+    s.diff_x = lerp(s.diff_x, 0, 0.05 * dt30f)
+    s.diff_y = lerp(s.diff_y, 0, 0.05 * dt30f)
+  end
+  
+  if s.id == my_id then
   
     s.shot_input = false
     s.dx_input = 0
@@ -104,35 +110,42 @@ function update_player(s)
     
   end
   
-  if server_only or (s.is_enemy == false) then
+  if server_only or s.id == my_id then
     
     -- MOVEMENT
     
-    -- locals to clear code
-    local acc = s.acceleration * delta_time * 10
-    local dec = s.deceleration * delta_time * 10
-    
-    s.v.x = s.v.x + acc * s.dx_input
-    s.v.y = s.v.y + acc * s.dy_input
-
-    -- decelerate speed every frame
-    if s.v.x > dec*1.3 then
-      s.v.x = s.v.x - dec
-    elseif s.v.x < - dec * 1.3 then
-      s.v.x = s.v.x + dec
-    else
-      s.v.x = 0
-    end
-    
-    if s.v.y > dec * 1.3 then
-      s.v.y = s.v.y - dec
-    elseif s.v.y < - dec * 1.3 then
-      s.v.y = s.v.y + dec
-    else
-      s.v.y = 0
-    end
+    --if server_only then -- only hard move & stop on server
+    --  s.v.x = s.dx_input * s.max_speed
+    --  s.v.y = s.dy_input * s.max_speed
+    --
+    --else                -- acceleration & deceleration on client
+      -- locals to clear code
+      local acc = s.acceleration * delta_time * 10
+      local dec = s.deceleration * delta_time * 10
       
-    -- cap speed 
+      s.v.x = s.v.x + acc * s.dx_input
+      s.v.y = s.v.y + acc * s.dy_input
+      
+      -- decelerate speed every frame
+      if s.v.x > dec*1.3 then
+        s.v.x = s.v.x - dec
+      elseif s.v.x < - dec * 1.3 then
+        s.v.x = s.v.x + dec
+      else
+        s.v.x = 0
+      end
+      
+      if s.v.y > dec * 1.3 then
+        s.v.y = s.v.y - dec
+      elseif s.v.y < - dec * 1.3 then
+        s.v.y = s.v.y + dec
+      else
+        s.v.y = 0
+      end
+    --end
+      
+    -- cap speed
+    s.speed = dist(s.v.x, s.v.y)
     if s.speed > s.max_speed then
       s.v.x = s.v.x / s.speed * s.max_speed
       s.v.y = s.v.y / s.speed * s.max_speed
@@ -155,7 +168,7 @@ function update_player(s)
   -- translate vector to position according to delta (30 fps)
   update_move_player(s)
   
-  if server_only or (s.is_enemy == false) then
+  if server_only or s.id == my_id then
     if s.shot_input --[[ and counter check ]] then
       local p = create_bullet(s)
       s.timer_fire = s.time_fire    
@@ -171,9 +184,9 @@ function update_move_player(s)
   if col then
     local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
     s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
-    s.v.y = s.v.y - 0.6* col.dir_y * s.acceleration * delta_time * 10
+    s.v.y = s.v.y - 0.7* col.dir_y * s.acceleration * delta_time * 10
   else
-    s.x=nx
+    s.x = nx
   end
   
   local ny = s.y + s.v.y * delta_time * 10
@@ -181,22 +194,24 @@ function update_move_player(s)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
     s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
-    s.v.x = s.v.x - 0.6* col.dir_x * s.acceleration * delta_time * 10
+    s.v.x = s.v.x - 0.7* col.dir_x * s.acceleration * delta_time * 10
   else
     s.y = ny
   end
 end
 
 function draw_player(s)
-  line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
+  local x = s.x + s.diff_x
+  local y = s.y + s.diff_y
+
+  line(x + (s.w) * cos(s.angle), y + (s.h) * sin(s.angle), x + (s.w)*1.5 * cos(s.angle), y + (s.h)*1.5 * sin(s.angle), 3)
   
   local state = "idle"
   if s.speed > 0 then
     state = "run"
   end
   local a = cos(s.angle) < 0
-  draw_anim_outlined(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-  
+  draw_anim_outlined(x, y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
 end
 
 function kill_player(s)

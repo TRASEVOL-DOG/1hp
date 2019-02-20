@@ -5,7 +5,7 @@ local bullet_nextid = 1
 function create_bullet(player, id)
   local s = {
     id                  = 0, -- bullet id
-    -- from                = 0, -- player id
+    from                = player, -- player id
     animt               = 0,
     anim_state          = "stopped",
     kill_anim_t         = .1,
