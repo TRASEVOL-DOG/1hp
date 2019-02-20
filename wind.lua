@@ -19,7 +19,7 @@ function create_wind()
   while not found do
     s.x = irnd(MAP_W) -1
     s.y = irnd(MAP_H) -1
-    found = (get_maptile(s.x, s.y) == 0)
+    found = (get_maptile(s.x, s.y) == 0 and get_maptile(s.x + (windgoright and -1 or 1), s.y) == 0)
   end
   s.x = s.x * 8 + 4
   s.y = s.y * 8 + 4
