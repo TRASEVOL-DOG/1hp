@@ -54,6 +54,8 @@ function _update(dt)
   t = t + dt
 
   update_objects()
+  
+  update_network()
 end
 
 function _draw()
