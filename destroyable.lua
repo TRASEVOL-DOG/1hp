@@ -4,7 +4,6 @@ local destroyable_nextid = 1
 
 function create_destroyable(id, x, y)
   local s = {
-    id                  = 0,
     w                   = 6,  -- Remy was here: moved w and h and lowered them both
     h                   = 6,
     update              = update_destroyable,
@@ -42,6 +41,7 @@ function create_destroyable(id, x, y)
     s.id = destroyable_nextid
     destroyable_nextid = destroyable_nextid + 1
   end
+  destroyable_list[s.id] = s
   
   
   register_object(s)

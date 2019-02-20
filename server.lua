@@ -42,18 +42,18 @@ function server.load()
   server_only = true
   
   if true or USE_CASTLE_CONFIG then
-    local syss = {"audio", "graphics", "video", "window"}
-    --local syss = {}
-    local syssav = {}
-    for sys in all(syss) do
-      syssav[sys], love[sys] = love[sys], nil
-    end
+--    local syss = {"audio", "graphics", "video", "window"}
+--    --local syss = {}
+--    local syssav = {}
+--    for sys in all(syss) do
+--      syssav[sys], love[sys] = love[sys], nil
+--    end
     
     _init()
     
-    for sys in all(syss) do
-      love[sys] = syssav[sys]
-    end
+--    for sys in all(syss) do
+--      love[sys] = syssav[sys]
+--    end
   else
     if not castle then
       init_graphics(400,300)

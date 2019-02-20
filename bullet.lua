@@ -2,10 +2,11 @@
 bullet_list = {} -- { id : bullet }
 local bullet_nextid = 1
 
-function create_bullet(player, id)
+function create_bullet(player_id, id)
   local s = {
-    id                  = 0, -- bullet id
-    from                = player, -- player id
+    from                = player_id, -- player id
+    w                   = 4,
+    h                   = 4,
     animt               = 0,
     anim_state          = "stopped",
     kill_anim_t         = .1,
@@ -33,15 +34,17 @@ function create_bullet(player, id)
     s.id = bullet_nextid
     bullet_nextid = bullet_nextid + 1
   end
+  bullet_list[s.id] = s
   
   --spawn according to vector
   
+  local player = player_list[player_id]
+  if not player then return end
+
   local angle = player.angle - .015 + rnd(.03)
   
-  s.x = player.x + player.w / 2 * (s.v.x ) 
-  s.y = player.y + player.h / 2 * (s.v.y )
-  s.w = 4
-  s.h = 4
+  s.x = player.x + player.w / 2 * s.v.x 
+  s.y = player.y + player.h / 2 * s.v.y
   s.v.x = cos(angle)
   s.v.y = sin(angle)
     
@@ -85,7 +88,6 @@ function update_bullet(s)
     s.anim_state = "moving"
     update_move_bullet(s)
   end
-  debuggg = s.anim_state
   
   
   -- Collisions

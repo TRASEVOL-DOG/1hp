@@ -138,6 +138,8 @@ function get_camera_pos()
 end
 
 function add_shake(p)
+  if server_only then return end
+
   p = p or 3
   local a = rnd(1)
   cam.shkx = p*cos(a)
@@ -203,11 +205,14 @@ function init_game()
   -- local p = create_player()
     -- p.is_enemy = true
   -- end
-  create_destroyable()
-  create_destroyable()
-  create_destroyable()
-  create_destroyable()
-  create_destroyable()
+  
+  if server_only then
+    create_destroyable()
+    create_destroyable()
+    create_destroyable()
+    create_destroyable()
+    create_destroyable()
+  end
 end
 
 function define_menus()

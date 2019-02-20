@@ -48,8 +48,8 @@ function client_input(diff)
   end
   
   sync_players(client.share[2])
---  sync_bullets(client.share[3])
---  sync_destroyables(client.share[4])
+  sync_bullets(client.share[3])
+  sync_destroyables(client.share[4])
 end
 
 function client_output()
@@ -61,15 +61,16 @@ function client_output()
   
   local my_player = player_list[client.id]
   if my_player then
-    client.home[2] = my_player.dx_input --(btn(0) and -1) + (btn(1) and 1)
-    client.home[3] = my_player.dy_input --(btn(2) and -1) + (btn(3) and 1)
+    client.home[2] = my_player.dx_input
+    client.home[3] = my_player.dy_input
     
-    if my_player.shot_input then
-      shot_id = shot_id + 1
-      client.home[4] = shot_id
-    end
+    --if my_player.shot_input then
+    --  shot_id = shot_id + 1
+    --  client.home[4] = shot_id
+    --  debuggg = "shoot!"
+    --end
     
-    client.home[5] = my_player.aim_input
+    client.home[5] = my_player.angle
   end
 end
 
@@ -81,6 +82,11 @@ end
 
 function client_disconnect()
   castle_print("Disconnected from server!")
+end
+
+function client_shoot()
+  shot_id = shot_id + 1
+  client.home[4] = shot_id
 end
 
 function sync_players(player_data)
@@ -102,11 +108,13 @@ function sync_players(player_data)
     end
     local p = player_list[id]
     
-    p.v.x = p_d[3]
-    p.v.y = p_d[4]
+    if id ~= my_id then
+      p.v.x = p_d[3]
+      p.v.y = p_d[4]
+    end
     
-    local x = p_d[1] + delay*p.v.x
-    local y = p_d[2] + delay*p.v.y
+    local x = p_d[1] + delay * p_d[3]
+    local y = p_d[2] + delay * p_d[4]
     
     p.diff_x = p.x - x
     p.diff_y = p.y - y
@@ -127,8 +135,8 @@ function sync_bullets(bullet_data)
   
   for id,b in pairs(bullet_list) do  -- checking if any player no longer exists
     if not bullet_data[id] then
-      kill_bullet(b)
-      bullet_list[b] = nil
+--      kill_bullet(b)
+--      bullet_list[b] = nil
     end
   end
   
@@ -141,8 +149,8 @@ function sync_bullets(bullet_data)
     b.v.x = b_d[3]
     b.v.y = b_d[4]
     
-    local x = b_d[1] + delay*b.vx
-    local y = b_d[2] + delay*b.vy
+    local x = b_d[1] + delay*b.v.x
+    local y = b_d[2] + delay*b.v.y
     b.x = x
     b.y = y
   end
@@ -174,7 +182,12 @@ function server_input()
     if player then
       player.dx_input = ho[2] or 0
       player.dy_input = ho[3] or 0
-      player.shot_input = ((ho[4] or 0) > shot_ids[id])
+      
+      if ho[4] > shot_ids[id] then
+        castle_print("Player #"..id.." shot! "..ho[4])
+      end
+      
+      player.shot_input = (ho[4] > shot_ids[id])
       shot_ids[id] = ho[4] or 0
       player.angle = ho[5] or 0
     end
@@ -211,7 +224,7 @@ function server_output()
     }
   end
   
-  local destroyable_data = server.share[3]
+  local destroyable_data = server.share[4]
   for id,d in pairs(destroyable_list) do
     destroyable_data[id] = {
       d.x, d.y,

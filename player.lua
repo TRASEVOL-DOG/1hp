@@ -36,7 +36,7 @@ function create_player(id,x,y)
     --network stuff
     dx_input            = 0,
     dy_input            = 0,
-    shot_input          = 0,
+    shot_input          = false,
     diff_x              = 0,
     diff_y              = 0
     --
@@ -81,7 +81,6 @@ function update_player(s)
   
   if s.id == my_id then
   
-    s.shot_input = false
     s.dx_input = 0
     s.dy_input = 0
     
@@ -91,13 +90,12 @@ function update_player(s)
     cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
     
     s.speed = dist(s.v.x, s.v.y)
-
-    -- create bullet    
-    if mouse_btnp(0) and s.timer_fire < 0 then
-      s.shot_input = true
-      add_shake()
-    end
     
+    s.shot_input = mouse_btnp(0)
+    if s.shot_input then
+      client_shoot()
+    end
+
     -- left   = 0
     -- right  = 1
     -- up     = 2
@@ -106,7 +104,7 @@ function update_player(s)
     if btn(0) then s.dx_input =             -1 end
     if btn(1) then s.dx_input = s.dx_input + 1 end
     if btn(2) then s.dy_input =             -1 end
-    if btn(3) then s.dy_input = s.dy_input + 1 end    
+    if btn(3) then s.dy_input = s.dy_input + 1 end
     
   end
   
@@ -169,9 +167,10 @@ function update_player(s)
   update_move_player(s)
   
   if server_only or s.id == my_id then
-    if s.shot_input --[[ and counter check ]] then
-      local p = create_bullet(s)
-      s.timer_fire = s.time_fire    
+    if s.shot_input and s.timer_fire < 0 then  -- Remy was here: moved the timer check here, also the screen-shake
+      local p = create_bullet(s.id)
+      s.timer_fire = s.time_fire
+      add_shake()
     end 
   end
   -- END MOVEMENT
