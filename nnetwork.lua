@@ -1,8 +1,7 @@
 
 network_t = 0
 delay = 0
-
-my_faction = nil
+my_id = nil
 
 local shot_id, shot_ids
 local my_player
@@ -47,6 +46,11 @@ function client_input(diff)
     end
   end
   
+  sync_players(client.share[2])
+  sync_bullets(client.share[3])
+  sync_destroyables(client.share[4])
+
+  
 end
 
 function client_output()
@@ -77,6 +81,79 @@ function client_disconnect()
   castle_print("Disconnected from server!")
 end
 
+function sync_players(player_data)
+  if not player_data then return end
+  
+  for id,p in pairs(player_list) do  -- checking if any player no longer exists
+    if not player_data[id] then
+      kill_player(p)
+      deregister_object(p)
+      player_list[p.id] = nil
+    end
+  end
+  
+  for id,p_d in pairs(player_data) do  -- syncing players with server data
+    if not player_list[id] then
+      castle_print("New player: id="..id)
+      create_player(id, p_d[1], p_d[2])
+    end
+    local p = player_list[id]
+    
+    p.vx = p_d[3]
+    p.vy = p_d[4]
+    
+    local x = p_d[1] + delay*p.vx
+    local y = p_d[2] + delay*p.vy
+    p.x = x
+    p.y = y
+    
+    if p.alive and not p_d[5] then
+      kill_player(p)
+    end
+    
+    p.score = p_d[6]
+  end
+end
+
+function sync_bullets(bullet_data)
+  if not bullet_data then return end
+  
+  for id,b in pairs(bullet_list) do  -- checking if any player no longer exists
+    if not bullet_data[id] then
+      kill_bullet(b)
+      bullet_list[b] = nil
+    end
+  end
+  
+  for id,b_d in pairs(bullet_data) do  -- syncing players with server data
+    if not bullet_list[id] then
+      create_bullet(b_d[5], id)
+    end
+    local b = bullet_list[id]
+    
+    b.vx = b_d[3]
+    b.vy = b_d[4]
+    
+    local x = b_d[1] + delay*b.vx
+    local y = b_d[2] + delay*b.vy
+    b.x = x
+    b.y = y
+  end
+end
+
+function sync_destroyables(destroyable_data)
+  if not destroyable_data then return nil end
+
+  for id,d_d in pairs(destroyable_data) do  -- syncing players with server data
+    if not destroyable_list[id] then
+      create_destroyable(id, d_d[1], d_d[2])
+    end
+    local d = destroyable_list[id]
+    
+    d.alive = d_d[3]
+  end
+end
+
 
 
 
@@ -97,7 +174,6 @@ function server_input()
   end
 end
 
-
 function server_output()
 --  if not server then
 --    return
@@ -108,7 +184,7 @@ function server_output()
     server.share[1][id] = ho[1]
   end
 
-  player_data = server.share[2]
+  local player_data = server.share[2]
   for id,p in pairs(player_list) do
     player_data[id] = {
       p.x, p.y,
@@ -119,21 +195,22 @@ function server_output()
     }
   end
   
---  bullet_data = server.share[3]
---  for id,b in pairs(bullet_list) do
---    bullet_data[id] = {
---      b.x, b.y,
---      b.vx, b.vy
---    }
---  end
---  
---  destroyable_data = server.share[3]
---  for id,d in pairs(destroyable_list) do
---    destroyable_data[id] = {
---      d.x, d.y,
---      d.alive
---    }
---  end
+  local bullet_data = server.share[3]
+  for id,b in pairs(bullet_list) do
+    bullet_data[id] = {
+      b.x, b.y,
+      b.vx, b.vy,
+      b.from
+    }
+  end
+  
+  local destroyable_data = server.share[3]
+  for id,d in pairs(destroyable_list) do
+    destroyable_data[id] = {
+      d.x, d.y,
+      d.alive
+    }
+  end
 end
 
 function server_new_client(id)

@@ -276,14 +276,13 @@ function draw_anim_outlined(x,y,object,state,t,outline_c,r,flipx,flipy)
   set_shader()
 end
 
-function anim_step(o)
- local state=o.state or "only"
- local info=anim_info[o.name][state]
+function anim_step(object, state, t)
+ local info=anim_info[object][state]
  
- local v=flr(o.animt/info.dt%#info.sprites)
- local k=flr((o.animt/info.dt)/#info.sprites)
+ local v=flr(t/info.dt%#info.sprites)
+ local k=flr((t/info.dt)/#info.sprites)
  
- return v,(o.animt%info.dt<0.01),k
+ return v,(t%info.dt<0.01),k
 end
 
 

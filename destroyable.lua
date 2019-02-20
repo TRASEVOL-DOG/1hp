@@ -1,4 +1,6 @@
 
+destroyable_list = {} -- { id : destroyable }
+
 function create_destroyable()
   local s = {
     id                  = 0,
@@ -36,12 +38,11 @@ function draw_destroyable(s)
   spr(s.skin, s.x, s.y-3)
   all_colors_to()
   spr(s.skin, s.x, s.y-2)
-
 end
 
 function kill_destroyable(s)
   if s.alive then
     s.alive = false
-    s.skin = 53 + irnd(2)
+    s.skin = (s.skin < 52) and 54 or 55
   end
 end
