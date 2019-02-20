@@ -41,5 +41,5 @@ end
 
 function kill_destroyable(s)
   s.alive = false
-  s.skin = 0 --53 + irnd(2)
+  s.skin = 53 + irnd(2)
 end

@@ -70,9 +70,9 @@ function update_bullet(s)
     end
   end
   
-  destroyable = collide_objgroup(s,"destroyable")
-  if(destroyable) then
-    kill_destroyable(destroyable)
+  local destr = collide_objgroup(s,"destroyable")
+  if(destr) then
+    kill_destroyable(destr)
   end
       
 end
