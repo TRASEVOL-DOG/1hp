@@ -51,6 +51,10 @@ function _update(dt)
   if btnp(6) then
     refresh_spritesheets()
   end
+  
+  if btnp(5) then
+    debug_mode = not debug_mode
+  end
 
   t = t + dt
   if chance(2) then

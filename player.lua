@@ -75,8 +75,8 @@ function update_player(s)
   s.animt = s.animt + delta_time
   
   if not server_only then
-    s.diff_x = lerp(s.diff_x, 0, delta_time)
-    s.diff_y = lerp(s.diff_y, 0, delta_time)
+    s.diff_x = lerp(s.diff_x, 0, 0.1 * delta_time)
+    s.diff_y = lerp(s.diff_y, 0, 0.1 * delta_time)
   end
   
   if s.id == my_id then
@@ -212,6 +212,12 @@ function draw_player(s)
   end
   local a = cos(s.angle) < 0
   draw_anim_outlined(x, y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+
+  if debug_mode then
+    all_colors_to(1)
+    draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    all_colors_to()
+  end
 end
 
 function kill_player(s)
