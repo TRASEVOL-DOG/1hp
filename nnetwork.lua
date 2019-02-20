@@ -108,8 +108,8 @@ function sync_players(player_data)
     local x = p_d[1] + delay*p.v.x
     local y = p_d[2] + delay*p.v.y
     
-    p.diff_x = p.x - x
-    p.diff_y = p.y - y
+    p.diff_x = x - p.x
+    p.diff_y = y - p.y
     
     p.x = x
     p.y = y
