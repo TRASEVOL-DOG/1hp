@@ -1,4 +1,6 @@
 
+bullet_list = {} -- { id : bullet }
+
 function create_bullet(player)
   local s = {
     id                  = 0, -- bullet id

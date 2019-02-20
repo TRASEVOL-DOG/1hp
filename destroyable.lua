@@ -1,4 +1,6 @@
 
+destroyable_list = {} -- { id : destroyable }
+
 function create_destroyable()
   local s = {
     id                  = 0,
