@@ -9,6 +9,7 @@ MAP_H = 72
 map = nil
 
 spawn_points = {}
+ground = {}
 
 local walls = {2,1,3,4}
 local map_data = {
@@ -87,12 +88,14 @@ local map_data = {
 }
 
 function init_map()
-  -- TEMP get spawns
+  -- TEMP get spawns and ground
   local i,j = 0, 0
   for i = 0,  (MAP_H-1) do
     for j = 0,  (MAP_W-1) do
       if map_data[i][j] == 8 then
         add(spawn_points, {x = j*8+4, y = i*8+4})
+      elseif map_data[i][j] == 0 then
+        add(ground, {x = j*8+4, y = i*8+4})
       end
     end
   end
