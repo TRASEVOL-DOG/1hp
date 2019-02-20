@@ -17,8 +17,8 @@ require("fx")
 require("map")
 require("player")
 require("destroyable")
-require("enemy_bullet")
 require("bullet")
+require("wind")
 
 
 function _init()
@@ -29,7 +29,8 @@ function _init()
   init_object_mgr(
     "player",
     "bullet",
-    "destroyable"
+    "destroyable",
+    "wind"
   )
 
   t = 0
@@ -50,7 +51,10 @@ function _update(dt)
   end
 
   t = t + dt
-
+  if chance(2) then
+    if chance(14) then windgoright = not windgoright end
+    create_wind()
+  end
   update_objects()
 end
 
@@ -183,7 +187,13 @@ end
 function init_game()
 
   local p = create_player()
-  
+  p.is_enemy = false
+  -- for i = 0, 4 do
+  -- local p = create_player()
+    -- p.is_enemy = true
+  -- end
+  create_destroyable()
+  create_destroyable()
   create_destroyable()
   create_destroyable()
   create_destroyable()

@@ -7,7 +7,7 @@ function create_bullet(player)
     anim_state          = "idle",
     update              = update_bullet,
     draw                = draw_bullet,
-    regs                = {"to_update", "to_draw2"},
+    regs                = {"to_update", "to_draw1", "bullet"},
     speed               = 18, -- per second
     speed_lost_rebound  = 1/2, -- per second
     v                   = { x = 0, y = 0}, -- movement vector 
@@ -61,18 +61,20 @@ function update_bullet(s)
   elseif( s.timer_despawn > 0.1  and  s.timer_despawn <  s.time_despawn - 0.05 ) then
     update_move_bullet(s)
   end
-  --Collisions
-  local player = collide_objgroup(s,"player")
-  if(player) then
-    if player.is_enemy then
-      player.alive = false
-      kill_bullet(s)
-    end
-  end
+  -- Collisions
+  -- local player = collide_objgroup(s,"player")
+  -- if(player) then
+    -- if player.is_enemy then
+      -- player.alive = false
+      -- kill_bullet(s)
+    -- end
+  -- end
   
-  local destr = collide_objgroup(s,"destroyable")
+  local destr = all_collide_objgroup(s,"destroyable")
   if(destr) then
-    kill_destroyable(destr)
+    for i=1, #destr do
+      kill_destroyable(destr[i])
+    end
   end
       
 end

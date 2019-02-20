@@ -46,9 +46,8 @@ function all_collide_objgroup(obj,groupname)
 end
 
 function collide_objobj(obj1,obj2)
-  -- return (abs(obj1.x-obj2.x)<(obj1.w+obj2.w)/2
-      -- and abs(obj1.y-obj2.y)<(obj1.h+obj2.h)/2)
-      return true
+  return (abs(obj1.x-obj2.x)<(obj1.w+obj2.w)/2
+      and abs(obj1.y-obj2.y)<(obj1.h+obj2.h)/2)
 end
 
 

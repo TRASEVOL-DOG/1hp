@@ -14,7 +14,7 @@ function create_player()
     anim_state          = "idle",
     update              = update_player,
     draw                = draw_player,
-    regs                = {"to_update", "to_draw1"},
+    regs                = {"to_update", "to_draw0", "player"},
     is_enemy            = false,    
     alive               = true,
     
@@ -23,6 +23,7 @@ function create_player()
     
     v                   = { x = 0, y = 0},-- movement vector 
     angle               = 0,
+    speed               = 0,
     max_speed           = 1.4*6,
     deceleration        = .5*6,
     acceleration        = .9*6,
@@ -49,11 +50,6 @@ end
 
 function update_player(s)
   
-  -- if s.id ~= my_id then
-  
-  -- else
-  
-  -- end
   
   -- cooldown firing gun
   s.timer_fire = s.timer_fire - delta_time
@@ -61,67 +57,48 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt + delta_time
   
-  -- MOVEMENT
+  if(s.is_enemy == false) then
   
+    s.shot_input = false
+    s.dx_input = 0
+    s.dy_input = 0
+    
+    -- gets angle
+    s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
+    -- move cam
+    cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
+    
+    s.speed = dist(s.v.x, s.v.y)
+
+    -- create bullet    
+    if mouse_btnp(0) and s.timer_fire < 0 then
+      s.shot_input = true
+      add_shake()
+    end
+    
+    -- left   = 0
+    -- right  = 1
+    -- up     = 2
+    -- down   = 3
+        
+    if btn(0) then s.dx_input =             -1 end
+    if btn(1) then s.dx_input = s.dx_input + 1 end
+    if btn(2) then s.dy_input =             -1 end
+    if btn(3) then s.dy_input = s.dy_input + 1 end    
+    
+  end
+  
+  if server_only or (s.is_enemy == false) then
+    
+    -- MOVEMENT
+    
     -- locals to clear code
     local acc = s.acceleration * delta_time * 10
     local dec = s.deceleration * delta_time * 10
     
-    if server_only then
-    
-        s.v.x = s.v.x + acc * s.dx_input
-        s.v.y = s.v.y + acc * s.dy_input
-    
-      if s.shot_input and s.timer_fire < 0 --[[ and counter check ]]then
-      
-        local p = create_bullet(s)
-        s.timer_fire = s.time_fire    
-        
-      end
-    else
-    
-      -- gets angle
-      s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
-      -- move cam
-      cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
+    s.v.x = s.v.x + acc * s.dx_input
+    s.v.y = s.v.y + acc * s.dy_input
 
-      -- create bullet    
-      s.shot_input = false
-      if mouse_btnp(0) and s.timer_fire < 0 then
-        local p = create_bullet(s)
-        s.timer_fire = s.time_fire
-        add_shake()
-        
-        s.shot_input = true
-      end
-    
-      -- left   = 0
-      -- right  = 1
-      -- up     = 2
-      -- down   = 3
-      
-      -- add speed to vector according to button pushed
-      
-      s.dx_input = 0
-      s.dy_input = 0
-      
-      if btn(0) then
-        s.dx_input = -1
-        s.v.x = s.v.x - acc
-      end
-      if btn(1) then
-        s.dx_input = 1
-        s.v.x = s.v.x + acc
-      end
-      if btn(2) then
-        s.dy_input = -1
-        s.v.y = s.v.y - acc
-      end
-      if btn(3) then
-        s.dy_input = 1
-        s.v.y = s.v.y + acc
-      end
-    end
     -- decelerate speed every frame
     if s.v.x > dec*1.3 then
       s.v.x = s.v.x - dec
@@ -140,26 +117,34 @@ function update_player(s)
     end
       
     -- cap speed 
-    local d = dist(s.v.x, s.v.y)
-    if d > s.max_speed then
-      s.v.x = s.v.x / d * s.max_speed
-      s.v.y = s.v.y / d * s.max_speed
+    if s.speed > s.max_speed then
+      s.v.x = s.v.x / s.speed * s.max_speed
+      s.v.y = s.v.y / s.speed * s.max_speed
     end
        
     -- Collisions
           
-    local other_player = collide_objgroup(s,"player")
-    if(other_player) then
-      s.v.x = sign(s.x - other_player.x) * 10
-    end
+    -- local other_player = collide_objgroup(s,"player")
+    -- if(other_player) then
+      -- s.v.x = sgn(s.x - other_player.x) * 10
+    -- end
     local destroyable = collide_objgroup(s,"destroyable")
-    if(destroyable) then
-      s.v.x = sign(s.x - destroyable.x) * 10
+    if destroyable and destroyable.alive then
+      s.v.x = s.v.x + sgn(s.x - destroyable.x) * .8
+      s.v.y = s.v.y + sgn(s.y - destroyable.y) * .8
     end
+
+  end
   
-    -- translate vector to position according to delta (30 fps)
-    update_move_player(s)
-    
+  -- translate vector to position according to delta (30 fps)
+  update_move_player(s)
+  
+  if server_only or (s.is_enemy == false) then
+    if s.shot_input --[[ and counter check ]] then
+      local p = create_bullet(s)
+      s.timer_fire = s.time_fire    
+    end 
+  end
   -- END MOVEMENT
   
 end
@@ -188,8 +173,13 @@ end
 
 function draw_player(s)
   line(s.x + (s.w) * cos(s.angle), s.y + (s.h) * sin(s.angle), s.x + (s.w)*1.5 * cos(s.angle), s.y + (s.h)*1.5 * sin(s.angle), 3)
-
-  draw_anim_outlined(s.x, s.y-2, "player", "run", s.animt, 0, 0, s.v.x < 0)
+  
+  local state = "idle"
+  if s.speed > 0 then
+    state = "run"
+  end
+  draw_anim_outlined(s.x, s.y-2, "player", state, s.animt, 0, 0, s.v.x < 0)
+  
 end
 
 function kill_player(s)

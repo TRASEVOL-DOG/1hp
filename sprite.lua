@@ -13,7 +13,7 @@ anim_info = {
   player = {
     idle = {
       sheet = "sprites",
-      dt = 0.05,
+      dt = 0.2,
       sprites = {0,1,2,3}
     },
     run = {
