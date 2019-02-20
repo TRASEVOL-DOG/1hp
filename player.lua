@@ -2,14 +2,17 @@
 require("input")
 -- spawn_players={{x = 0, y = 0}}
 
+player_list = {} -- { id : player }
+
 function kill_player(s)
 end
 
 
-function create_player()
+function create_player(id,x,y)
   
   local s = {
-    id                  = 0,
+    id                  = id,
+  
     animt               = 0,
     anim_state          = "idle",
     update              = update_player,
@@ -17,6 +20,9 @@ function create_player()
     regs                = {"to_update", "to_draw0", "player"},
     is_enemy            = false,    
     alive               = true,
+    
+    w                   = 6,
+    h                   = 4,
     
     time_fire           = .1, -- max cooldown (seconds)  for bullet fire
     timer_fire          = 0, -- cooldown (seconds) left for bullet fire
@@ -33,15 +39,21 @@ function create_player()
     dy_input            = 0,
     shot_input          = 0    
     --
-    
   }
   
-  q = pick_and_remove(spawn_points)
+  player_list[s.id or 0] = s
   
-  s.x = q.x
-  s.y = q.y
-  s.w = 6
-  s.h = 4
+  
+  if x and y then
+    s.x = x
+    s.y = y
+  else
+    q = pick_and_remove(spawn_points)
+    
+    s.x = q.x
+    s.y = q.y
+  end
+  
   
   register_object(s)
   

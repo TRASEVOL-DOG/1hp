@@ -56,6 +56,8 @@ function _update(dt)
     create_wind()
   end
   update_objects()
+  
+  update_network()
 end
 
 function _draw()

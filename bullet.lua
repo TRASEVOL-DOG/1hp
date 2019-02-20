@@ -10,7 +10,7 @@ function create_bullet(player)
     regs                = {"to_update", "to_draw1", "bullet"},
     speed               = 18, -- per second
     speed_lost_rebound  = 1/2, -- per second
-    v                   = { x = 0, y = 0}, -- movement vector 
+    v                   = { x = 0, y = 0}, -- movement vector
     time_despawn        = 0.5, -- seconds a bullet would have at spawn before despawn
     timer_despawn       = 0, -- seconds remaining before despawn
     despawn             = false

@@ -142,6 +142,11 @@ function check_mapcol(s,x,y)
   return b and {dir_x = res[1], dir_y = res[2]}
 end
 
+function get_maptile(x,y)
+  if not map_data[y] then return nil end
+  return map_data[y][x]
+end
+
 mapsurf = nil
 function gen_mapsurf()
   if server_only then return end
