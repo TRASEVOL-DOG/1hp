@@ -4,11 +4,14 @@ delay = 0
 
 my_faction = nil
 
+local shot_id, shot_ids
+local my_player
+
 function init_network()
   if server_only then
-  
+    shot_ids = {}
   else
-
+    shot_id = 0
   end
 end
 
@@ -50,8 +53,17 @@ function client_output()
   
   client.home[1] = love.timer.getTime()
   
-  client.home[2] = (btn(0) and -1) + (btn(1) and 1)
-  client.home[3] = (btn(2) and -1) + (btn(3) and 1)
+  if my_player then
+    client.home[2] = my_player.dx_input --(btn(0) and -1) + (btn(1) and 1)
+    client.home[3] = my_player.dy_input --(btn(2) and -1) + (btn(3) and 1)
+    
+    if my_player.shoot_input then
+      shot_id = shot_id + 1
+      client.home[4] = shot_id
+    end
+    
+    client.home[5] = my_player.aim_input
+  end
 end
 
 function client_connect()
