@@ -48,7 +48,13 @@ function create_player()
 end
 
 function update_player(s)
-
+  
+  -- if s.id ~= my_id then
+  
+  -- else
+  
+  -- end
+  
   -- cooldown firing gun
   s.timer_fire = s.timer_fire - delta_time
   
