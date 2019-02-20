@@ -29,8 +29,6 @@ function _init()
   init_object_mgr(
     "player",
     "bullet",
-    "enemy_bullet",
-    "enemy_player",
     "destroyable"
   )
 

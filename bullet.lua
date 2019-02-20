@@ -18,18 +18,34 @@ function create_bullet(player)
   
   -- s.from = player.id
   -- get vector
-  local angle = player.angle - .015 + rnd(.03)
-  s.v.x = cos(angle)
-  s.v.y = sin(angle)
+  
   
   --spawn according to vector
   
+  -- , s.y = x/2 , y/2
+  
+  local angle = player.angle - .015 + rnd(.03)
+  
   s.x = player.x + player.w / 2 * (s.v.x ) 
   s.y = player.y + player.h / 2 * (s.v.y )
+  s.w = 4
+  s.h = 4
+  s.v.x = cos(angle)
+  s.v.y = sin(angle)
+    
+  local col = check_mapcol(s,s.x,s.y)
+  if col then
+    if (angle > .25 or angle < .75) then
+      angle = angle -.5
+    else
+      angle = angle +.5
+    end
+    s.v.x = cos(angle)
+    s.v.y = sin(angle)
+    s.x = player.x + player.w / 2 * (s.v.x ) 
+    s.y = player.y + player.h / 2 * (s.v.y )
   
-  -- , s.y = x/2 , y/2
-  s.w = 6
-  s.h = 6
+  end
   
   s.timer_despawn = s.time_despawn
   register_object(s)
@@ -50,13 +66,13 @@ function update_bullet(s)
   if(player) then
     if player.is_enemy then
       player.alive = false
+      kill_bullet(s)
     end
-    kill_bullet(s)
   end
   
-  local destroyable = collide_objgroup(s,"destroyable")
-  if(destroyable) then
-    destroyable.alive = false
+  local destr = collide_objgroup(s,"destroyable")
+  if(destr) then
+    kill_destroyable(destr)
   end
       
 end

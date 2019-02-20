@@ -5,7 +5,7 @@ function create_destroyable()
     update              = update_destroyable,
     draw                = draw_destroyable,
     regs                = {"to_update", "to_draw2"},
-    alive               = 0,
+    alive               = true,
     skin                = 0 -- 48 ~ 48 + 3 and 54 -- 48 + 4 ~ 48 + 6 and 55
   }
   
@@ -15,8 +15,8 @@ function create_destroyable()
   
   s.x = q.x
   s.y = q.y
-  s.w = 8
-  s.h = 8
+  s.w = 800
+  s.h = 800
   
   register_object(s)
   
@@ -40,5 +40,6 @@ function draw_destroyable(s)
 end
 
 function kill_destroyable(s)
+  s.alive = false
   s.skin = 53 + irnd(2)
 end
