@@ -130,7 +130,7 @@ function sync_players(player_data)
       
       p.x = x
       p.y = y
-    --end
+    end
     
     if p.alive and not p_d[5] then
       kill_player(p)
