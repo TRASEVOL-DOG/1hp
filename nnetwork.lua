@@ -193,11 +193,14 @@ function server_input()
       player.dx_input = ho[2] or 0
       player.dy_input = ho[3] or 0
       
-      if ho[4] > shot_ids[id] then
-        castle_print("Player #"..id.." shot! "..ho[4])
+      if ho[4] then
+        if ho[4] > shot_ids[id] then
+          castle_print("Player #"..id.." shot! "..ho[4])
+        end
+        
+        player.shot_input = (ho[4] > shot_ids[id])
       end
       
-      player.shot_input = (ho[4] > shot_ids[id])
       shot_ids[id] = ho[4] or 0
       player.angle = ho[5] or 0
     end
