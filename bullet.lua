@@ -5,6 +5,20 @@ local bullet_nextid = 1
 
 function create_bullet(player_id, id)
   if dead_bullets[id] then return end
+  
+  if player_id == my_id then
+    if id then
+      for b in group("bullet") do
+        if b.from == player_id and not b.id then
+          b.id = id
+          bullet_list[id] = b
+          
+          bullet_nextid = max(bullet_nextid, id + 1)
+          return
+        end
+      end
+    end
+  end
 
   local s = {
     from                = player_id, -- player id
@@ -30,21 +44,6 @@ function create_bullet(player_id, id)
   if not player then return end
   
   -- setting id
-  
-  if player_id == my_id then
-    if id then
-      for b in group("bullet") do
-        if b.from == player_id and not b.id then
-          s.x, s.y = b.x, b.y
-          s.hold = b.hold
-          s.timer_despawn = b.timer_despawn
-          s.kill_anim_t = b.kill_anim_t
-          deregister_object(b)
-          break
-        end
-      end
-    end
-  end
   
   if id then -- assigned by server
     if bullet_list[id] then
