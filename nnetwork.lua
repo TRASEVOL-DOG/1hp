@@ -144,12 +144,12 @@ end
 function sync_bullets(bullet_data)
   if not bullet_data then return end
   
-  for id,b in pairs(bullet_list) do  -- checking if any player no longer exists
-    if not bullet_data[id] then
-      deregister_bullet(b)
-      bullet_list[b] = nil
-    end
-  end
+--  for id,b in pairs(bullet_list) do  -- checking if any bullet no longer exists
+--    if not bullet_data[id] then
+--      deregister_bullet(b)
+--      bullet_list[b] = nil
+--    end
+--  end
   
   for id,b_d in pairs(bullet_data) do  -- syncing players with server data
     if not bullet_list[id] then

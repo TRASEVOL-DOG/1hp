@@ -163,10 +163,10 @@ function update_player(s)
       local dx = s.x - s.rx
       local dy = s.y - s.ry
       if abs(dx) >= 1 then
-        s.v.x = s.v.x - (--[[sgn(dx) +]] dx/8) * s.acceleration * delta_time * 5
+        s.v.x = s.v.x - (sgn(dx) * 0.5 + dx/32) * s.acceleration * delta_time * 5
       end
       if abs(dy) >= 1 then
-        s.v.y = s.v.y - (--[[sgn(dy) +]] dy/8) * s.acceleration * delta_time * 5
+        s.v.y = s.v.y - (sgn(dy) * 0.5 + dy/32) * s.acceleration * delta_time * 5
       end
       s.speed = dist(s.v.x, s.v.y) -- update speed
       
