@@ -36,7 +36,7 @@ function get_list_leaderboard()
         my_place = index
       end
     end
-    add(sorted_list, { rank = index, name = list_player[index].score})
+    add(sorted_list, { rank = index, name = list_player[index].id})
     delat(list_player, index)
     
     while_condition = while_condition - 1

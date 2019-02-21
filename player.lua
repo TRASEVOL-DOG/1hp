@@ -85,6 +85,7 @@ function update_player(s)
     s.shot_input = mouse_btnp(0)
     if s.shot_input then
       client_shoot()
+      s.score = s.score + 1
     end
 
     -- left   = 0
