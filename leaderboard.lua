@@ -1,6 +1,5 @@
 
 leaderboard = {}
-my_place = 0
 
 function get_list_leaderboard()
   
@@ -19,8 +18,14 @@ function get_list_leaderboard()
   -- end
   
   local sorted_list = {}
-  local size = #list_player
-  local while_condition = leaderboard.small and 5 or size -- we either want 5 entries or the entire list of players
+  local while_condition = #list_player
+  if leaderboard.is_large then
+    while_condition = #list_player
+  end
+  -- we either want 5 entries or the entire list of players
+  
+  local my_id = my_id or 1
+  local ranks = 1
   
   while while_condition > 0 do -- defined above
   
@@ -33,17 +38,19 @@ function get_list_leaderboard()
         index = i
       end
       if v.id == my_id then
-        my_place = index
+        my_place = ranks
       end
     end
-    add(sorted_list, { rank = index, name = list_player[index].id, score = list_player[index].score})
+    add(sorted_list, {  rank = ranks, 
+                        name = list_player[index].id,
+                        score = list_player[index].score})
     delat(list_player, index)
-    
+    ranks = ranks + 1
     while_condition = while_condition - 1
     
   end 
   
-  if leaderboard.small then
+  if leaderboard.is_large then
     if my_place > 6 and #sorted_list > 3 then
         sorted_list[4].rank = "..."
       for i, v in pairs(list_player) do
@@ -52,6 +59,7 @@ function get_list_leaderboard()
     end
   end
   
+ debuggg = my_id 
   
   -- local l = {}
   -- if leaderboard.small then
@@ -90,7 +98,7 @@ end
 
 function init_leaderboard()
 
-  leaderboard.small = true
+  leaderboard.is_large = true
 
 end
 
@@ -100,7 +108,7 @@ function draw_leaderboard()
   
   local y = 3
   local x = 70
-  draw_text_oultined("Leaderboard", sx - x, y)
+  draw_text_oultined("Leaderboard", sx - x, y, 0)
     
   y = 8
   for i = 1, #leaderboard.list do
@@ -136,7 +144,7 @@ end
 
 function update_leaderboard()
 
-  if btnp(5) then leaderboard.small = not leaderboard.small end
+  if btnp(10) then leaderboard.is_large = not leaderboard.is_large end
   
   leaderboard.list = get_list_leaderboard()
 
