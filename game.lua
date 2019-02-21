@@ -19,6 +19,7 @@ require("player")
 require("destroyable")
 require("bullet")
 require("wind")
+require("leaderboard")
 
 
 function _init()
@@ -63,6 +64,8 @@ function _update(dt)
   end
   update_objects()
   
+  update_leaderboard()
+  
   update_network()
 end
 
@@ -78,6 +81,8 @@ function _draw()
   camera()
 
   draw_debug()
+  
+  draw_leaderboard()
   
   cursor:draw()
 end
@@ -208,13 +213,6 @@ end
 
 function init_game()
 
---  local p = create_player()
-
-  -- for i = 0, 4 do
-  -- local p = create_player()
-    -- p.is_enemy = true
-  -- end
-  
   if server_only then
     create_destroyable()
     create_destroyable()
@@ -222,6 +220,7 @@ function init_game()
     create_destroyable()
     create_destroyable()
   end
+  
 end
 
 function define_menus()

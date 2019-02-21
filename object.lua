@@ -2,7 +2,7 @@
 -- by TRASEVOL_DOG (https://trasevol.dog/)
 
 require("ttable")
-
+objs = {}
 function init_object_mgr(...)
   objs={
     to_update={},
@@ -122,6 +122,11 @@ function eradicate_group(grp)
 end
 
 function new_group(name) objs[name] = {} end
+
+function get_group_copy(grp)
+  return copy_table(objs[grp])
+end
+
 function group_exists(name) return objs[name] ~= nil end
 
 function group(name) return all(objs[name]) end

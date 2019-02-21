@@ -16,15 +16,18 @@ input.layout={
   right=1,
   up=2,
   down=3,
-  -- qwerty controls
+  
+  -- azerty controls
   q=0,
   a=0,
   d=1,
   z=2,
   w=2,
   s=3,
+  
   -- z=4,
   x=5,
+  m=10,
   p=6,
   
   escape=7,

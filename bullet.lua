@@ -107,10 +107,8 @@ function update_bullet(s)
   -- Collisions
   -- local player = collide_objgroup(s,"player")
   -- if(player) then
-    -- if player.is_enemy then
-      -- player.alive = false
       -- kill_bullet(s)
-    -- end
+      -- kill_player(player)
   -- end
   
   local destr = all_collide_objgroup(s,"destroyable")
@@ -174,10 +172,6 @@ function kill_bullet(s)
   s.anim_state = "killed"
   -- s.kill_anim_t = .2
 end
--- function kill_bullet2(s)
-  -- s.anim_state = "killed"
-  -- s.kill_anim_t = .2
--- end
 
 function deregister_bullet(s)
   deregister_object(s)

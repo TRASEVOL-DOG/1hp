@@ -1,12 +1,7 @@
 
 require("input")
--- spawn_players={{x = 0, y = 0}}
 
 player_list = {} -- { id : player }
-
-function kill_player(s)
-end
-
 
 function create_player(id,x,y)
   
@@ -19,6 +14,7 @@ function create_player(id,x,y)
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
+    score               = 0,
     
     w                   = 6,
     h                   = 4,
@@ -182,10 +178,9 @@ function update_player(s)
       local p = create_bullet(s.id)
       s.timer_fire = s.time_fire
       add_shake()
+      s.score = s.score + 1
     end 
   end
-  -- END MOVEMENT
-  
 end
 
 function update_move_player(s)
@@ -245,4 +240,9 @@ function draw_player(s)
 end
 
 function kill_player(s)
+  s.alive = false
+end
+
+function resurrect(s)
+  s.alive = true
 end

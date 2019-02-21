@@ -132,7 +132,8 @@ function sync_players(player_data)
       kill_player(p)
     end
     
-    p.score = p_d[6]
+    p.angle = p_d[6]
+    p.score = p_d[7]
   end
 end
 
