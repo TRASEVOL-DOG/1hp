@@ -36,7 +36,7 @@ function get_list_leaderboard()
         my_place = index
       end
     end
-    add(sorted_list, { rank = index, name = list_player[index].id})
+    add(sorted_list, { rank = index, name = list_player[index].id, score = list_player[index].score})
     delat(list_player, index)
     
     while_condition = while_condition - 1
@@ -47,7 +47,7 @@ function get_list_leaderboard()
     if my_place > 6 and #sorted_list > 3 then
         sorted_list[4].rank = "..."
       for i, v in pairs(list_player) do
-        if v.id == my_id then sorted_list[4] = { rank = i, name = list_player[i]} end
+        if v.id == my_id then sorted_list[4] = { rank = i, name = list_player[i], score = list_player[index].score} end
       end 
     end
   end
@@ -110,7 +110,7 @@ function draw_leaderboard()
     local str = ""
     
     if player.rank ~= "..." then
-        str = player.rank .. "." .. player.name
+        str = player.rank .. "." .. player.name .. "(" .. player.score .. ")"
     else
         str = player.rank
     end
