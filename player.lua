@@ -74,22 +74,6 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt + delta_time
   
-  if not server_only then
-    if s.id == my_id and s.rx then
-      local dx = s.x - s.rx
-      local dy = s.y - s.ry
-      if abs(dx) >= 1 then
-        s.v.x = s.v.x - sgn(dx) * s.acceleration * delta_time * 5
-      end
-      if abs(dy) >= 1 then
-        s.v.y = s.v.y - sgn(dy) * s.acceleration * delta_time * 5
-      end
-    else
-      s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
-      s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
-    end
-  end
-  
   if s.id == my_id then
   
     s.dx_input = 0
@@ -176,6 +160,23 @@ function update_player(s)
     -- we need the speed to figure out state on draw_player
     s.speed = dist(s.v.x, s.v.y)
   
+  end
+  
+  if not server_only then
+    if s.id == my_id and s.rx then
+      local dx = s.x - s.rx
+      local dy = s.y - s.ry
+      if abs(dx) >= 1 then
+        s.v.x = s.v.x - sgn(dx) * s.acceleration * delta_time * 5
+      end
+      if abs(dy) >= 1 then
+        s.v.y = s.v.y - sgn(dy) * s.acceleration * delta_time * 5
+      end
+      s.speed = dist(s.v.x, s.v.y) -- update speed
+    else
+      s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
+      s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
+    end
   end
   
   -- translate vector to position according to delta (30 fps)
