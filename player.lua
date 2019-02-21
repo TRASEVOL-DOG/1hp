@@ -78,8 +78,8 @@ function update_player(s)
     if s.id == my_id and s.rx then
       local dx = s.x - s.rx
       local dy = s.y - s.ry
-      s.v.x = s.v.x + dx * delta_time * 100
-      s.v.y = s.v.y + dy * delta_time * 100
+      s.v.x = s.v.x - dx * delta_time * 10
+      s.v.y = s.v.y - dy * delta_time * 10
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
       s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
