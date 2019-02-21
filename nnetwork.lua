@@ -152,15 +152,17 @@ function sync_bullets(bullet_data)
     end
     local b = bullet_list[id]
     
-    b.v.x = b_d[3]
-    b.v.y = b_d[4]
-    
-    local x = b_d[1] + delay*b.v.x
-    local y = b_d[2] + delay*b.v.y
-    b.diff_x = b.x - x
-    b.diff_y = b.y - y
-    b.x = x
-    b.y = y
+    if b then
+      b.v.x = b_d[3]
+      b.v.y = b_d[4]
+      
+      local x = b_d[1] + delay*b.v.x
+      local y = b_d[2] + delay*b.v.y
+      b.diff_x = b.x - x
+      b.diff_y = b.y - y
+      b.x = x
+      b.y = y
+    end
   end
 end
 

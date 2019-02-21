@@ -18,10 +18,13 @@ function create_bullet(player_id, id)
     v                   = { x = 0, y = 0}, -- movement vector
     time_despawn        = 0.8, -- seconds a bullet would have at spawn before despawn
     timer_despawn       = 0, -- seconds remaining before despawn
-    time_hold           = server_only and 0 or delay, -- time to hold the bullet before it shoots off (should make server sync look smoother)
+    time_hold           = player_id == my_id and delay or 0, -- time to hold the bullet before it shoots off (should make server sync look smoother)
     diff_x              = 0, -- difference with server position (used to smoothen syncing)
     diff_y              = 0  -- ^^^
   }
+  
+  local player = player_list[player_id]
+  if not player then return end
   
   -- setting id
   
@@ -40,9 +43,6 @@ function create_bullet(player_id, id)
   bullet_list[s.id] = s
   
   --spawn according to vector
-  
-  local player = player_list[player_id]
-  if not player then return end
 
   local angle = player.angle - .015 + rnd(.03)
   
@@ -159,6 +159,12 @@ function draw_bullet(s)
     spr(59, x, y, 1, 1, atan2(s.v.x, s.v.y))
   else
     spr(57, x, y, 2, 1, atan2(s.v.x, s.v.y))
+  end
+  
+  if debug_mode then
+    all_colors_to(1)
+    spr(57, s.x, s.y-2, 2, 1, atan2(s.v.x, s.v.y))
+    all_colors_to()
   end
 end
 

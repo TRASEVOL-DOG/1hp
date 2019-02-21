@@ -221,7 +221,11 @@ function draw_player(s)
 
   if debug_mode then
     all_colors_to(1)
-    draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    if s.id == my_id then
+      draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    else
+      draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    end
     all_colors_to()
   end
 end

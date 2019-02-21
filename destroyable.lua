@@ -59,7 +59,9 @@ function draw_destroyable(s)
   spr(s.skin, s.x+1, s.y-2)
   spr(s.skin, s.x, s.y-3)
   all_colors_to()
+  pal(1,0)
   spr(s.skin, s.x, s.y-2)
+  pal(1,1)
 end
 
 function kill_destroyable(s)
