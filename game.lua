@@ -64,8 +64,6 @@ function _update(dt)
   update_objects()
   
   update_network()
-  
-  debuggg = ""..delta_time
 end
 
 function _draw()

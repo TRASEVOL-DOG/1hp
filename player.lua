@@ -75,11 +75,11 @@ function update_player(s)
   s.animt = s.animt + delta_time
   
   if not server_only then
-    if id == my_id and s.rx then
+    if s.id == my_id and s.rx then
       local dx = s.x - s.rx
       local dy = s.y - s.ry
-      s.v.x = s.v.x + dx * delta_time * 1000
-      s.v.y = s.v.y + dy * delta_time * 1000
+      s.v.x = s.v.x + dx * delta_time * 100
+      s.v.y = s.v.y + dy * delta_time * 100
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
       s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
