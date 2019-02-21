@@ -175,4 +175,5 @@ end
 
 function deregister_bullet(s)
   deregister_object(s)
+  bullet_list[s.id] = nil
 end
