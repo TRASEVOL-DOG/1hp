@@ -121,8 +121,8 @@ function sync_players(player_data)
       local x = p_d[1] + delay * p_d[3]
       local y = p_d[2] + delay * p_d[4]
       
-      p.diff_x = p.x - x
-      p.diff_y = p.y - y
+      p.diff_x = p.diff_x + p.x - x
+      p.diff_y = p.diff_y + p.y - y
       
       p.x = x
       p.y = y
@@ -158,8 +158,8 @@ function sync_bullets(bullet_data)
       
       local x = b_d[1] + delay*b.v.x
       local y = b_d[2] + delay*b.v.y
-      b.diff_x = b.x - x
-      b.diff_y = b.y - y
+      b.diff_x = b.diff_x + b.x - x
+      b.diff_y = b.diff_y + b.y - y
       b.x = x
       b.y = y
     end

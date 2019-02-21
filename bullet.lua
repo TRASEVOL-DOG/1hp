@@ -81,8 +81,8 @@ function update_bullet(s)
   end
   
   if not server_only then
-    s.diff_x = lerp(s.diff_x, 0, 0.1 * delta_time)
-    s.diff_y = lerp(s.diff_y, 0, 0.1 * delta_time)
+    s.diff_x = lerp(s.diff_x, 0, delta_time)
+    s.diff_y = lerp(s.diff_y, 0, delta_time)
   end
   
 
