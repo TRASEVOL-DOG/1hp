@@ -36,6 +36,9 @@ function create_bullet(player_id, id)
       for b in group("bullet") do
         if b.from == player_id and not b.id then
           s.x, s.y = b.x, b.y
+          s.hold = b.hold
+          s.timer_despawn = b.timer_despawn
+          s.kill_anim_t = b.kill_anim_t
           deregister_object(b)
           break
         end
@@ -200,6 +203,9 @@ end
 
 function deregister_bullet(s)
   deregister_object(s)
-  bullet_list[s.id] = nil
-  dead_bullets[s.id] = true
+  
+  if s.id then
+    bullet_list[s.id] = nil
+    dead_bullets[s.id] = true
+  end
 end
