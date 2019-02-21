@@ -78,8 +78,12 @@ function update_player(s)
     if s.id == my_id and s.rx then
       local dx = s.x - s.rx
       local dy = s.y - s.ry
-      s.v.x = s.v.x - dx * delta_time * 10
-      s.v.y = s.v.y - dy * delta_time * 10
+      if abs(dx) >= 1 then
+        s.v.x = s.v.x - sgn(dx) * delta_time * 20
+      end
+      if abs(dy) >= 1 then
+        s.v.y = s.v.y - sgn(dy) * delta_time * 20
+      end
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
       s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
@@ -167,7 +171,11 @@ function update_player(s)
       s.v.x = s.v.x + sgn(s.x - destroyable.x) * .8
       s.v.y = s.v.y + sgn(s.y - destroyable.y) * .8
     end
-
+  else
+  
+    -- we need the speed to figure out state on draw_player
+    s.speed = dist(s.v.x, s.v.y)
+  
   end
   
   -- translate vector to position according to delta (30 fps)
