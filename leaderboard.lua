@@ -5,6 +5,7 @@ my_place = 0
 function get_list_leaderboard()
   
   local list_player = get_group_copy("player")
+  
   -- if group_exists("player") and group_size("player") > 0 then 
     -- local grp = "player"
     -- local pos = 0
@@ -89,7 +90,7 @@ end
 
 function init_leaderboard()
 
-  -- update_leaderboard()
+  leaderboard.small = true
 
 end
 

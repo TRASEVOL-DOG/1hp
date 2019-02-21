@@ -4,7 +4,6 @@ local destroyable_nextid = 1
 
 function create_destroyable(id, x, y)
   local s = {
-    id                  = 0,
     w                   = 6,  -- Remy was here: moved w and h and lowered them both
     h                   = 6,
     update              = update_destroyable,
@@ -42,6 +41,7 @@ function create_destroyable(id, x, y)
     s.id = destroyable_nextid
     destroyable_nextid = destroyable_nextid + 1
   end
+  destroyable_list[s.id] = s
   
   
   register_object(s)
@@ -59,7 +59,9 @@ function draw_destroyable(s)
   spr(s.skin, s.x+1, s.y-2)
   spr(s.skin, s.x, s.y-3)
   all_colors_to()
+  pal(1,0)
   spr(s.skin, s.x, s.y-2)
+  pal(1,1)
 end
 
 function kill_destroyable(s)

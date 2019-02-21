@@ -19,11 +19,13 @@ require("player")
 require("destroyable")
 require("bullet")
 require("wind")
-require("playground")
+require("leaderboard")
 
 
 function _init()
   eventpump()
+  
+  init_network()
   
   init_menu_system()
   
@@ -49,6 +51,10 @@ end
 function _update(dt)
   if btnp(6) then
     refresh_spritesheets()
+  end
+  
+  if btnp(5) then
+    debug_mode = not debug_mode
   end
 
   t = t + dt
@@ -137,6 +143,8 @@ function get_camera_pos()
 end
 
 function add_shake(p)
+  if server_only then return end
+
   p = p or 3
   local a = rnd(1)
   cam.shkx = p*cos(a)
@@ -189,22 +197,30 @@ function draw_debug()
   
   font("small")
   draw_text("debug: "..debuggg, scrnw, scrnh-8, 2, 3)
+  
+  if client.connected then
+    draw_text("Connected as #"..client.id, 2, 2, 0, 3)
+    draw_text("Ping: "..client.getPing(), 2, 10, 0, 3)
+  else
+    draw_text("Not Connected", 2, 2, 0, 3)
+    if castle and castle.isLoggedIn then
+      draw_text("Please wait...", 2, 10, 0, 3)
+    else
+      draw_text("Please sign into Castle to connect", 2, 10, 0, 3)
+    end
+  end
 end
-my_player = {}
+
 function init_game()
 
-  my_player = create_player()
-  my_player.is_enemy = false
-  create_player()
-  create_player()
-  create_player()
-  create_player()
-  create_player()
-  for i = 0, 4 do
+  if server_only then
+    create_destroyable()
+    create_destroyable()
+    create_destroyable()
+    create_destroyable()
     create_destroyable()
   end
   
-  init_leaderboard()
 end
 
 function define_menus()
