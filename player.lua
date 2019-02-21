@@ -85,7 +85,6 @@ function update_player(s)
     s.shot_input = mouse_btnp(0)
     if s.shot_input then
       client_shoot()
-      s.score = s.score + 1
     end
 
     -- left   = 0
@@ -179,6 +178,7 @@ function update_player(s)
       local p = create_bullet(s.id)
       s.timer_fire = s.time_fire
       add_shake()
+      s.score = s.score + 1
     end 
   end
 end
