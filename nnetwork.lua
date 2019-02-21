@@ -147,7 +147,6 @@ function sync_bullets(bullet_data)
 --  for id,b in pairs(bullet_list) do  -- checking if any bullet no longer exists
 --    if not bullet_data[id] then
 --      deregister_bullet(b)
---      bullet_list[b] = nil
 --    end
 --  end
   

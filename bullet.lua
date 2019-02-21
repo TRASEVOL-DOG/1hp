@@ -1,8 +1,11 @@
 
 bullet_list = {} -- { id : bullet }
+dead_bullets = {}
 local bullet_nextid = 1
 
 function create_bullet(player_id, id)
+  if dead_bullets[id] then return end
+
   local s = {
     from                = player_id, -- player id
     w                   = 4,
@@ -28,6 +31,18 @@ function create_bullet(player_id, id)
   
   -- setting id
   
+  if player_id == my_id then
+    if id then
+      for b in group("bullet") do
+        if b.from == player_id and not b.id then
+          s.x, s.y = b.x, b.y
+          deregister_object(b)
+          break
+        end
+      end
+    end
+  end
+  
   if id then -- assigned by server
     if bullet_list[id] then
       deregister_object(bullet_list[id])
@@ -36,11 +51,14 @@ function create_bullet(player_id, id)
     s.id = id
     bullet_nextid = max(bullet_nextid, id + 1)
     
-  else       -- assigning id now - probably running server
+  elseif server_only then -- assigning id now
     s.id = bullet_nextid
     bullet_nextid = bullet_nextid + 1
   end
-  bullet_list[s.id] = s
+  
+  if s.id then
+    bullet_list[s.id] = s
+  end
   
   --spawn according to vector
 
@@ -183,4 +201,5 @@ end
 function deregister_bullet(s)
   deregister_object(s)
   bullet_list[s.id] = nil
+  dead_bullets[s.id] = true
 end

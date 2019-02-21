@@ -149,6 +149,7 @@ function update_player(s)
     if s.speed > s.max_speed then
       s.v.x = s.v.x / s.speed * s.max_speed
       s.v.y = s.v.y / s.speed * s.max_speed
+      s.speed = s.max_speed
     end
     
   else
@@ -162,11 +163,14 @@ function update_player(s)
     if s.id == my_id then-- and s.rx then
       local dx = s.x - s.rx
       local dy = s.y - s.ry
+      
+      local dd = 1 - (s.speed / s.max_speed)
+      
       if abs(dx) >= 1 then
-        s.v.x = s.v.x - (sgn(dx) * 0.5 + dx/32) * s.acceleration * delta_time * 5
+        s.v.x = s.v.x - (sgn(dx) * 0.5 + dd * dx/2) * s.acceleration * delta_time * 5
       end
       if abs(dy) >= 1 then
-        s.v.y = s.v.y - (sgn(dy) * 0.5 + dy/32) * s.acceleration * delta_time * 5
+        s.v.y = s.v.y - (sgn(dy) * 0.5 + dd * dy/2) * s.acceleration * delta_time * 5
       end
       s.speed = dist(s.v.x, s.v.y) -- update speed
       
