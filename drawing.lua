@@ -19,7 +19,7 @@ function init_graphics(w,h, window_title)
   if castle or network then
     ww,hh = love.graphics.getDimensions()
   else
-    ww,hh = 800, 600
+    ww,hh = 800 + 100, 600
     love.window.setMode(ww,hh,{resizable=true})
   end
   local scale = min(flr(ww/w), flr(hh/h))

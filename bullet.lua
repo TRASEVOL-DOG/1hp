@@ -91,10 +91,8 @@ function update_bullet(s)
   -- Collisions
   -- local player = collide_objgroup(s,"player")
   -- if(player) then
-    -- if player.is_enemy then
-      -- player.alive = false
       -- kill_bullet(s)
-    -- end
+      -- kill_player(player)
   -- end
   
   local destr = all_collide_objgroup(s,"destroyable")
