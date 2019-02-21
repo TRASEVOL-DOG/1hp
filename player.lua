@@ -226,7 +226,7 @@ function draw_player(s)
   
   -- drawing arm
   pal(1,0)
-  spr(7, x, y-1.5, 1, 1, s.angle, false, a, 1/8, 5/8)
+  spr(200, x, y-1.5, 1, 1, s.angle, false, a, 1/8, 5/8)
   pal(1,1)
   
   -- drawing rest of body

@@ -160,19 +160,19 @@ function gen_mapsurf()
     local d_line = map_data[y]
     for x = 0,MAP_W-1 do
       local v = d_line[x]
-      local n = 16
+      local n = 0
       if v == 0 then
-        if chance(3) then
-          n = 23
+        if chance(2) then
+          n = 8+irnd(7)
         elseif chance(15) then
-          n = 16+irnd(6)
+          n = irnd(8)
         end
       elseif v == 1 then
         local left = (d_line[x-1]  and d_line[x-1] >= 1 and d_line[x-1] < 5)
         local right = (d_line[x+1] and d_line[x+1] >= 1 and d_line[x+1] < 5)
         
         if left and right then
-          n = 23+irnd(2)
+          n = 21+irnd(4)
         elseif left then
           n = 27
         elseif right then
@@ -191,7 +191,7 @@ function gen_mapsurf()
       elseif v == 3 then
         n = 31
       elseif v == 4 then
-        n = 30
+        n = 28+irnd(2)
       end
       
       line[x] = n
@@ -199,13 +199,18 @@ function gen_mapsurf()
     tile_map[y] = line
   end
   
+  local flippable = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,24,25,29,30}
+  local is_flippable = {}
+  for _,n in pairs(flippable) do is_flippable[n] = true end
+  
   mapsurf = new_surface(MAP_W*8, MAP_H*8)
   draw_to(mapsurf)
   palt(0,false)
   for y = 0,MAP_H-1 do
     local line = tile_map[y]
     for x = 0,MAP_W-1 do
-      spr(line[x], x*8+4, y*8+4)
+      local n = line[x]
+      spr(n, x*8+4, y*8+4, 1, 1, 0, is_flippable[n] and chance(50))
     end
   end
   
