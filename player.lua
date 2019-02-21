@@ -105,7 +105,7 @@ function update_player(s)
     
     local delta_time = delta_time
     if s.delay then
-      delta_time = delta_time + 0.75 * delay
+      delta_time = delta_time + 0.5 * delay
     end
     
     local acc = s.acceleration * delta_time * 10
@@ -163,10 +163,10 @@ function update_player(s)
       local dx = s.x - s.rx
       local dy = s.y - s.ry
       if abs(dx) >= 1 then
-        s.v.x = s.v.x - (sgn(dx) + dx/8) * s.acceleration * delta_time * 10
+        s.v.x = s.v.x - (--[[sgn(dx) +]] dx/8) * s.acceleration * delta_time * 5
       end
       if abs(dy) >= 1 then
-        s.v.y = s.v.y - (sgn(dy) + dy/8) * s.acceleration * delta_time * 10
+        s.v.y = s.v.y - (--[[sgn(dy) +]] dy/8) * s.acceleration * delta_time * 5
       end
       s.speed = dist(s.v.x, s.v.y) -- update speed
       
@@ -220,7 +220,7 @@ function draw_player(s)
 --  line(x + (s.w) * cos(s.angle), y + (s.h) * sin(s.angle), x + (s.w)*1.5 * cos(s.angle), y + (s.h)*1.5 * sin(s.angle), 3)
   
   local state = "idle"
-  if s.speed > 0 then
+  if s.speed > 0.5 then
     state = "run"
   end
   local a = cos(s.angle) < 0

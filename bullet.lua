@@ -124,6 +124,10 @@ function update_bullet(s)
 end
 
 function update_move_bullet(s)
+  -- client syncing stuff
+  s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
+
+  -- actual move update
   local nx = s.x + s.v.x * s.speed * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
@@ -147,6 +151,9 @@ function update_move_bullet(s)
   else
     s.y = ny
   end
+  
+  -- more client syncing bullshit
+  s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
 end
 
 function draw_bullet(s)
