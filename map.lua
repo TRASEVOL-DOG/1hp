@@ -129,7 +129,10 @@ function check_mapcol(s,x,y)
     local x = sx+s.w*0.5*d[1]
     local y = sy+s.h*0.5*d[2]
     
-    if walls[map_data[flr(y/8)][flr(x/8)]] then
+    local tx = flr(x/8)
+    local ty = flr(y/8)
+    
+    if tx < 0 or tx >= MAP_W or ty < 0 or ty >= MAP_H or walls[map_data[ty][tx]] then
       res[1] = res[1] + d[1]
       res[2] = res[2] + d[2]
       b=true
