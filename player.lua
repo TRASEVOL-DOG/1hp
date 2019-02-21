@@ -79,10 +79,10 @@ function update_player(s)
       local dx = s.x - s.rx
       local dy = s.y - s.ry
       if abs(dx) >= 1 then
-        s.v.x = s.v.x - sgn(dx) * delta_time * 20
+        s.v.x = s.v.x - sgn(dx) * s.acceleration * delta_time * 5
       end
       if abs(dy) >= 1 then
-        s.v.y = s.v.y - sgn(dy) * delta_time * 20
+        s.v.y = s.v.y - sgn(dy) * s.acceleration * delta_time * 5
       end
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
