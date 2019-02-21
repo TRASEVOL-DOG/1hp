@@ -219,15 +219,25 @@ function draw_player(s)
   local x = s.x + s.diff_x
   local y = s.y + s.diff_y
 
-  line(x + (s.w) * cos(s.angle), y + (s.h) * sin(s.angle), x + (s.w)*1.5 * cos(s.angle), y + (s.h)*1.5 * sin(s.angle), 3)
+--  line(x + (s.w) * cos(s.angle), y + (s.h) * sin(s.angle), x + (s.w)*1.5 * cos(s.angle), y + (s.h)*1.5 * sin(s.angle), 3)
   
   local state = "idle"
   if s.speed > 0 then
     state = "run"
   end
   local a = cos(s.angle) < 0
-  draw_anim_outlined(x, y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+  local animt = s.animt * (s.v.x > 0 == a and -1 or 1)
+  draw_anim_outline(x, y-2, "player", state, animt, 0, 0, a)
+  
+  -- drawing arm
+  pal(1,0)
+  spr(7, x, y-1.5, 1, 1, s.angle, false, a, 1/8, 5/8)
+  pal(1,1)
+  
+  -- drawing rest of body
+  draw_anim(x, y-2, "player", state, animt, 0, a)
 
+  -- syncing debug
   if debug_mode then
     all_colors_to(1)
     if s.id == my_id then

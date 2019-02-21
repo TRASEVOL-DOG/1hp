@@ -48,8 +48,8 @@ function create_bullet(player_id, id)
   
   s.v.x = cos(angle)
   s.v.y = sin(angle)
-  s.x = player.x + (player.w + s.w) / 2 * s.v.x 
-  s.y = player.y + (player.h + s.h) / 2 * s.v.y
+  s.x = player.x + (player.w + s.w) * s.v.x 
+  s.y = player.y + (player.h + s.h) * s.v.y - 2 -- offset to line up with gun
     
   -- check if in wall
   s.anim_state = "stopped"
@@ -63,8 +63,8 @@ function create_bullet(player_id, id)
     end
     s.v.x = cos(angle)
     s.v.y = sin(angle)
-    s.x = player.x + (player.w + s.w) / 2 * s.v.x 
-    s.y = player.y + (player.h + s.h) / 2 * s.v.y
+    s.x = player.x + (player.w + s.w) * s.v.x 
+    s.y = player.y + (player.h + s.h) * s.v.y
   
   end
   
@@ -151,7 +151,7 @@ end
 
 function draw_bullet(s)
   local x = s.x + s.diff_x
-  local y = s.y + s.diff_y - 2
+  local y = s.y + s.diff_y - 1
 
   if s.anim_state == "stopped" then
     spr(56, x, y, 1, 1, atan2(s.v.x, s.v.y))

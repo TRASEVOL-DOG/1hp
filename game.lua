@@ -193,8 +193,17 @@ function draw_debug()
   font("small")
   draw_text("debug: "..debuggg, scrnw, scrnh-8, 2, 3)
   
-  draw_text(client.connected and ("Connected as #"..client.id) or "Not Connected", scrnw, 2, 2, 3)
-  draw_text(client.connected and ("Ping: "..client.getPing()) or "", scrnw, 10, 2, 3)
+  if client.connected then
+    draw_text("Connected as #"..client.id, 2, 2, 0, 3)
+    draw_text("Ping: "..client.getPing(), 2, 10, 0, 3)
+  else
+    draw_text("Not Connected", 2, 2, 0, 3)
+    if castle and castle.isLoggedIn then
+      draw_text("Please wait...", 2, 10, 0, 3)
+    else
+      draw_text("Please sign into Castle to connect", 2, 10, 0, 3)
+    end
+  end
 end
 
 function init_game()
