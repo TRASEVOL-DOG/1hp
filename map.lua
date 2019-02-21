@@ -189,7 +189,7 @@ function gen_mapsurf()
         if y>=MAP_H-1 or map_data[y+1][x]==v then k = k+8 end
         n = 32+k
       elseif v == 3 then
-        n = 31
+        n = pick{31,16}
       elseif v == 4 then
         n = 28+irnd(2)
       end
@@ -199,7 +199,7 @@ function gen_mapsurf()
     tile_map[y] = line
   end
   
-  local flippable = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,24,25,29,30}
+  local flippable = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,22,23,24,25,29,30,31,16}
   local is_flippable = {}
   for _,n in pairs(flippable) do is_flippable[n] = true end
   
