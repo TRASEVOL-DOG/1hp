@@ -107,42 +107,29 @@ function update_player(s)
     
     -- MOVEMENT
     
-    --if server_only then -- only hard move & stop on server
-    --  s.v.x = s.dx_input * s.max_speed
-    --  s.v.y = s.dy_input * s.max_speed
-    --
-    --else                -- acceleration & deceleration on client
-      -- locals to clear code
-      local acc = s.acceleration * delta_time * 10
-      local dec = s.deceleration * delta_time * 10
-      
-      s.v.x = s.v.x + acc * s.dx_input
-      s.v.y = s.v.y + acc * s.dy_input
-      
-      -- decelerate speed every frame
-      if s.v.x > dec*1.3 then
-        s.v.x = s.v.x - dec
-      elseif s.v.x < - dec * 1.3 then
-        s.v.x = s.v.x + dec
-      else
-        s.v.x = 0
-      end
-      
-      if s.v.y > dec * 1.3 then
-        s.v.y = s.v.y - dec
-      elseif s.v.y < - dec * 1.3 then
-        s.v.y = s.v.y + dec
-      else
-        s.v.y = 0
-      end
-    --end
-      
-    -- cap speed
-    s.speed = dist(s.v.x, s.v.y)
-    if s.speed > s.max_speed then
-      s.v.x = s.v.x / s.speed * s.max_speed
-      s.v.y = s.v.y / s.speed * s.max_speed
+    local acc = s.acceleration * delta_time * 10
+    local dec = s.deceleration * delta_time * 10
+    
+    -- decelerate speed every frame
+    if s.v.x > dec*1.3 then
+      s.v.x = s.v.x - dec
+    elseif s.v.x < - dec * 1.3 then
+      s.v.x = s.v.x + dec
+    else
+      s.v.x = 0
     end
+    
+    if s.v.y > dec * 1.3 then
+      s.v.y = s.v.y - dec
+    elseif s.v.y < - dec * 1.3 then
+      s.v.y = s.v.y + dec
+    else
+      s.v.y = 0
+    end
+    
+    -- accelerate on input
+    s.v.x = s.v.x + acc * s.dx_input
+    s.v.y = s.v.y + acc * s.dy_input
        
     -- Collisions
           
@@ -151,10 +138,18 @@ function update_player(s)
       -- s.v.x = sgn(s.x - other_player.x) * 10
     -- end
     local destroyable = collide_objgroup(s,"destroyable")
-    if destroyable and destroyable.alive then
-      s.v.x = s.v.x + sgn(s.x - destroyable.x) * .8
-      s.v.y = s.v.y + sgn(s.y - destroyable.y) * .8
+    if destroyable and destroyable.alive then  -- Remy was here: made this use delta time (and acceleration)
+      s.v.x = s.v.x + sgn(s.x - destroyable.x) * acc * 0.5
+      s.v.y = s.v.y + sgn(s.y - destroyable.y) * acc * 0.5
     end
+    
+    -- cap speed
+    s.speed = dist(s.v.x, s.v.y)
+    if s.speed > s.max_speed then
+      s.v.x = s.v.x / s.speed * s.max_speed
+      s.v.y = s.v.y / s.speed * s.max_speed
+    end
+    
   else
   
     -- we need the speed to figure out state on draw_player

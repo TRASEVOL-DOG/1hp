@@ -133,6 +133,7 @@ function update_move_bullet(s)
     s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
     s.v.x = s.v.x *-1
     s.speed = s.speed * ( 1 - s.speed_lost_rebound )
+    s.timer_despawn = s.timer_despawn * ( 1 - s.speed_lost_rebound ) -- Remy was here: made bullet lose lifetime on bounce
   else
     s.x = nx
   end
@@ -144,6 +145,7 @@ function update_move_bullet(s)
     s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
     s.v.y = s.v.y *-1
     s.speed = s.speed * ( 1 - s.speed_lost_rebound )
+    s.timer_despawn = s.timer_despawn * ( 1 - s.speed_lost_rebound )
   else
     s.y = ny
   end
