@@ -71,6 +71,8 @@ function client_output()
     --end
     
     client.home[5] = my_player.angle
+    
+    client.home[6] = delay
   end
 end
 
@@ -111,12 +113,14 @@ function sync_players(player_data)
     local x = p_d[1] + delay * p_d[3]
     local y = p_d[2] + delay * p_d[4]
     
-    if id == my_id then
-      p.rx = x
-      p.ry = y
-    else
-      p.v.x = p_d[3]
-      p.v.y = p_d[4]
+    --if id == my_id then
+    --  p.rx = x
+    --  p.ry = y
+    --else
+      if id ~= my_id then
+        p.v.x = p_d[3]
+        p.v.y = p_d[4]
+      end
       
       local x = p_d[1] + delay * p_d[3]
       local y = p_d[2] + delay * p_d[4]
@@ -126,7 +130,7 @@ function sync_players(player_data)
       
       p.x = x
       p.y = y
-    end
+    --end
     
     if p.alive and not p_d[5] then
       kill_player(p)
@@ -206,6 +210,8 @@ function server_input()
       
       shot_ids[id] = ho[4] or 0
       player.angle = ho[5] or 0
+      
+      player.delay = ho[6]
     end
   end
 end

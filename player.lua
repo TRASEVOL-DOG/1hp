@@ -103,6 +103,11 @@ function update_player(s)
     
     -- MOVEMENT
     
+    local delta_time = delta_time
+    if s.delay then
+      delta_time = delta_time + delay
+    end
+    
     local acc = s.acceleration * delta_time * 10
     local dec = s.deceleration * delta_time * 10
     
@@ -154,16 +159,19 @@ function update_player(s)
   end
   
   if not server_only then
-    if s.id == my_id and s.rx then
-      local dx = s.x - s.rx
-      local dy = s.y - s.ry
-      if abs(dx) >= 1 then
-        s.v.x = s.v.x - (sgn(dx) + dx/8) * s.acceleration * delta_time * 10
-      end
-      if abs(dy) >= 1 then
-        s.v.y = s.v.y - (sgn(dy) + dy/8) * s.acceleration * delta_time * 10
-      end
-      s.speed = dist(s.v.x, s.v.y) -- update speed
+    if s.id == my_id then-- and s.rx then
+      --local dx = s.x - s.rx
+      --local dy = s.y - s.ry
+      --if abs(dx) >= 1 then
+      --  s.v.x = s.v.x - (sgn(dx) + dx/8) * s.acceleration * delta_time * 10
+      --end
+      --if abs(dy) >= 1 then
+      --  s.v.y = s.v.y - (sgn(dy) + dy/8) * s.acceleration * delta_time * 10
+      --end
+      --s.speed = dist(s.v.x, s.v.y) -- update speed
+      
+      s.diff_x = lerp(s.diff_x, 0, 10*delta_time)
+      s.diff_y = lerp(s.diff_y, 0, 10*delta_time)
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
       s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
@@ -230,11 +238,11 @@ function draw_player(s)
   -- syncing debug
   if debug_mode then
     all_colors_to(1)
-    if s.id == my_id then
-      draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-    else
+    --if s.id == my_id then
+    --  draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    --else
       draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-    end
+    --end
     all_colors_to()
   end
 end
