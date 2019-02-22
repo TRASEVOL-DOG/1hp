@@ -25,9 +25,9 @@ function create_player(id,x,y)
     v                   = { x = 0, y = 0},-- movement vector 
     angle               = 0,
     speed               = 0,
-    max_speed           = 1.4*6,
-    deceleration        = .5*6*2,
-    acceleration        = .9*6*2,
+    max_speed           = 1.4*5,
+    deceleration        = .5*6*1.5,
+    acceleration        = .9*6*1.5,
     
     --network stuff
     dx_input            = 0,
@@ -112,6 +112,7 @@ function update_player(s)
     local dec = s.deceleration * delta_time * 10
     
     if server_only then
+      acc = acc * 1.25
       dec = dec * 1.25
     else
       acc = acc * 0.75
