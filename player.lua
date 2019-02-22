@@ -51,7 +51,7 @@ function create_player(id,x,y)
     s.x = x
     s.y = y
   else
-    q = pick_and_remove(spawn_points)
+    q = get_spawn()
     
     s.x = q.x
     s.y = q.y

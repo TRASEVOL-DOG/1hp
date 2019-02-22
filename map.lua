@@ -9,6 +9,7 @@ MAP_H = 72
 map = nil
 
 spawn_points = {}
+spawn_points_copy = {}
 ground = {}
 
 local walls = {2,1,3,4}
@@ -99,6 +100,8 @@ function init_map()
       end
     end
   end
+  
+  spawn_points_copy = copy_table(spawn_points_copy)
   
   local owalls = walls
   walls = {}
@@ -221,3 +224,17 @@ function gen_mapsurf()
   draw_to()
   palt(0,true)
 end
+
+function reset_spawn()
+
+  spawn_points_copy = copy_table(spawn_points)
+  
+end
+
+function get_spawn()
+
+  if #spawn_points_copy < 1 then reset_spawn() end
+  
+  return pick_and_remove(spawn_points_copy)
+end
+
