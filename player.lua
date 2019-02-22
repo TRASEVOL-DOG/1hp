@@ -203,7 +203,7 @@ end
 
 function update_move_player(s)
   -- client syncing stuff
-  if s.id == my_id then
+  if s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0 then
     s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
   end
   
@@ -229,7 +229,7 @@ function update_move_player(s)
   end
   
   -- more client syncing bullshit
-  if s.id == my_id then
+  if s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0 then
     s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
   end
 end
