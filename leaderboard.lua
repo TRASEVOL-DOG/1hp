@@ -1,5 +1,5 @@
 
-leaderboard = {}
+leaderboard = {is_large = true}
 
 function get_list_leaderboard()
   
@@ -16,50 +16,40 @@ function get_list_leaderboard()
   -- else 
     -- return {{rank = my_player.score, name = "my player"}} 
   -- end
-  
   local sorted_list = {}
-  local while_condition = #list_player
-  if leaderboard.is_large then
-    while_condition = #list_player
-  end
-  -- we either want 5 entries or the entire list of players
   
   local my_id = my_id or 1
-  local ranks = 1
+  my_place = 0
+  local rank = 1
   
-  while while_condition > 0 do -- defined above
+  for i = 1, #list_player do -- defined above
   
     local maxi = 0
     local index = 1
     
-    for i, v in pairs(list_player) do
+    for j, v in pairs(list_player) do
       if v.score > maxi then 
         maxi = v.score
-        index = i
+        index = j
       end
       if v.id == my_id then
-        my_place = ranks
+        my_place = rank
       end
     end
-    add(sorted_list, {  rank = ranks, 
-                        name = list_player[index].id,
-                        score = list_player[index].score})
+    
+    local lrank = rank or 1
+    local lname = list_player[index].id
+    local lscore = list_player[index].score or 1
+    
+    add(sorted_list, {  rank = lrank, 
+                        name = lname,
+                        score = lscore})
     delat(list_player, index)
-    ranks = ranks + 1
-    while_condition = while_condition - 1
+    rank = rank + 1
+    
     
   end 
   
-  if leaderboard.is_large then
-    if my_place > 6 and #sorted_list > 3 then
-        sorted_list[4].rank = "..."
-      for i, v in pairs(list_player) do
-        if v.id == my_id then sorted_list[4] = { rank = i, name = list_player[i], score = list_player[index].score} end
-      end 
-    end
-  end
-  
- debuggg = my_id 
   
   -- local l = {}
   -- if leaderboard.small then
@@ -110,21 +100,39 @@ function draw_leaderboard()
   local x = 70
   draw_text_oultined("Leaderboard", sx - x, y, 0)
     
+  local size = #leaderboard.list
+  
+  if not leaderboard.is_large then
+    size = size > 5 and 5 or size
+  end
+ 
+  -- if big, will display everything
+  -- if small and player <=5th, will display 5 first
+  -- if small and player > 5th, will display 3 first, "..." + the player on the 5th line
+ 
   y = 8
-  for i = 1, #leaderboard.list do
+  for i = 1, size do
   
     local player = leaderboard.list[i]
     local c = my_place == i and 2 or 0
-    local str = ""
+    local str = player.rank .. "." .. player.name .. "(" .. player.score .. ")"
     
-    if player.rank ~= "..." then
+    if leaderboard.is_large then    
+      str = player.rank .. "." .. player.name .. "(" .. player.score .. ")"
+    else 
+      if i == 4 and my_place > 5  then
+        str = "..."
+      end
+      if i == 5 and my_place > 5  then        
+        player = leaderboard.list[my_place]
         str = player.rank .. "." .. player.name .. "(" .. player.score .. ")"
-    else
-        str = player.rank
+        c = 2        
+      end
     end
-    draw_text_oultined(str, sx - x, y + i*8, c)
+    
+    draw_text_oultined(str, sx - x, y + i*8 , c)
   end
-  
+  --[[ needs to be implemented in the network
   y = sy - 60
   draw_text_oultined("Last victim :", sx - str_width("Last victim : "), y, 0)
   y = y + 8
@@ -139,7 +147,7 @@ function draw_leaderboard()
   draw_text_oultined("Last killer :", sx - str_width("Last Killer : "), y)
   y = y + 8
   draw_text_oultined(leaderboard.killer, sx - x, y)
-
+  --]]
 end
 
 function update_leaderboard()
