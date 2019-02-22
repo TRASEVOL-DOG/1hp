@@ -189,6 +189,8 @@ function sync_destroyables(destroyable_data)
     
     if d.alive and not d_d[3] then
       kill_destroyable(d, d_d[4])
+    elseif not d.alive and d_d[3] then
+      respawn_destroyable(d)
     end
   end
 end
