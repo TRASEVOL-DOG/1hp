@@ -71,7 +71,7 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt - delta_time
   
-  if s.id == my_id then
+  if s.id == my_id and not in_pause then
   
     s.dx_input = 0
     s.dy_input = 0
@@ -296,7 +296,7 @@ function draw_player(s)
     all_colors_to()
     pal(1,0)
     spr(203, s.x, s.y-2)
-    pal(1,1)    
+    pal(1,1)
   end
   
   -- drawing arm
@@ -319,6 +319,10 @@ function draw_player(s)
     --end
     all_colors_to()
   end
+  
+  local str = s.name or ""
+  --draw_text(str, s.x, s.y+7, 1, 2)
+  draw_text(str, x, y+6, 1, 3, 0)
 end
 
 function kill_player(s)

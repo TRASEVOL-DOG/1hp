@@ -3,6 +3,9 @@ network_t = 0
 delay = 0
 my_id = nil
 
+connecting = false
+restarting = false
+
 local shot_id, shot_ids
 
 function init_network()
@@ -45,6 +48,9 @@ function client_input(diff)
     if timestamp then
       delay = (love.timer.getTime() - timestamp) / 2
     end
+  elseif restarting then
+    restarting = false
+    connecting = true
   end
   
   sync_players(client.share[2])
@@ -57,7 +63,11 @@ function client_output()
 --    return
 --  end
   
-  client.home[1] = love.timer.getTime()
+  if restarting then
+    client.home[1] = nil
+  elseif connecting then
+    client.home[1] = love.timer.getTime()
+  end
   
   local my_player = player_list[client.id]
   if my_player then
@@ -81,6 +91,8 @@ function client_output()
     client.home[5] = my_player.angle
     
     client.home[6] = delay
+    
+    client.home[7] = my_name
   end
 end
 
@@ -148,6 +160,7 @@ function sync_players(player_data)
     
     p.angle = p_d[6]
     p.score = p_d[7]
+    p.name = p_d[8]
   end
 end
 
@@ -206,8 +219,13 @@ function server_input()
 --  end
   
   for id,ho in pairs(server.homes) do
-    local player = player_list[id]
-    if player then
+    if ho[1] then
+      local player = player_list[id]
+      
+      if not player then
+        player = create_player(id)
+      end
+      
       player.dx_input = ho[2] or 0
       player.dy_input = ho[3] or 0
       
@@ -223,6 +241,10 @@ function server_input()
       player.angle = ho[5] or 0
       
       player.delay = ho[6]
+      
+      player.name = ho[7]
+    else
+      forget_player(id)
     end
   end
 end
@@ -251,7 +273,8 @@ function server_output()
       p.v.x, p.v.y,
       p.alive,
       p.angle,
-      p.score
+      p.score,
+      p.name
     }
   end
   
@@ -284,14 +307,16 @@ end
 
 function server_new_client(id)
   castle_print("New client: #"..id)
-  
-  create_player(id)
   shot_ids[id] = 0
 end
 
 function server_lost_client(id)
   castle_print("Client #"..id.." disconnected.")
   
+  forget_player(id)
+end
+
+function forget_player(id)
   local player = player_list[id]
   if player then
     kill_player(player)
