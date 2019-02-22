@@ -135,8 +135,8 @@ function update_bullet(s)
   if(#destr>0) then
     for i=1, #destr do
       if destr[i].alive then
-        kill_destroyable(destr[i])
         kill_bullet(s)
+        kill_destroyable(destr[i], s.id)
       end
     end
   end

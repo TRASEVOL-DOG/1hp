@@ -188,7 +188,7 @@ function sync_destroyables(destroyable_data)
     local d = destroyable_list[id]
     
     if d.alive and not d_d[3] then
-      kill_destroyable(d)
+      kill_destroyable(d, d_d[4])
     end
   end
 end
@@ -272,7 +272,8 @@ function server_output()
   for id,d in pairs(destroyable_list) do
     destroyable_data[id] = {
       d.x, d.y,
-      d.alive
+      d.alive,
+      d.killer
     }
   end
 end

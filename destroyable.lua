@@ -10,6 +10,7 @@ function create_destroyable(id, x, y)
     draw                = draw_destroyable,
     regs                = {"to_update", "to_draw0", "destroyable"},
     alive               = true,
+    killer              = nil,
     t_respawn           = 0,
     skin                = 0 -- 48 ~ 48 + 3 and 54 -- 48 + 4 ~ 48 + 6 and 55
   }
@@ -68,16 +69,28 @@ function draw_destroyable(s)
   pal(1,1)
 end
 
-function kill_destroyable(s)
+function kill_destroyable(s, killer_id)
   if s.alive then
     s.alive = false
     s.skin = (s.skin < 52) and 54 or 55
     s.t_respawn = 10 + rnd(5)
+    s.killer = killer_id
+    
+    if killer_id then
+      local b = bullet_list[killer_id]
+      if b then
+        kill_bullet(b)
+      else
+        dead_bullets[killer_id] = true
+      end
+    end
   end
 end
+
 function respawn_destroyable(s)
   if not s.alive then
     s.alive = true
     s.skin = 47 + irnd(6)
+    s.killer = nil
   end
 end
