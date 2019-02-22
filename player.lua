@@ -112,6 +112,12 @@ function update_player(s)
     local acc = s.acceleration * delta_time * 10
     local dec = s.deceleration * delta_time * 10
     
+    if server_only then
+      dec = dec * 1.25
+    else
+      dec = dec * 0.75
+    end
+    
     -- decelerate speed every frame
     if s.v.x > dec*1.3 then
       s.v.x = s.v.x - dec
@@ -185,8 +191,8 @@ function update_player(s)
       
       local odx, ody = s.diff_x, s.diff_y
       
-      s.diff_x = lerp(s.diff_x, 0, (dd + 0.05) * 10 * delta_time)
-      s.diff_y = lerp(s.diff_y, 0, (dd + 0.05) * 10 * delta_time)
+      s.diff_x = lerp(s.diff_x, 0, (dd + 0.01) * 10 * delta_time)
+      s.diff_y = lerp(s.diff_y, 0, (dd + 0.01) * 10 * delta_time)
       
       local diff_x = s.diff_x-odx
       local diff_y = s.diff_y-ody
