@@ -156,12 +156,13 @@ function update_leaderboard()
   
   leaderboard.list = get_list_leaderboard()
 
+  --[[
   leaderboard.victim = get_victim() -- Last player killed
 
   leaderboard.victimest = get_victimest() -- Player killed the most:
 
   leaderboard.killer = get_killer() -- Last Killer
-  
+  --]]
   
 end
 
