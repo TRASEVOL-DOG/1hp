@@ -175,7 +175,7 @@ function update_player(s)
       --end
       --s.speed = dist(s.v.x, s.v.y) -- update speed
       
-      if abs(s.diff_x) + abs(s.diff_y) > 0 then
+      if abs(s.dx_input) + abs(s.dy_input) > 0 then
         s.moved_t = delay
       else
         s.moved_t = max(s.moved_t - delta_time, 0)
@@ -185,8 +185,8 @@ function update_player(s)
       
       local odx, ody = s.diff_x, s.diff_y
       
-      s.diff_x = lerp(s.diff_x, 0, (dd + 0.001) * 500 * delta_time)
-      s.diff_y = lerp(s.diff_y, 0, (dd + 0.001) * 500 * delta_time)
+      s.diff_x = lerp(s.diff_x, 0, (dd + 0.01) * 100 * delta_time)
+      s.diff_y = lerp(s.diff_y, 0, (dd + 0.01) * 100 * delta_time)
       
       s.speed = dist(s.v.x + s.diff_x-odx, s.v.y + s.diff_y-ody)
     else
