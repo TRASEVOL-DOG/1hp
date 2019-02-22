@@ -197,9 +197,9 @@ function update_player(s)
       local diff_x = s.diff_x-odx
       local diff_y = s.diff_y-ody
       local ndiff = dist(diff_x, diff_y)
-      if ndiff > s.max_speed then
-        diff_x = diff_x / ndiff * s.max_speed
-        diff_y = diff_y / ndiff * s.max_speed
+      if ndiff > s.max_speed*0.5 then
+        diff_x = diff_x / ndiff * s.max_speed*0.5
+        diff_y = diff_y / ndiff * s.max_speed*0.5
         s.diff_x = odx + diff_x
         s.diff_y = ody + diff_y
       end
