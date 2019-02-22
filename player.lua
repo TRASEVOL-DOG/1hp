@@ -34,7 +34,8 @@ function create_player(id,x,y)
     dy_input            = 0,
     shot_input          = false,
     diff_x              = 0,
-    diff_y              = 0
+    diff_y              = 0,
+    moved_t             = 0
     --
   }
   
@@ -174,7 +175,13 @@ function update_player(s)
       --end
       --s.speed = dist(s.v.x, s.v.y) -- update speed
       
-      local dd = mid(1 - (s.speed / s.max_speed) - abs(s.dx_input) - abs(s.dy_input), 0, 1)
+      if abs(s.diff_x) + abs(s.diff_y) > 0 then
+        s.moved_t = delay
+      else
+        s.moved_t = max(s.moved_t - delta_time, 0)
+      end
+      
+      local dd = mid(1 - (s.speed / s.max_speed) - (s.moved_t/delay*2-1), 0, 1)
       
       local odx, ody = s.diff_x, s.diff_y
       
@@ -203,7 +210,8 @@ end
 
 function update_move_player(s)
   -- client syncing stuff
-  if s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0 then
+  local apply_diff = (s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0)
+  if apply_diff then
     s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
   end
   
@@ -213,23 +221,27 @@ function update_move_player(s)
   if col then
     local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
     s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
-    s.v.y = s.v.y - 0.7* col.dir_y * s.acceleration * delta_time * 10
+    
+    col = check_mapcol(s,nx,nil,true) or col
+    s.v.y = s.v.y - 1* col.dir_y * s.acceleration * delta_time * 10
   else
     s.x = nx
   end
   
   local ny = s.y + s.v.y * delta_time * 10
-  local col = check_mapcol(s,s.x,ny)
+  local col = check_mapcol(s,nil,ny)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
     s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
-    s.v.x = s.v.x - 0.7* col.dir_x * s.acceleration * delta_time * 10
+    
+    col = check_mapcol(s,nil,ny,true) or col
+    s.v.x = s.v.x - 1* col.dir_x * s.acceleration * delta_time * 10
   else
     s.y = ny
   end
   
   -- more client syncing bullshit
-  if s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0 then
+  if apply_diff then
     s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
   end
 end
