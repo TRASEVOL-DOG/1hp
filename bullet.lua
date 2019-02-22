@@ -75,18 +75,23 @@ function create_bullet(player_id, id)
   s.anim_state = "stopped"
   
   local col = check_mapcol(s,s.x,s.y)
-  if col then
-    if (angle > .25 or angle < .75) then
-      angle = angle -.5
-    else
-      angle = angle +.5
-    end
-    s.v.x = cos(angle)
-    s.v.y = sin(angle)
-    s.x = player.x + player.diff_x + (player.w + s.w) * s.v.x 
-    s.y = player.y + player.diff_y + (player.h + s.h) * s.v.y
-  
+  while col do
+    s.x = s.x - s.v.x
+    s.y = s.y - s.v.y
+    col = check_mapcol(s)
   end
+--  if col then
+--    if (angle > .25 or angle < .75) then
+--      angle = angle -.5
+--    else
+--      angle = angle +.5
+--    end
+--    s.v.x = cos(angle)
+--    s.v.y = sin(angle)
+--    s.x = player.x + player.diff_x + (player.w + s.w) * s.v.x 
+--    s.y = player.y + player.diff_y + (player.h + s.h) * s.v.y
+--  
+--  end
   
   s.timer_despawn = s.time_despawn
   register_object(s)
@@ -136,12 +141,12 @@ function update_bullet(s)
   if(#destr>0) then
     for i=1, #destr do
       if destr[i].alive then
-        kill_destroyable(destr[i])
         kill_bullet(s)
+        kill_destroyable(destr[i], s.id)
       end
     end
   end
-      
+
 end
 
 function update_move_bullet(s)

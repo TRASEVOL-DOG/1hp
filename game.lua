@@ -58,10 +58,12 @@ function _update(dt)
   end
 
   t = t + dt
-  if chance(2) then
-    if chance(14) then windgoright = not windgoright end
+  
+  if not server_only and chance(10) then
+    if chance(0.2) then windgoright = not windgoright end
     create_wind()
   end
+
   update_objects()
   
   update_leaderboard()
@@ -70,7 +72,7 @@ function _update(dt)
 end
 
 function _draw()
-  cls(0)
+  cls(2)
   camera()
   draw_map()
   
@@ -214,11 +216,11 @@ end
 function init_game()
 
   if server_only then
-    create_destroyable()
-    create_destroyable()
-    create_destroyable()
-    create_destroyable()
-    create_destroyable()
+    for _,p in pairs(cacti_spawn_points) do
+      if chance(90) then
+        create_destroyable(nil, p.x+irnd(5)-3, p.y+irnd(5)-3)
+      end
+    end
   end
   
 end

@@ -14,11 +14,13 @@ function create_wind()
     skin                = 0 -- 48 ~ 48 + 3 and 54 -- 48 + 4 ~ 48 + 6 and 55
   }
   
-  local q = pick(ground)
   local found = false
+  local scrnw,scrnh = screen_size()
+  local mx,my = get_camera_pos()
   while not found do
-    s.x = irnd(MAP_W) -1
-    s.y = irnd(MAP_H) -1
+    if chance(5) then return end
+    s.x = flr((mx+rnd(scrnw+32)-16)/8)
+    s.y = flr((my+rnd(scrnh+32)-16)/8)
     found = (get_maptile(s.x, s.y) == 0 and get_maptile(s.x + (windgoright and -1 or 1), s.y) == 0)
   end
   s.x = s.x * 8 + 4
