@@ -181,12 +181,12 @@ function update_player(s)
         s.moved_t = max(s.moved_t - delta_time, 0)
       end
       
-      local dd = mid(1 - (s.speed / s.max_speed) - (s.moved_t/delay*2-1), 0, 1)
+      local dd = mid(1 - (s.speed / s.max_speed) - (s.moved_t/delay*4-3), 0, 1)
       
       local odx, ody = s.diff_x, s.diff_y
       
-      s.diff_x = lerp(s.diff_x, 0, (dd + 0.03) * 50 * delta_time)
-      s.diff_y = lerp(s.diff_y, 0, (dd + 0.03) * 50 * delta_time)
+      s.diff_x = lerp(s.diff_x, 0, (dd + 0.0025) * 200 * delta_time)
+      s.diff_y = lerp(s.diff_y, 0, (dd + 0.0025) * 200 * delta_time)
       
       s.speed = dist(s.v.x + s.diff_x-odx, s.v.y + s.diff_y-ody)
     else

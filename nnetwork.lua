@@ -65,11 +65,11 @@ function client_output()
     client.home[3] = my_player.dy_input
     
     if abs(my_player.diff_x) > 4 then
-      client.home[2] = client.home[2] + mid(my_player.diff_x / 16, -1, 1)
+      client.home[2] = client.home[2] + mid(my_player.diff_x / 8, -1, 1)
     end
     
     if abs(my_player.diff_y) > 4 then
-      client.home[3] = client.home[3] + mid(my_player.diff_y / 16, -1, 1)
+      client.home[3] = client.home[3] + mid(my_player.diff_y / 8, -1, 1)
     end
     
     --if my_player.shot_input then
