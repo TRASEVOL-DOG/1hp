@@ -73,6 +73,16 @@ function _update(dt)
   
   update_leaderboard()
   
+  if btnp(7) or btnp(8) then
+    local curmenu = querry_menu()
+    if not curmenu then
+      pause_menu()
+    elseif curmenu == "pause" or curmenu == "settings" then
+      menu_back()
+      in_pause = false
+    end
+  end
+  
   update_menu()
   
   update_network()
@@ -92,6 +102,14 @@ function _draw()
   draw_debug()
   
   draw_leaderboard()
+  
+  if in_pause then
+    local scrnw,scrnh=screen_size()
+    color(0)
+    for i=0,scrnh+scrnw,2 do
+      line(i,0,i-scrnh,scrnh)
+    end
+  end
   
   draw_menu()
   
@@ -209,13 +227,20 @@ function main_menu()
 end
 
 function pause_menu() -- not an actual pause - access to settings & restart & main menu
+  local scrnw, scrnh = screen_size()
   menu_position(scrnw/2, scrnh/2)
   menu("pause")
+  in_pause = true
 end
 
 function game_over()
+  menu_back()
+  menu_back()
+  
+  local scrnw, scrnh = screen_size()
   menu_position(scrnw/2, scrnh/2)
   menu("gameover")
+  in_pause = false
 end
 
 
@@ -271,10 +296,10 @@ function define_menus()
       {"Back", menu_back}
     },
     pause={
-      {"Resume", function() menu_back() end},
+      {"Resume", function() menu_back() in_pause = false end},
       {"Restart", function() restarting = true end},
       {"Settings", function() menu("settings") end},
-      {"Back to Main Menu", main_menu},
+      {"Back to Main Menu", function() menu_back() main_menu() in_pause = false end},
     },
     gameover={
       {"Restart", function() restarting = true end},

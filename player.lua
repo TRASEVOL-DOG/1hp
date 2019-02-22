@@ -71,7 +71,7 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt - delta_time
   
-  if s.id == my_id then
+  if s.id == my_id and not in_pause then
   
     s.dx_input = 0
     s.dy_input = 0
