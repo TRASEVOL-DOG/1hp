@@ -92,7 +92,6 @@ function update_player(s)
     -- right  = 1
     -- up     = 2
     -- down   = 3
-        
     if btn(0) then s.dx_input =             -1 end
     if btn(1) then s.dx_input = s.dx_input + 1 end
     if btn(2) then s.dy_input =             -1 end
@@ -115,6 +114,7 @@ function update_player(s)
     if server_only then
       dec = dec * 1.25
     else
+      acc = acc * 0.75
       dec = dec * 0.75
     end
     
