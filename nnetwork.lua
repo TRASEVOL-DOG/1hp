@@ -71,6 +71,8 @@ function client_output()
     --end
     
     client.home[5] = my_player.angle
+    
+    client.home[6] = delay
   end
 end
 
@@ -111,12 +113,14 @@ function sync_players(player_data)
     local x = p_d[1] + delay * p_d[3]
     local y = p_d[2] + delay * p_d[4]
     
-    if id == my_id then
-      p.rx = x
-      p.ry = y
-    else
-      p.v.x = p_d[3]
-      p.v.y = p_d[4]
+    --if id == my_id then
+    --  p.rx = x
+    --  p.ry = y
+    --else
+      if id ~= my_id then
+        p.v.x = p_d[3]
+        p.v.y = p_d[4]
+      end
       
       local x = p_d[1] + delay * p_d[3]
       local y = p_d[2] + delay * p_d[4]
@@ -126,7 +130,7 @@ function sync_players(player_data)
       
       p.x = x
       p.y = y
-    end
+    --end
     
     if p.alive and not p_d[5] then
       kill_player(p)
@@ -140,12 +144,11 @@ end
 function sync_bullets(bullet_data)
   if not bullet_data then return end
   
-  for id,b in pairs(bullet_list) do  -- checking if any player no longer exists
-    if not bullet_data[id] then
---      kill_bullet(b)
---      bullet_list[b] = nil
-    end
-  end
+--  for id,b in pairs(bullet_list) do  -- checking if any bullet no longer exists
+--    if not bullet_data[id] then
+--      deregister_bullet(b)
+--    end
+--  end
   
   for id,b_d in pairs(bullet_data) do  -- syncing players with server data
     if not bullet_list[id] then
@@ -176,7 +179,9 @@ function sync_destroyables(destroyable_data)
     end
     local d = destroyable_list[id]
     
-    d.alive = d_d[3]
+    if d.alive and not d_d[3] then
+      kill_destroyable(d)
+    end
   end
 end
 
@@ -204,6 +209,8 @@ function server_input()
       
       shot_ids[id] = ho[4] or 0
       player.angle = ho[5] or 0
+      
+      player.delay = ho[6]
     end
   end
 end
@@ -218,7 +225,14 @@ function server_output()
     server.share[1][id] = ho[1]
   end
   
+  
   local player_data = server.share[2]
+  for id,_ in pairs(player_data) do
+    if not player_list[id] then
+      player_data[id] = nil
+    end
+  end
+  
   for id,p in pairs(player_list) do
     player_data[id] = {
       p.x, p.y,
@@ -229,7 +243,14 @@ function server_output()
     }
   end
   
+  
   local bullet_data = server.share[3]
+  for id,_ in pairs(bullet_data) do
+    if not bullet_list[id] then
+      bullet_data[id] = nil
+    end
+  end
+  
   for id,b in pairs(bullet_list) do
     bullet_data[id] = {
       b.x, b.y,
@@ -237,6 +258,7 @@ function server_output()
       b.from
     }
   end
+  
   
   local destroyable_data = server.share[4]
   for id,d in pairs(destroyable_list) do

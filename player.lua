@@ -103,6 +103,11 @@ function update_player(s)
     
     -- MOVEMENT
     
+    local delta_time = delta_time
+    if s.delay then
+      delta_time = delta_time + 0.5 * delay
+    end
+    
     local acc = s.acceleration * delta_time * 10
     local dec = s.deceleration * delta_time * 10
     
@@ -144,6 +149,7 @@ function update_player(s)
     if s.speed > s.max_speed then
       s.v.x = s.v.x / s.speed * s.max_speed
       s.v.y = s.v.y / s.speed * s.max_speed
+      s.speed = s.max_speed
     end
     
   else
@@ -154,16 +160,28 @@ function update_player(s)
   end
   
   if not server_only then
-    if s.id == my_id and s.rx then
-      local dx = s.x - s.rx
-      local dy = s.y - s.ry
-      if abs(dx) >= 1 then
-        s.v.x = s.v.x - (sgn(dx) + dx/8) * s.acceleration * delta_time * 10
-      end
-      if abs(dy) >= 1 then
-        s.v.y = s.v.y - (sgn(dy) + dy/8) * s.acceleration * delta_time * 10
-      end
-      s.speed = dist(s.v.x, s.v.y) -- update speed
+    if s.id == my_id then-- and s.rx then
+      --local dx = s.x - s.rx
+      --local dy = s.y - s.ry
+      --
+      --local dd = mid(1 - (s.speed / s.max_speed) - abs(s.dx_input) - abs(s.dy_input), 0, 1)
+      --
+      --if abs(dx) >= 1 then
+      --  s.v.x = s.v.x - (sgn(dx) * 0.75 + dd * dx/2) * s.acceleration * delta_time * 5
+      --end
+      --if abs(dy) >= 1 then
+      --  s.v.y = s.v.y - (sgn(dy) * 0.75 + dd * dy/2) * s.acceleration * delta_time * 5
+      --end
+      --s.speed = dist(s.v.x, s.v.y) -- update speed
+      
+      local dd = mid(1 - (s.speed / s.max_speed) - abs(s.dx_input) - abs(s.dy_input), 0, 1)
+      
+      local odx, ody = s.diff_x, s.diff_y
+      
+      s.diff_x = lerp(s.diff_x, 0, (dd + 0.05) * 20 * delta_time)
+      s.diff_y = lerp(s.diff_y, 0, (dd + 0.05) * 20 * delta_time)
+      
+      s.speed = dist(s.v.x + s.diff_x-odx, s.v.y + s.diff_y-ody)
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
       s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
@@ -184,6 +202,12 @@ function update_player(s)
 end
 
 function update_move_player(s)
+  -- client syncing stuff
+  if s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0 then
+    s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
+  end
+  
+  -- actual move update
   local nx = s.x + s.v.x * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
@@ -203,6 +227,11 @@ function update_move_player(s)
   else
     s.y = ny
   end
+  
+  -- more client syncing bullshit
+  if s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0 then
+    s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
+  end
 end
 
 function draw_player(s)
@@ -212,7 +241,7 @@ function draw_player(s)
 --  line(x + (s.w) * cos(s.angle), y + (s.h) * sin(s.angle), x + (s.w)*1.5 * cos(s.angle), y + (s.h)*1.5 * sin(s.angle), 3)
   
   local state = "idle"
-  if s.speed > 0 then
+  if s.speed > 0.5 then
     state = "run"
   end
   local a = cos(s.angle) < 0
@@ -230,11 +259,11 @@ function draw_player(s)
   -- syncing debug
   if debug_mode then
     all_colors_to(1)
-    if s.id == my_id then
-      draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-    else
+    --if s.id == my_id then
+    --  draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    --else
       draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-    end
+    --end
     all_colors_to()
   end
 end

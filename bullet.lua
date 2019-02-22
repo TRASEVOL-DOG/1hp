@@ -1,8 +1,25 @@
 
 bullet_list = {} -- { id : bullet }
+dead_bullets = {}
 local bullet_nextid = 1
 
 function create_bullet(player_id, id)
+  if dead_bullets[id] then return end
+  
+  if player_id == my_id then
+    if id then
+      for b in group("bullet") do
+        if b.from == player_id and not b.id then
+          b.id = id
+          bullet_list[id] = b
+          
+          bullet_nextid = max(bullet_nextid, id + 1)
+          return
+        end
+      end
+    end
+  end
+
   local s = {
     from                = player_id, -- player id
     w                   = 4,
@@ -36,11 +53,14 @@ function create_bullet(player_id, id)
     s.id = id
     bullet_nextid = max(bullet_nextid, id + 1)
     
-  else       -- assigning id now - probably running server
+  elseif server_only then -- assigning id now
     s.id = bullet_nextid
     bullet_nextid = bullet_nextid + 1
   end
-  bullet_list[s.id] = s
+  
+  if s.id then
+    bullet_list[s.id] = s
+  end
   
   --spawn according to vector
 
@@ -124,6 +144,10 @@ function update_bullet(s)
 end
 
 function update_move_bullet(s)
+  -- client syncing stuff
+  s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
+
+  -- actual move update
   local nx = s.x + s.v.x * s.speed * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
@@ -147,6 +171,9 @@ function update_move_bullet(s)
   else
     s.y = ny
   end
+  
+  -- more client syncing bullshit
+  s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
 end
 
 function draw_bullet(s)
@@ -175,4 +202,9 @@ end
 
 function deregister_bullet(s)
   deregister_object(s)
+  
+  if s.id then
+    bullet_list[s.id] = nil
+    dead_bullets[s.id] = true
+  end
 end
