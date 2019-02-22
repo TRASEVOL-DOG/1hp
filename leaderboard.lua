@@ -1,21 +1,9 @@
 
-leaderboard = {is_large = true}
+leaderboard = {is_large = false}
 
 function get_list_leaderboard()
   
   local list_player = get_group_copy("player")
-  
-  -- if group_exists("player") and group_size("player") > 0 then 
-    -- local grp = "player"
-    -- local pos = 0
-    
-    -- while objs[grp][pos] ~= nil do
-      -- add(list_player, { rank = objs[grp][pos].score, name = objs[grp][pos].score})
-    -- end
-    -- list_player =  group("player")()
-  -- else 
-    -- return {{rank = my_player.score, name = "my player"}} 
-  -- end
   local sorted_list = {}
   
   local my_id = my_id or 1
@@ -49,28 +37,7 @@ function get_list_leaderboard()
     
     
   end 
-  
-  
-  -- local l = {}
-  -- if leaderboard.small then
-    -- for i = 1, 15 do 
-      -- add(l, {rank = i, str = "player"..i})
-    -- end
-  -- else
-      -- add(l, {rank = 1, str = "player"..1})
-      -- add(l, {rank = 2, str = "player"..2})
-      -- add(l, {rank = 3, str = "(".."player"..3})
-      -- add(l, {rank = "..."})
-      -- add(l, {rank = 8, str = "player"..8})
-  -- end
-  -- if sorted_list == {} or sorted_list == nil  then 
-    -- sorted_list = {rank = "x", name ="no_name"}
-  -- end
-  
-  -- if #sorted_list < 1 and sorted_list == {} or sorted_list == nil then
-    -- sorted_list = {rank = "x", name ="no_name"}
-  -- end
-  
+   
   return sorted_list -- array of string with players according to score
 end
 
@@ -88,7 +55,7 @@ end
 
 function init_leaderboard()
 
-  leaderboard.is_large = true
+  leaderboard.is_large = false
 
 end
 
@@ -96,21 +63,27 @@ function draw_leaderboard()
   
   local sx, sy = screen_size()
   
-  local y = 3
+  local y = 8
   local x = 70
-  draw_text_oultined("Leaderboard", sx - x, y, 0)
     
   local size = #leaderboard.list
   
+  y = 8
   if not leaderboard.is_large then
     size = size > 5 and 5 or size
+    x = 70
+  else
+    rectfill(sx - x - 2, y + 1, sx - 2 , y + 12 , 0)
+    rectfill(sx - x - 1, y + 2, sx - 3 , y + 11 , 1)
+    draw_text_oultined(" Leaderboard", sx - x, y - 2, 0)
+    rectfill(sx - x - 2, y + 13 , sx - 2 , y + 10 + (size+1) * 8    , 0)
+    rectfill(sx - x - 1, y + 14 , sx - 3 , y + 1 + (size+1) * 8 - 1, 1)
   end
- 
+   
   -- if big, will display everything
-  -- if small and player <=5th, will display 5 first
-  -- if small and player > 5th, will display 3 first, "..." + the player on the 5th line
+  -- if small and player <= 5th, will display 5 first
+  -- if small and player >  5th, will display 3 first, "..." + the player on the 5th line
  
-  y = 8
   for i = 1, size do
   
     local player = leaderboard.list[i]
@@ -130,7 +103,7 @@ function draw_leaderboard()
       end
     end
     
-    draw_text_oultined(str, sx - x, y + i*8 , c)
+    draw_text_oultined(str, sx - leaderboard.width - 15 , y + 3 + i*8 , c)
   end
   --[[ needs to be implemented in the network
   y = sy - 60
@@ -155,7 +128,7 @@ function update_leaderboard()
   if btnp(10) then leaderboard.is_large = not leaderboard.is_large end
   
   leaderboard.list = get_list_leaderboard()
-
+  leaderboard.width = get_length_leaderboard()
   --[[
   leaderboard.victim = get_victim() -- Last player killed
 
@@ -165,24 +138,6 @@ function update_leaderboard()
   --]]
   
 end
-
-
-
--- leaderboard = {
-
-  -- small = true,
-  
-  -- list = get_list_leaderboard(),
-
-  -- victim = get_victim(), -- Last player killed
-
-  -- victimest = get_victimest(), -- Player killed the most:
-
-  -- killer = get_killer() -- Last Killer
-  
--- }
-
-
 
 function draw_text_oultined(str, x, y, c1)
   c1 = c1 or 0
@@ -204,7 +159,14 @@ function draw_text_oultined(str, x, y, c1)
   color(3)
 end
 
-
-
-
-
+function get_length_leaderboard()
+  local maxi = 0
+  for i = 1, #leaderboard.list do
+    local name = leaderboard.list[i].name
+    local length = str_width(name)
+    if length > maxi then
+      maxi = length
+    end  
+  end
+  return maxi
+end

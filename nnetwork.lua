@@ -142,6 +142,8 @@ function sync_players(player_data)
     
     if p.alive and not p_d[5] then
       kill_player(p)
+    elseif not p.alive and p_d[5] then
+      resurrect(p)
     end
     
     p.angle = p_d[6]
@@ -189,6 +191,8 @@ function sync_destroyables(destroyable_data)
     
     if d.alive and not d_d[3] then
       kill_destroyable(d, d_d[4])
+    elseif not d.alive and d_d[3] then
+      respawn_destroyable(d)
     end
   end
 end

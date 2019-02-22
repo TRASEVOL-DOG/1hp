@@ -9,8 +9,8 @@ c_lit = {[0]=1, 2, 3, 3}
 
 function init_graphics(w,h, window_title)
   local fonts={
-    small={"EffortsPro.ttf",16},
-    big={"Marksman.ttf",16}
+    small={"Miserable.ttf",16},
+    big={"Worthy.ttf",16}
   }
   
   local ww,hh

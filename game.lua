@@ -198,7 +198,7 @@ function draw_debug()
   local scrnw, scrnh = screen_size()
   
   font("small")
-  draw_text("debug: "..debuggg, scrnw, scrnh-8, 2, 3)
+  draw_text("debug: "..debuggg, scrnw, scrnh-16, 2, 3)
   
   if client.connected then
     draw_text("Connected as #"..client.id, 2, 2, 0, 3)
