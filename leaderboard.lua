@@ -26,7 +26,7 @@ function get_list_leaderboard()
     end
     
     local lrank = rank or 1
-    local lname = list_player[index].id
+    local lname = list_player[index].name or ""
     local lscore = list_player[index].score or 1
     
     add(sorted_list, {  rank = lrank, 
@@ -71,13 +71,17 @@ function draw_leaderboard()
   y = 8
   if not leaderboard.is_large then
     size = size > 5 and 5 or size
-    x = 70
+    y = - 13
+    x = leaderboard.maxi
   else
     rectfill(sx - x - 2, y + 1, sx - 2 , y + 12 , 0)
     rectfill(sx - x - 1, y + 2, sx - 3 , y + 11 , 1)
     draw_text_oultined(" Leaderboard", sx - x, y - 2, 0)
-    rectfill(sx - x - 2, y + 13 , sx - 2 , y + 10 + (size+1) * 8    , 0)
-    rectfill(sx - x - 1, y + 14 , sx - 3 , y + 1 + (size+1) * 8 - 1, 1)
+    rectfill(sx - x - 2, y + 13     , sx - 2 , y + 10 + (size+1) * 8    , 0)
+    rectfill(sx - x - 1, y + 13 + 1 , sx - 3 , y + 10 + (size+1) * 8 - 1, 1)
+    sx = sx - 4
+    
+    
   end
    
   -- if big, will display everything
@@ -103,7 +107,7 @@ function draw_leaderboard()
       end
     end
     
-    draw_text_oultined(str, sx - leaderboard.width - 15 , y + 3 + i*8 , c)
+    draw_text_oultined(str, sx - leaderboard.width - 19 , y + 3 + i*8 , c)
   end
   --[[ needs to be implemented in the network
   y = sy - 60
@@ -161,12 +165,14 @@ end
 
 function get_length_leaderboard()
   local maxi = 0
+  
   for i = 1, #leaderboard.list do
-    local name = leaderboard.list[i].name
+    local name = leaderboard.list[i].name or 0
     local length = str_width(name)
     if length > maxi then
       maxi = length
     end  
   end
+  
   return maxi
 end
