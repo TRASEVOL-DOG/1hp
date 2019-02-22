@@ -116,18 +116,22 @@ function draw_map()
   draw_surface(mapsurf, 0, 0, x, y, scrnw, scrnh)
 end
 
-function check_mapcol(s,x,y)
+function check_mapcol(s,x,y,further)
   local sx = x or s.x
   local sy = y or s.y
  
   local dirs = {{-1,-1},{1,-1},{-1,1},{1,1}}
   nirs=dirs
   
+  local dd = further and (server_only and 0.8 or 0.7) or 0.5
+  local w = s.w
+  local h = further and (s.h+2) or s.h
+  
   local res,b={0,0}
  
   for k,d in pairs(dirs) do
-    local x = sx+s.w*0.5*d[1]
-    local y = sy+s.h*0.5*d[2]
+    local x = sx+w*dd*d[1]
+    local y = sy+h*dd*d[2]
     
     local tx = flr(x/8)
     local ty = flr(y/8)
