@@ -115,12 +115,24 @@ function init_map()
   gen_mapsurf()
 end
 
+
 function draw_map()
-  local scrnw, scrnh = screen_size()
+  local w,h = screen_size()
   local x,y = get_camera_pos()
+  local sx,sy
+
+  if x<0 then sx,x,w = -x,0,w-x end
+  if y<0 then sy,y,h = -y,0,h-y end
   
-  draw_surface(mapsurf, 0, 0, x, y, scrnw, scrnh)
+  local ssw,ssh = surface_size(mapsurf)
+  if x+w > ssw then w = ssw-x end
+  if y+h > ssh then h = ssh-y end
+
+  palt(0,false)
+  draw_surface(mapsurf, sx, sy, x, y, w, h)
+  palt(0,true)
 end
+
 
 function check_mapcol(s,x,y,further)
   local sx = x or s.x
@@ -155,10 +167,12 @@ function check_mapcol(s,x,y,further)
   return b and {dir_x = res[1], dir_y = res[2]}
 end
 
+
 function get_maptile(x,y)
   if not map_data[y] then return nil end
   return map_data[y][x]
 end
+
 
 mapsurf = nil
 function gen_mapsurf()
@@ -180,8 +194,10 @@ function gen_mapsurf()
       elseif v == 7 then
         if chance(5) then
           n = 15
+        elseif chance(5) then
+          n = 8+irnd(2)
         else
-          n = 8+irnd(6)
+          n = 10+irnd(4)
         end
       elseif v == 1 then
         local down = map_data[y+1] and map_data[y+1][x]
@@ -213,11 +229,19 @@ function gen_mapsurf()
         
       elseif v == 2 then
         local k = 0
-        if d_line[x-1]==v then k = k+1 end
-        if d_line[x+1]==v then k = k+2 end
-        if y<=0 or map_data[y-1][x]==v then       k = k+4 end
+        if x<=0       or d_line[x-1] == v    then k = k+1 end
+        if x>=MAP_W-1 or d_line[x+1] == v    then k = k+2 end
+        if y<=0       or map_data[y-1][x]==v then k = k+4 end
         if y>=MAP_H-1 or map_data[y+1][x]==v then k = k+8 end
         n = 32+k
+        
+        if n == 47 then
+          local i = min(x,y,MAP_W-1-x,MAP_H-1-y)
+          if i < 2 then
+            n = 62+i
+          end
+        end
+        
       elseif v == 3 then
         n = pick{30,31}
       elseif v == 4 then
@@ -253,11 +277,13 @@ function gen_mapsurf()
   palt(0,true)
 end
 
+
 function reset_spawn()
 
   spawn_points_copy = copy_table(spawn_points)
   
 end
+
 
 function get_spawn()
 

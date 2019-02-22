@@ -58,7 +58,7 @@ function _update(dt)
   end
 
   t = t + dt
-  if chance(2) then
+  if chance(3) then
     if chance(14) then windgoright = not windgoright end
     create_wind()
   end
@@ -70,7 +70,7 @@ function _update(dt)
 end
 
 function _draw()
-  cls(0)
+  cls(2)
   camera()
   draw_map()
   
