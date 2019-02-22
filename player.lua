@@ -182,7 +182,7 @@ function update_player(s)
       --s.speed = dist(s.v.x, s.v.y) -- update speed
       
       if abs(s.dx_input) + abs(s.dy_input) > 0 then
-        s.moved_t = delay*3
+        s.moved_t = delay*4
       else
         s.moved_t = max(s.moved_t - delta_time, 0)
       end
