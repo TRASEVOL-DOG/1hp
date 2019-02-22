@@ -51,7 +51,10 @@ function create_destroyable(id, x, y)
 end
 
 function update_destroyable(s)
-  if not s.alive then s.t_respawn = s.t_respawn - delta_time end
+  if not s.alive then 
+    s.t_respawn = s.t_respawn - delta_time 
+    if s.t_respawn < 0 then respawn_destroyable(s) end
+  end
 end
 
 function draw_destroyable(s)
@@ -69,7 +72,7 @@ function kill_destroyable(s)
   if s.alive then
     s.alive = false
     s.skin = (s.skin < 52) and 54 or 55
-    s.t_respawn = 20 + rnd(10)
+    s.t_respawn = 10 + rnd(5)
   end
 end
 function respawn_destroyable(s)
