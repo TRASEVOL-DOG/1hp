@@ -79,7 +79,7 @@ function update_player(s)
     -- gets angle
     s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
     -- move cam
-    cam.follow = {x = lerp(s.x, cursor.x, .25), y = lerp(s.y, cursor.y, .25)}
+    cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)}
     
     s.speed = dist(s.v.x, s.v.y)
     
@@ -185,8 +185,8 @@ function update_player(s)
       
       local odx, ody = s.diff_x, s.diff_y
       
-      s.diff_x = lerp(s.diff_x, 0, (dd + 0.05) * 20 * delta_time)
-      s.diff_y = lerp(s.diff_y, 0, (dd + 0.05) * 20 * delta_time)
+      s.diff_x = lerp(s.diff_x, 0, (dd + 0.03) * 50 * delta_time)
+      s.diff_y = lerp(s.diff_y, 0, (dd + 0.03) * 50 * delta_time)
       
       s.speed = dist(s.v.x + s.diff_x-odx, s.v.y + s.diff_y-ody)
     else
