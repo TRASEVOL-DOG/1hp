@@ -21,6 +21,7 @@ require("bullet")
 require("wind")
 require("leaderboard")
 
+my_name = "[*.*]"
 
 function _init()
   eventpump()
@@ -46,6 +47,10 @@ function _init()
   init_map()
   
   init_game()
+  
+  if not server_only then
+    main_menu()
+  end
 end
 
 function _update(dt)
@@ -68,6 +73,8 @@ function _update(dt)
   
   update_leaderboard()
   
+  update_menu()
+  
   update_network()
 end
 
@@ -85,6 +92,8 @@ function _draw()
   draw_debug()
   
   draw_leaderboard()
+  
+  draw_menu()
   
   cursor:draw()
 end
@@ -193,6 +202,24 @@ end
 
 
 
+function main_menu()
+  local scrnw, scrnh = screen_size()
+  menu_position(scrnw/2, scrnh/2)
+  menu("mainmenu")
+end
+
+function pause_menu() -- not an actual pause - access to settings & restart & main menu
+  menu_position(scrnw/2, scrnh/2)
+  menu("pause")
+end
+
+function game_over()
+  menu_position(scrnw/2, scrnh/2)
+  menu("gameover")
+end
+
+
+
 debuggg = ""
 function draw_debug()
   local scrnw, scrnh = screen_size()
@@ -228,10 +255,10 @@ end
 function define_menus()
   local menus={
     mainmenu={
-      {"Play", function() end},
-      {"Player Name", function(str) end, "text_field", 16, my_name},
+      {"Play", function() menu_back() connecting = true end},
+      {"Player Name", function(str) end, "text_field", 8, my_name},
       {"Settings", function() menu("settings") end},
-      {"Join the Castle Discord!", function() love.system.openURL("https://discordapp.com/invite/4C7yEEC") end}
+--      {"Join the Castle Discord!", function() love.system.openURL("https://discordapp.com/invite/4C7yEEC") end}
     },
     cancel={
       {"Go Back", function() connecting=false main_menu() end}
@@ -245,9 +272,13 @@ function define_menus()
     },
     pause={
       {"Resume", function() menu_back() end},
-      {"Restart", function() end},
+      {"Restart", function() restarting = true end},
       {"Settings", function() menu("settings") end},
       {"Back to Main Menu", main_menu},
+    },
+    gameover={
+      {"Restart", function() restarting = true end},
+      {"Back to Main Menu", main_menu}
     }
   }
   
