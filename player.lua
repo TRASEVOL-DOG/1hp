@@ -14,6 +14,7 @@ function create_player(id,x,y)
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
+    t_death_anim        = 0,
     score               = 0,
     
     w                   = 6,
@@ -22,7 +23,7 @@ function create_player(id,x,y)
     time_fire           = .1, -- max cooldown (seconds)  for bullet fire
     timer_fire          = 0, -- cooldown (seconds) left for bullet fire
     
-    v                   = { x = 0, y = 0},-- movement vector 
+    v                   = { x = 0, y = 0 },-- movement vector 
     angle               = 0,
     speed               = 0,
     max_speed           = 1.4*5,
@@ -64,7 +65,6 @@ end
 
 function update_player(s)
   
-  
   -- cooldown firing gun
   s.timer_fire = s.timer_fire - delta_time
   
@@ -77,26 +77,29 @@ function update_player(s)
     s.dy_input = 0
     
     -- gets angle
-    s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
     -- move cam
     cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)}
     
     s.speed = dist(s.v.x, s.v.y)
     
-    s.shot_input = mouse_btnp(0)
-    if s.shot_input then
-      client_shoot()
-    end
-
     -- left   = 0
     -- right  = 1
     -- up     = 2
     -- down   = 3
-    if btn(0) then s.dx_input =             -1 end
-    if btn(1) then s.dx_input = s.dx_input + 1 end
-    if btn(2) then s.dy_input =             -1 end
-    if btn(3) then s.dy_input = s.dy_input + 1 end
-    
+    if s.alive then
+      s.angle = atan2(cursor.x - s.x, cursor.y - s.y)
+      if btn(0) then s.dx_input =             -1 end
+      if btn(1) then s.dx_input = s.dx_input + 1 end
+      if btn(2) then s.dy_input =             -1 end
+      if btn(3) then s.dy_input = s.dy_input + 1 end
+      
+      s.shot_input = mouse_btnp(0)
+      if s.shot_input then
+        client_shoot()
+      end
+    else
+      s.t_death_anim = s.t_death_anim - delta_time
+    end
   end
   
   if server_only or s.id == my_id then
@@ -269,12 +272,22 @@ function draw_player(s)
 
 --  line(x + (s.w) * cos(s.angle), y + (s.h) * sin(s.angle), x + (s.w)*1.5 * cos(s.angle), y + (s.h)*1.5 * sin(s.angle), 3)
   
+  
   local state = "idle"
-  if s.speed > 0.5 then
-    state = "run"
-  end
   local a = cos(s.angle) < 0
-  local animt = s.animt * (s.v.x > 0 == a and -1 or 1)
+  local animt = (s.v.x > 0 == a and -1 or 1)
+  
+  if s.alive then
+    if s.speed > 0.5 then
+      state = "run"
+    end
+    animt = animt * s.animt
+  else
+    state = "hurt"
+    animt = animt * s.t_death_anim
+  end
+  
+  
   draw_anim_outline(x, y-2, "player", state, animt, 0, 0, a)
   
   -- drawing arm
@@ -298,7 +311,12 @@ function draw_player(s)
 end
 
 function kill_player(s)
+
+  s.score = 0
   s.alive = false
+  
+  s.t_death_anim = .5
+  
 end
 
 function resurrect(s)
