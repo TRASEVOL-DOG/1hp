@@ -129,6 +129,7 @@ function update_bullet(s)
   if player and player.id ~= s.from and player.alive then
       kill_bullet(s)
       kill_player(player)
+      add_score(player_list[s.from])
   end
   
   local destr = all_collide_objgroup(s,"destroyable")

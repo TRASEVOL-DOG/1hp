@@ -14,7 +14,7 @@ function create_player(id,x,y)
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
-    t_death_anim        = 0,
+    t_death_anim        = .5,
     score               = 0,
     
     w                   = 6,
@@ -69,7 +69,7 @@ function update_player(s)
   s.timer_fire = s.timer_fire - delta_time
   
   -- change anime time
-  s.animt = s.animt + delta_time
+  s.animt = s.animt - delta_time
   
   if s.id == my_id then
   
@@ -97,8 +97,6 @@ function update_player(s)
       if s.shot_input then
         client_shoot()
       end
-    else
-      s.t_death_anim = s.t_death_anim - delta_time
     end
   end
   
@@ -223,7 +221,6 @@ function update_player(s)
       local p = create_bullet(s.id)
       s.timer_fire = s.time_fire
       add_shake()
-      s.score = s.score + 1
     end 
   end
 end
@@ -275,20 +272,32 @@ function draw_player(s)
   
   local state = "idle"
   local a = cos(s.angle) < 0
-  local animt = (s.v.x > 0 == a and -1 or 1)
+  local animt = s.animt * (s.v.x > 0 == a and 1 or -1)
   
   if s.alive then
     if s.speed > 0.5 then
       state = "run"
     end
-    animt = animt * s.animt
   else
-    state = "hurt"
-    animt = animt * s.t_death_anim
+    if s.animt > 0 then
+      state = "hurt"
+    else
+      state = "dead"
+    end
   end
   
-  
-  draw_anim_outline(x, y-2, "player", state, animt, 0, 0, a)
+  if state ~= "dead" then
+    draw_anim_outline(x, y-2, "player", state, animt, 0, 0, a)
+  else
+    all_colors_to(0)
+    spr(203, s.x-1, s.y-2)
+    spr(203, s.x+1, s.y-2)
+    spr(203, s.x, s.y-3)
+    all_colors_to()
+    pal(1,0)
+    spr(203, s.x, s.y-2)
+    pal(1,1)    
+  end
   
   -- drawing arm
   pal(1,0)
@@ -296,15 +305,17 @@ function draw_player(s)
   pal(1,1)
   
   -- drawing rest of body
-  draw_anim(x, y-2, "player", state, animt, 0, a)
-
+  if state ~= "dead" then
+    draw_anim(x, y-2, "player", state, animt, 0, a)
+  end
+  
   -- syncing debug
   if debug_mode then
     all_colors_to(1)
     --if s.id == my_id then
     --  draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
     --else
-      draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+      draw_anim(s.x, s.y-2, "player", "run", s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
     --end
     all_colors_to()
   end
@@ -314,11 +325,14 @@ function kill_player(s)
 
   s.score = 0
   s.alive = false
-  
-  s.t_death_anim = .5
+  s.animt = s.t_death_anim
   
 end
 
 function resurrect(s)
   s.alive = true
+end
+
+function add_score(s)
+  s.score = s.score + 1
 end
