@@ -161,21 +161,27 @@ function update_player(s)
   
   if not server_only then
     if s.id == my_id then-- and s.rx then
-      local dx = s.x - s.rx
-      local dy = s.y - s.ry
+      --local dx = s.x - s.rx
+      --local dy = s.y - s.ry
+      --
+      --local dd = mid(1 - (s.speed / s.max_speed) - abs(s.dx_input) - abs(s.dy_input), 0, 1)
+      --
+      --if abs(dx) >= 1 then
+      --  s.v.x = s.v.x - (sgn(dx) * 0.75 + dd * dx/2) * s.acceleration * delta_time * 5
+      --end
+      --if abs(dy) >= 1 then
+      --  s.v.y = s.v.y - (sgn(dy) * 0.75 + dd * dy/2) * s.acceleration * delta_time * 5
+      --end
+      --s.speed = dist(s.v.x, s.v.y) -- update speed
       
       local dd = mid(1 - (s.speed / s.max_speed) - abs(s.dx_input) - abs(s.dy_input), 0, 1)
       
-      if abs(dx) >= 1 then
-        s.v.x = s.v.x - (sgn(dx) * 0.75 + dd * dx/2) * s.acceleration * delta_time * 5
-      end
-      if abs(dy) >= 1 then
-        s.v.y = s.v.y - (sgn(dy) * 0.75 + dd * dy/2) * s.acceleration * delta_time * 5
-      end
-      s.speed = dist(s.v.x, s.v.y) -- update speed
+      local odx, ody = s.diff_x, s.diff_y
       
-      --s.diff_x = lerp(s.diff_x, 0, 10*delta_time)
-      --s.diff_y = lerp(s.diff_y, 0, 10*delta_time)
+      s.diff_x = lerp(s.diff_x, 0, (dd + 0.25) * 20 * delta_time)
+      s.diff_y = lerp(s.diff_y, 0, (dd + 0.25) * 20 * delta_time)
+      
+      s.speed = dist(s.v.x + s.diff_x-odx, s.v.y + s.diff_y-ody)
     else
       s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
       s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
@@ -196,6 +202,12 @@ function update_player(s)
 end
 
 function update_move_player(s)
+  -- client syncing stuff
+  if s.id == my_id then
+    s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
+  end
+  
+  -- actual move update
   local nx = s.x + s.v.x * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
@@ -214,6 +226,11 @@ function update_move_player(s)
     s.v.x = s.v.x - 0.7* col.dir_x * s.acceleration * delta_time * 10
   else
     s.y = ny
+  end
+  
+  -- more client syncing bullshit
+  if s.id == my_id then
+    s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
   end
 end
 
@@ -242,11 +259,11 @@ function draw_player(s)
   -- syncing debug
   if debug_mode then
     all_colors_to(1)
-    if s.id == my_id then
-      draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-    else
+    --if s.id == my_id then
+    --  draw_anim(s.rx, s.ry-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
+    --else
       draw_anim(s.x, s.y-2, "player", state, s.animt * (s.v.x > 0 == a and -1 or 1), 0, 0, a)
-    end
+    --end
     all_colors_to()
   end
 end
