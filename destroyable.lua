@@ -25,8 +25,8 @@ function create_destroyable(id, x, y)
     if q == nil then
       return
     end
-    s.x = q.x + irnd(5)-2
-    s.y = q.y + irnd(5)-2
+    s.x = q.x
+    s.y = q.y
   end
   
   -- setting id

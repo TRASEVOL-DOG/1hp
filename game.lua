@@ -214,11 +214,11 @@ end
 function init_game()
 
   if server_only then
-    create_destroyable()
-    create_destroyable()
-    create_destroyable()
-    create_destroyable()
-    create_destroyable()
+    for _,p in pairs(cacti_spawn_points) do
+      if chance(90) then
+        create_destroyable(nil, p.x+irnd(5)-3, p.y+irnd(5)-3)
+      end
+    end
   end
   
 end
