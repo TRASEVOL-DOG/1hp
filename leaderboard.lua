@@ -154,6 +154,7 @@ function update_leaderboard()
 
   if btnp(10) then leaderboard.is_large = not leaderboard.is_large end
   
+  --[[
   leaderboard.list = get_list_leaderboard()
 
   leaderboard.victim = get_victim() -- Last player killed
@@ -161,7 +162,7 @@ function update_leaderboard()
   leaderboard.victimest = get_victimest() -- Player killed the most:
 
   leaderboard.killer = get_killer() -- Last Killer
-  
+  --]]
   
 end
 
