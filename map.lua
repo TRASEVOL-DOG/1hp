@@ -9,6 +9,7 @@ MAP_H = 72
 map = nil
 
 spawn_points = {}
+spawn_points_copy = {}
 cacti_spawn_points = {}
 ground = {}
 
@@ -89,7 +90,6 @@ local map_data = {
 }
 
 function init_map()
-  -- TEMP get spawns and ground
   local i,j = 0, 0
   for i = 0,  (MAP_H-1) do
     for j = 0,  (MAP_W-1) do
@@ -103,6 +103,8 @@ function init_map()
       end
     end
   end
+  
+  spawn_points_copy = copy_table(spawn_points_copy)
   
   local owalls = walls
   walls = {}
@@ -250,3 +252,17 @@ function gen_mapsurf()
   draw_to()
   palt(0,true)
 end
+
+function reset_spawn()
+
+  spawn_points_copy = copy_table(spawn_points)
+  
+end
+
+function get_spawn()
+
+  if #spawn_points_copy < 1 then reset_spawn() end
+  
+  return pick_and_remove(spawn_points_copy)
+end
+
