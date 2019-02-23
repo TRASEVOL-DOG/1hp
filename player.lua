@@ -322,7 +322,7 @@ function draw_player(s)
   
   local str = s.name or ""
   --draw_text(str, s.x, s.y+7, 1, 2)
-  draw_text(str, x, y+6, 1, 3, 0)
+  draw_text(str, x, y+6, 1, 3, 2, 0)
 end
 
 function kill_player(s)

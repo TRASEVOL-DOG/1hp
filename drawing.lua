@@ -437,7 +437,7 @@ end
 
 
 function init_palette()
-  palette = scorched_palette()
+  palette = sunscorched_palette()
   
   palette_norm = {}
   for i = 0,#palette do
@@ -553,6 +553,15 @@ function scorched_palette()
     {0xa1, 0x25, 0x38},
     {0xde, 0x60, 0x49},
     {0xf0, 0xec, 0xd5}
+  }
+end
+
+function sunscorched_palette()
+  return {
+[0]={0x40, 0x1e, 0x2e},
+    {0xab, 0x35, 0x35},
+    {0xff, 0x83, 0x4a},
+    {0xff, 0xff, 0xa6}
   }
 end
 
