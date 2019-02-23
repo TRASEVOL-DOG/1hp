@@ -12,11 +12,14 @@ function init_menu_system()
     return
   end
   
+  menu_linespace={}
+  menu_positions={}
+  
   local l=define_menus()
   
   menus={}
   for n,m in pairs(l) do
-    menus[n]=init_menu(m)
+    menus[n]=init_menu(m, n)
   end
   
   curmenu=nil
@@ -27,7 +30,7 @@ function init_menu_system()
 end
 
 
-function init_menu(l)
+function init_menu(l, name)
   local m={}
   
   local maxw=0
@@ -48,7 +51,7 @@ function init_menu(l)
       n.slidw=o[6] or 64
       n.slidv=n.call()
       n.w=max(#n.name*6+8,n.slidw+8)
-      n.h=28
+      n.h=26
     elseif n.typ=="text_field" then
       n.mlen = o[4] or 24
       n.txt = o[5] or ""
@@ -61,7 +64,7 @@ function init_menu(l)
     add(m,n)
   end
   
-  m.linespace=16
+  m.linespace = menu_linespace[name] or 16
   
   m.h=toth+(#m-1)*m.linespace
   m.w=maxw+32
@@ -71,8 +74,12 @@ function init_menu(l)
 end
 
 function update_menu(x,y)
-  x = x or menu_x
-  y = y or menu_y
+  if not x then
+    local scrnw,scrnh = screen_size()
+    local pos = menu_positions[curmenu] or {x = 0.5, y = 0.5}
+    x = pos.x * scrnw
+    y = pos.y * scrnh
+  end
 
   menuchange=max(menuchange-0.01,0)
   
@@ -140,8 +147,12 @@ function update_menu(x,y)
 end
 
 function draw_menu(x,y)
-  x = x or menu_x
-  y = y or menu_y
+  if not x then
+    local scrnw,scrnh = screen_size()
+    local pos = menu_positions[curmenu] or {x = 0.5, y = 0.5}
+    x = pos.x * scrnw
+    y = pos.y * scrnh
+  end
 
   if not curmenu then return end
   m=menus[curmenu]
@@ -159,10 +170,10 @@ function draw_menu(x,y)
     elseif o.typ=="slider" then
       draw_text(o.name,x+ofx,y+o.h*0.25+2, 1, c0, c1, c2)
       
-      local x1,x2,y=x-o.slidw/2,x+o.slidw/2,y+o.h*0.95
-      rect(x1-1,y-2.5,x2+1,y+1,c2)
-      line(x1,y-1,x2,y-1,c0)
-      line(x1,y,x2,y,c1)
+      local x1,x2,y=x-o.slidw/2,x+o.slidw/2,y+o.h*1+1
+      rectfill(x1-1,y-2,x2,y+2,c2)
+      line(x1,y,x2-1,y,c1)
+      line(x1,y-1,x2-1,y-1,c0)
       
       local x=x1+(o.slidv/(o.slidmax-o.slidmin))*o.slidw
       local r=4
@@ -221,8 +232,12 @@ function querry_menu()
   return curmenu
 end
 
-function menu_position(x,y)
-  menu_x, menu_y = x, y
+function menu_position(name,x,y)
+  menu_positions[name] = {x=x, y=y}
+end
+
+function set_menu_linespace(name, space) -- to call inside define_menus()
+  menu_linespace[name] = space
 end
 
 function menu_back()

@@ -47,10 +47,10 @@ function client_input(diff)
     local timestamp = client.share[1][client.id]
     if timestamp then
       delay = (love.timer.getTime() - timestamp) / 2
+    elseif restarting then
+      restarting = false
+      connecting = true
     end
-  elseif restarting then
-    restarting = false
-    connecting = true
   end
   
   sync_players(client.share[2])

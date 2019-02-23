@@ -15,7 +15,7 @@ function create_player(id,x,y)
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
-    t_death_anim        = .5,
+    t_death_anim        = .245,
     score               = 0,
     
     w                   = 6,
@@ -291,28 +291,30 @@ function draw_player(s)
   end
   
   if state ~= "dead" then
+    -- drawing body outline
     draw_anim_outline(x, y-2, "player", state, animt, 0, 0, a)
-  else
-    all_colors_to(0)
-    spr(203, s.x-1, s.y-2)
-    spr(203, s.x+1, s.y-2)
-    spr(203, s.x, s.y-3)
-    all_colors_to()
+    
+    -- drawing arm
     pal(1,0)
-    spr(203, s.x, s.y-2)
+    spr(200, x, y-1.5, 1, 1, s.angle, false, a, 1/8, 5/8)
     pal(1,1)
-  end
-  
-  -- drawing arm
-  pal(1,0)
-  spr(200, x, y-1.5, 1, 1, s.angle, false, a, 1/8, 5/8)
-  pal(1,1)
-  
-  -- drawing rest of body
-  if state ~= "dead" then
+    
+    -- drawing rest of body
     draw_anim(x, y-2, "player", state, animt, 0, a)
+  else
+    -- drawing body outline
+    draw_spr_outline(203, x, y-1, 1, 1, 0)
+    
+    -- drawing gun
+    pal(3,0)
+    spr(199, x, y-1.5, 1, 1, s.angle, false, a, 1/8, 5/8)
+    pal(3,3)
+    
+    -- drawing body
+    spr(203, x, y-1)
   end
   
+
   -- syncing debug
   if debug_mode then
     all_colors_to(1)
@@ -324,9 +326,9 @@ function draw_player(s)
     all_colors_to()
   end
   
+  
   local str = s.name or ""
-  --draw_text(str, s.x, s.y+7, 1, 2)
-  draw_text(str, x, y+6, 1, 3, 0)
+  draw_text(str, x, y+6, 1, 3, 2, 0)
 end
 
 function kill_player(s)
