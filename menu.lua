@@ -64,7 +64,7 @@ function init_menu(l, name)
     add(m,n)
   end
   
-  m.linespace = menu_linespace[name] or 16
+  m.linespace = menu_linespace[name] or 14
   
   m.h=toth+(#m-1)*m.linespace
   m.w=maxw+32
@@ -157,7 +157,7 @@ function draw_menu(x,y)
   if not curmenu then return end
   m=menus[curmenu]
   
-  local c0,c1,c2 = 3,2,0
+  local c0,c1,c2 = 0,2,3
   
   y=y-m.h/2
   
