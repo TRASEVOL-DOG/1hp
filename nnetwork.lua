@@ -5,6 +5,7 @@ my_id = nil
 
 connecting = false
 restarting = false
+connected = false
 
 local shot_id, shot_ids
 
@@ -47,9 +48,11 @@ function client_input(diff)
     local timestamp = client.share[1][client.id]
     if timestamp then
       delay = (love.timer.getTime() - timestamp) / 2
+      connected = true
     elseif restarting then
       restarting = false
       connecting = true
+      connected = false
     end
   end
   
@@ -157,6 +160,8 @@ function sync_players(player_data)
     elseif not p.alive and p_d[5] then
       resurrect(p)
     end
+    
+    p.server_death = not p_d[5]
     
     p.angle = p_d[6]
     p.score = p_d[7]

@@ -10,6 +10,7 @@ if CASTLE_PREFETCH then
     'bullet.lua',
     'destroyable.lua',
     'wind.lua',
+    'leaderboard.lua',
     'audio.lua',
     'drawing.lua',
     'input.lua',

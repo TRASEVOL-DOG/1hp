@@ -6,7 +6,8 @@ require("shader")
 require("drawing")
 
 files={
-  sprites = "assets/spritesheet.png"
+  sprites = "assets/spritesheet.png",
+  title = "assets/title.png"
 }
 
 anim_info = {

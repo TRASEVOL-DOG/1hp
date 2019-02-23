@@ -21,7 +21,8 @@ require("bullet")
 require("wind")
 require("leaderboard")
 
-my_name = "[*.*]"
+my_name = "Traveller"
+score = 0
 
 function _init()
   eventpump()
@@ -99,11 +100,22 @@ function _draw()
   
   camera()
 
-  draw_debug()
+--  draw_debug()
   
-  draw_leaderboard()
+  local menu = querry_menu()
   
-  if in_pause then draw_pause_background() end
+  if not menu or menu == "gameover" then
+    draw_leaderboard()
+  end
+  
+  if menu == "mainmenu" or not client.connected then
+    draw_title()
+    draw_connection()
+  elseif menu == "gameover" then
+    draw_gameover()
+  elseif in_pause then
+    draw_pause_background()
+  end
   
   draw_menu()
   
@@ -216,13 +228,69 @@ end
 
 function main_menu()
   local scrnw, scrnh = screen_size()
-  menu_position(scrnw/2, scrnh/2)
   menu("mainmenu")
+end
+
+function draw_title()
+  local scrnw, scrnh = screen_size()
+  
+  font("big")
+  draw_text("Trasevol_Dog and Eliott present", scrnw/2, 8, 1, 1,2,3)
+  
+  spritesheet("title")
+  
+  local x = 0.5 * scrnw - 8 * 9
+  local y = 0.25 * scrnh - 14
+  
+  for i=0,8 do
+    local s = (i*2)%16 + flr(i*2/16)*32
+    local v = t*0.25+i*0.1
+    
+    local dy = 2*(4+3*sin(t*0.13+i*0.13))*cos(v)
+    local yy = y + dy
+    local a = 0.03*cos(v+0.25)
+    
+    draw_spr_outline(s, x, yy, 2, 2, 3, a)
+    draw_spr_outline(s, x, yy+1, 2, 2, 3, a)
+    pal(3,2)
+    spr(s, x, yy+1, 2, 2, a)
+    pal(3,0)
+    spr(s, x, yy, 2, 2, a)
+    
+    x = x + 18
+  end
+  
+  local x = 0.5 * scrnw - 7 * 9
+  local y = 0.25 * scrnh + 14
+  
+  for i=0,7 do
+    local s = 64+ (i*2)%16 + flr(i*2/16)*32
+    local v = t*0.25+(i+0.5)*0.1
+    
+    local dy = 2*(4+3*sin(t*0.13+i*0.13))*cos(v)
+    local yy = y + dy
+    local a = 0.03*cos(v+0.25)
+    
+    draw_spr_outline(s, x, yy, 2, 2, 3, a)
+    draw_spr_outline(s, x, yy+1, 2, 2, 3, a)
+    pal(3,2)
+    spr(s, x, yy+1, 2, 2, a)
+    pal(3,0)
+    spr(s, x, yy, 2, 2, a)
+    
+    x = x + 18
+  end
+  
+  pal(3,3)
+  
+  spritesheet("sprites")
+  
+  draw_text("@Trasevol_Dog", scrnw-2, scrnh-26, 2, 3,2,0)
+  draw_text("@Eliott_MacR" , scrnw-2, scrnh-10, 2, 3,2,0)
 end
 
 function pause_menu() -- not an actual pause - access to settings & restart & main menu
   local scrnw, scrnh = screen_size()
-  menu_position(scrnw/2, scrnh/2)
   menu("pause")
   in_pause = true
 end
@@ -239,13 +307,66 @@ function game_over()
   menu_back()
   menu_back()
   
+  add_shake(8)
   local scrnw, scrnh = screen_size()
-  menu_position(scrnw/2, scrnh/2)
   menu("gameover")
   in_pause = false
 end
 
+function draw_gameover()
+  local scrnw, scrnh = screen_size()
+  
+  font("big")
+  
+  local str = "* G A M E   O V E R *"
+  local w = str_width(str)
+  
+  local x = scrnw/2-w/2
+  local y = 0.25 * scrnh
+  
+  for i = 1,#str do
+    local st = str:sub(i,i)
+    if st ~= ' ' then
+      local yy = y + (4+2*sin(t*0.41+i*0.13))*cos(t*0.25+i*0.1)
+      draw_text(st, x, yy, 0, 0,3,3)
+    end
+    x = x + str_width(st)
+  end
+  
+  local x = 0.5 * scrnw
+  local y = 0.4 * scrnh
+  
+  draw_text("You got shot.", x, y-10, 1, 3, 1, 0)
+  
+  local player = player_list[my_id]
+  if player then
+    draw_text("Score: "..player.score, x, y+10, 1, 3, 1, 0) -- doesn't work? where is the score stored??
+  end
+end
 
+
+
+function draw_connection()
+  font("small")
+  
+  local scrnw,scrnh = screen_size()
+  local x,y = 2, 0.5*scrnh
+  
+  local c0,c1,c2 = 3,1,0
+  
+  if client.connected then
+    draw_text("Connected!", x, y-4, 0, c0,c1,c2)
+    draw_text("Ping: "..client.getPing(), x, y+4, 0, c0,c1,c2)
+  else
+    draw_text("Not Connected.", x, y-4, 0, c0,c1,c2)
+    if castle and castle.isLoggedIn then
+      draw_text("Please wait...", x, y+4, 0, c0,c1,c2)
+    else
+      draw_text("Please sign into", x, y+6, 0, c0,c1,c2)
+      draw_text("Castle to connect", x, y+14, 0, c0,c1,c2)
+    end
+  end
+end
 
 debuggg = ""
 function draw_debug()
@@ -253,18 +374,6 @@ function draw_debug()
   
   font("small")
   draw_text("debug: "..debuggg, scrnw, scrnh-16, 2, 3)
-  
-  if client.connected then
-    draw_text("Connected as #"..client.id, 2, 2, 0, 3)
-    draw_text("Ping: "..client.getPing(), 2, 10, 0, 3)
-  else
-    draw_text("Not Connected", 2, 2, 0, 3)
-    if castle and castle.isLoggedIn then
-      draw_text("Please wait...", 2, 10, 0, 3)
-    else
-      draw_text("Please sign into Castle to connect", 2, 10, 0, 3)
-    end
-  end
 end
 
 function init_game()
@@ -283,7 +392,7 @@ function define_menus()
   local menus={
     mainmenu={
       {"Play", function() menu_back() connecting = true end},
-      {"Player Name", function(str) my_name = str end, "text_field", 8, my_name},
+      {"Player Name", function(str) my_name = str end, "text_field", 9, my_name},
       {"Settings", function() menu("settings") end},
 --      {"Join the Castle Discord!", function() love.system.openURL("https://discordapp.com/invite/4C7yEEC") end}
     },
@@ -305,14 +414,16 @@ function define_menus()
       {"Back to Main Menu", function() menu_back() main_menu() in_pause = false end},
     },
     gameover={
-      {"Restart", function() restarting = true end},
+      {"Restart", function() menu_back() restarting = true end},
       {"Back to Main Menu", main_menu}
     }
   }
   
+  set_menu_linespace("mainmenu", 13)
   set_menu_linespace("settings", 10)
   
-  menu_position("mainmenu",0.5,0.5)
+  menu_position("mainmenu",0.5,0.7)
+  menu_position("gameover",0.5,0.75)
   
   if not (castle or network) then
     add(menus.mainmenu, {"Quit", function() love.event.push("quit") end})
