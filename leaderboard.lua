@@ -72,7 +72,8 @@ function draw_leaderboard()
   if not leaderboard.is_large then
     size = size > 5 and 5 or size
     y = - 13
-    x = leaderboard.maxi
+    
+    draw_text_oultined("\"Tab\" to expand", sx - str_width("\"Tab\" to expand"),  y + 3 + (size+1)*8, 0)
   else
     rectfill(sx - x - 2, y + 1, sx - 2 , y + 12 , 0)
     rectfill(sx - x - 1, y + 2, sx - 3 , y + 11 , 1)
@@ -114,7 +115,7 @@ function draw_leaderboard()
   y = sy - 60
   draw_text_oultined(str, sx - str_width(str), y, 0)
    
-  str = leaderboard.last_killed or ""
+  str = leaderboard.last_victim or "none"
   y = y + 8
   draw_text_oultined(str, sx - str_width(str), y)
   
@@ -122,7 +123,7 @@ function draw_leaderboard()
   y = y + 10
   draw_text_oultined(str, sx - str_width(str), y)
   
-  str = leaderboard.last_killer or ""
+  str = leaderboard.last_killer or "none"
   y = y + 8
   draw_text_oultined(str, sx - str_width(str), y)
   
@@ -130,17 +131,17 @@ function draw_leaderboard()
   y = y + 10
   draw_text_oultined(str, sx - str_width(str), y)
   
-  local q = leaderboard.stats
-  if q then
-    q = q.most_killed
-    if q.count > 0 then
-      str = q.name or ""
+  local q = leaderboard.most_killed
+  
+  y = y + 8
+  
+  if q and q.count > 0 and q.name ~="" then
+      str = q.name
       str = (str .. "(" .. q.count .. ")" )
-      y = y + 8
-      
-      draw_text_oultined(str, sx - str_width(str), y)
-    end
+  else
+    str = "none"
   end
+  draw_text_oultined(str, sx - str_width(str), y)
   
 end
 
@@ -155,64 +156,60 @@ function update_leaderboard()
   leaderboard.width = get_length_leaderboard()
   
   if player_list[my_id] then
-    local death_history = player_list[my_id].death_history
   
-    leaderboard.stats = get_stats(death_history)        -- { most_killed : {name : count}, most_killed_by : {name : count}}
+    local name = "none"
     
-    leaderboard.last_killer = death_history.last_killer
+    -- find in last victim 
+    local d = death_history.last_victim[my_id]
+    if d and player_list[d.victim] then
+      name = player_list[d.victim].name 
+    else
+      name = "none"
+    end
+    leaderboard.last_victim = name
     
-    leaderboard.last_killed = death_history.last_killed
+    -- find last killer
+    d = death_history.last_killer[my_id]
+    if d and player_list[d.killer] then
+      name = player_list[d.killer].name  
+    else
+      name = "none"
+    end
+    leaderboard.last_killer = name
+
+    -- find most killed
+    get_most_killed() -- {name : count}
+    
   end
   
 end
+                
+function get_most_killed()
 
-function get_stats (death_history)
-
-  if death_history.killed_by then
-    local stats = {}
-    local m_killer = {name = "", count = 0}
-    
-    for i,v in pairs(death_history.killed_by) do
-      if v.count > m_killer.count then
-        m_killer = v
+  local count = 0
+  local killed_name = ""
+  local found = false
+  
+  if death_history.kills then
+    for i, v in pairs(death_history.kills) do
+      if v.killer == my_id and v.count > count then
+        count = v.count
+        debuggg = "count found"
+        local p = player_list[v.victim]
+        if p then
+          killed_name = p.name
+        end
       end
     end
-    
-    local m_killed = {name = "", count = 0}
-    
-    for i,v in pairs(death_history.killed) do
-      if v.count > m_killed.count then
-        m_killed = v
-      end
-    end
-    
-    return {most_killed_by = { name = m_killer.name, count = m_killer.count }, 
-            most_killed    = { name = m_killed.name, count = m_killed.count }
-           }
-  else
-    return {most_killed_by = { name = "", count = 0}, most_killed = { name = "", count = 0}}
   end
+  leaderboard.most_killed =  {name = killed_name, count = count}
 end
 
 
 function draw_text_oultined(str, x, y, c1)
-  c1 = c1 or 0
-  
-  color(3)
-  print(str, x+1, y-1)
-  print(str, x+1, y)
-  print(str, x+1, y+1)
-  
-  print(str, x-1, y-1)
-  print(str, x-1, y)
-  print(str, x-1, y+1)
-  
-  print(str, x, y-1)
-  print(str, x, y+1)
-    
-  color(c1)
-  print(str, x, y)
-  color(3)
+  y = y + 5
+  draw_text(str, x, y, 0, 0,2,3)
+  draw_text(str, x, y, 0, 1,2,3)
 end
 
 function get_length_leaderboard()

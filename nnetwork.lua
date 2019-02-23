@@ -125,7 +125,7 @@ function sync_players(player_data)
   for id,p_d in pairs(player_data) do  -- syncing players with server data
     if not player_list[id] then
       castle_print("New player: id="..id)
-      debuggg = "New player: id="..id
+      -- debuggg = "New player: id="..id
       create_player(id, p_d[1], p_d[2])
     end
     local p = player_list[id]

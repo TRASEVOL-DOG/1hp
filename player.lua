@@ -2,6 +2,11 @@
 require("input")
 
 player_list = {} -- { id : player }
+death_history = {
+                  kills = {}, -- { killed = killed.name , killer = killed.name, count } 
+                  last_victim = {}, -- { killed = killed.name , killer = killed.name }
+                  last_killer = {} -- { killed = killed.name , killer = killed.name }
+                }
 
 function create_player(id,x,y)
   
@@ -31,7 +36,7 @@ function create_player(id,x,y)
     deceleration        = .5*6*1.5,
     acceleration        = .9*6*1.5,
     
-    death_history       = {killed_by = {}, killed = {}, most_killed_by = {}, most_killed = {}}, -- { killed_by : {id_player : count}, killed : {id_player : count}, last_killer : player.name, last_killed : player.name}
+    -- { killed_by = {name : count}, killed = {name : count}, last_killer = player.name, last_killed = player.name}
     
     
     --network stuff
@@ -343,39 +348,63 @@ function resurrect(s)
   s.alive = true
 end
 
-function killed_and_killer(killed, killer) -- two players
+-- death_history = {
+                  -- kills = {}, -- { killed = killed.name , killer = killed.name } 
+                  -- last_kill_for_player = {} -- { killed = killed.name , killer = killed.name }
+                  -- last_killed_by_player = {} -- { killed = killed.name , killer = killed.name }
+                -- }
 
-  -- add(killed.death_history, { killer =
-  
-  add_killed( killed, killer )
-  killer.death_history.last_killed = killed.name
-  
-  add_killer( killed, killer )
-  killed.death_history.last_killer = killer.name
-  
-  kill_player(killed)
+function killed_and_killer(victim, killer) -- two players
 
-end
-
-function add_killed(killed, killer)
-
-  local p = killer.death_history.killed
-  if p[killed.id] then
-    p[killed.id].count = p.count + 1
-  else
-    add(p, {id_player = killed.id, count = 1})
+  if(death_history) then
+    local lcount = 1
+    local death = {}
+    
+    for i,v in pairs(death_history.kills) do
+      if (v.killer == killer.id) and (v.victim == victim.id) then
+        lcount = lcount + 1 
+      end
+    end
+    
+    lcount = lcount
+    debuggg = debuggg..lcount
+    death = { victim = victim.id , killer = killer.id, count = lcount}
+    add( death_history.kills, death)
+    
+    ----------
+    local found = false
+    
+    for i,v in pairs(death_history.last_victim) do
+    
+      if v.killer == killer.id then
+        v.victim = victim.id 
+      end
+      
+    end
+    
+    if not found then death_history.last_victim[killer.id] = death end
+    
+    ----------
+    
+    found = false
+    
+    for i,v in pairs(death_history.last_killer) do
+    
+      if v.victim == victim.id then
+        v.killer = killer.id 
+        found = true
+      end
+    end
+    if not found then death_history.last_killer[victim.id] = death end
+    
+    if player_list[my_id] then debuggg = player_list[my_id].score end
+    
+    add_score(killer)
+    kill_player(victim)
+    
   end
-  
 end
 
-function add_killer(killed, killer)
-
-  local p = killed.death_history.killed_by
-  if p[killer.id] then
-    p[killer.id].count = p.count + 1
-  else
-    add(p, {id_player = killer.id, count = 1})
-  end
-  
+function add_score(s)
+  s.score = s.score + 1
 end
-

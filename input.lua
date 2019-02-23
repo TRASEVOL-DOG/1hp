@@ -27,7 +27,7 @@ input.layout={
   
   -- z=4,
   x=5,
-  m=10,
+  tab=10,
   p=6,
   
   escape=7,
