@@ -42,7 +42,7 @@ function get_list_leaderboard()
 end
 
 function get_victim()
-  return { "playerthree" } -- array of string with players according to score
+  return player_li -- array of string with players according to score
 end
 
 function get_victimest()
@@ -109,39 +109,91 @@ function draw_leaderboard()
     
     draw_text_oultined(str, sx - leaderboard.width - 19 , y + 3 + i*8 , c)
   end
-  --[[ needs to be implemented in the network
+  
+  str = "Last victim :"
   y = sy - 60
-  draw_text_oultined("Last victim :", sx - str_width("Last victim : "), y, 0)
+  draw_text_oultined(str, sx - str_width(str), y, 0)
+   
+  str = leaderboard.last_killed or ""
   y = y + 8
-  draw_text_oultined(leaderboard.victim, sx - x, y)
+  draw_text_oultined(str, sx - str_width(str), y)
   
+  str = "Last killer :"
   y = y + 10
-  draw_text_oultined("Most killed :", sx - str_width("Most killed : "), y)
-  y = y + 8
-  draw_text_oultined(leaderboard.victimest, sx - x, y)
+  draw_text_oultined(str, sx - str_width(str), y)
   
-  y = y + 10
-  draw_text_oultined("Last killer :", sx - str_width("Last Killer : "), y)
+  str = leaderboard.last_killer or ""
   y = y + 8
-  draw_text_oultined(leaderboard.killer, sx - x, y)
-  --]]
+  draw_text_oultined(str, sx - str_width(str), y)
+  
+  str = "Most killed :"
+  y = y + 10
+  draw_text_oultined(str, sx - str_width(str), y)
+  
+  local q = leaderboard.stats
+  if q then
+    q = q.most_killed
+    if q.count > 0 then
+      str = q.name or ""
+      str = (str .. "(" .. q.count .. ")" )
+      y = y + 8
+      
+      draw_text_oultined(str, sx - str_width(str), y)
+    end
+  end
+  
 end
 
 function update_leaderboard()
 
-  if btnp(10) then leaderboard.is_large = not leaderboard.is_large end
+  if btnp(10) then 
+    leaderboard.is_large = not leaderboard.is_large 
+  end
   
   leaderboard.list = get_list_leaderboard()
+  
   leaderboard.width = get_length_leaderboard()
-  --[[
-  leaderboard.victim = get_victim() -- Last player killed
-
-  leaderboard.victimest = get_victimest() -- Player killed the most:
-
-  leaderboard.killer = get_killer() -- Last Killer
-  --]]
+  
+  if player_list[my_id] then
+    local death_history = player_list[my_id].death_history
+  
+    leaderboard.stats = get_stats(death_history)        -- { most_killed : {name : count}, most_killed_by : {name : count}}
+    
+    leaderboard.last_killer = death_history.last_killer
+    
+    leaderboard.last_killed = death_history.last_killed
+  end
   
 end
+
+function get_stats (death_history)
+
+  if death_history.killed_by then
+    local stats = {}
+    local m_killer = {name = "", count = 0}
+    
+    for i,v in pairs(death_history.killed_by) do
+      if v.count > m_killer.count then
+        m_killer = v
+      end
+    end
+    
+    local m_killed = {name = "", count = 0}
+    
+    for i,v in pairs(death_history.killed) do
+      if v.count > m_killed.count then
+        m_killed = v
+      end
+    end
+    
+    return {most_killed_by = { name = m_killer.name, count = m_killer.count }, 
+            most_killed    = { name = m_killed.name, count = m_killed.count }
+           }
+  else
+    return {most_killed_by = { name = "", count = 0}, most_killed = { name = "", count = 0}}
+  end
+end
+
 
 function draw_text_oultined(str, x, y, c1)
   c1 = c1 or 0

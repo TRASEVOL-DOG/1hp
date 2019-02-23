@@ -31,6 +31,9 @@ function create_player(id,x,y)
     deceleration        = .5*6*1.5,
     acceleration        = .9*6*1.5,
     
+    death_history       = {killed_by = {}, killed = {}, most_killed_by = {}, most_killed = {}}, -- { killed_by : {id_player : count}, killed : {id_player : count}, last_killer : player.name, last_killed : player.name}
+    
+    
     --network stuff
     dx_input            = 0,
     dy_input            = 0,
@@ -338,6 +341,39 @@ function resurrect(s)
   s.alive = true
 end
 
-function add_score(s)
-  s.score = s.score + 1
+function killed_and_killer(killed, killer) -- two players
+
+  -- add(killed.death_history, { killer =
+  
+  add_killed( killed, killer )
+  killer.death_history.last_killed = killed.name
+  
+  add_killer( killed, killer )
+  killed.death_history.last_killer = killer.name
+  
+  kill_player(killed)
+
 end
+
+function add_killed(killed, killer)
+
+  local p = killer.death_history.killed
+  if p[killed.id] then
+    p[killed.id].count = p.count + 1
+  else
+    add(p, {id_player = killed.id, count = 1})
+  end
+  
+end
+
+function add_killer(killed, killer)
+
+  local p = killed.death_history.killed_by
+  if p[killer.id] then
+    p[killer.id].count = p.count + 1
+  else
+    add(p, {id_player = killer.id, count = 1})
+  end
+  
+end
+
