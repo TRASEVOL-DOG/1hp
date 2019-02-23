@@ -103,13 +103,7 @@ function _draw()
   
   draw_leaderboard()
   
-  if in_pause then
-    local scrnw,scrnh=screen_size()
-    color(0)
-    for i=0,scrnh+scrnw,2 do
-      line(i,0,i-scrnh,scrnh)
-    end
-  end
+  if in_pause then draw_pause_background() end
   
   draw_menu()
   
@@ -233,6 +227,14 @@ function pause_menu() -- not an actual pause - access to settings & restart & ma
   in_pause = true
 end
 
+function draw_pause_background()
+  local scrnw,scrnh=screen_size()
+  color(1)
+  for i=0,scrnh+scrnw,2 do
+    line(i,0,i-scrnh,scrnh)
+  end
+end
+
 function game_over()
   menu_back()
   menu_back()
@@ -281,7 +283,7 @@ function define_menus()
   local menus={
     mainmenu={
       {"Play", function() menu_back() connecting = true end},
-      {"Player Name", function(str)my_name = str end, "text_field", 8, my_name},
+      {"Player Name", function(str) my_name = str end, "text_field", 8, my_name},
       {"Settings", function() menu("settings") end},
 --      {"Join the Castle Discord!", function() love.system.openURL("https://discordapp.com/invite/4C7yEEC") end}
     },
@@ -297,7 +299,7 @@ function define_menus()
     },
     pause={
       {"Resume", function() menu_back() in_pause = false end},
-      {"Restart", function() restarting = true end},
+      {"Restart", function() menu_back() in_pause = false restarting = true end},
       {"Settings", function() menu("settings") end},
       {"Back to Main Menu", function() menu_back() main_menu() in_pause = false end},
     },
