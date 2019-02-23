@@ -21,7 +21,8 @@ require("bullet")
 require("wind")
 require("leaderboard")
 
-my_name = "[*.*]"
+my_name = "Traveller"
+score = 0
 
 function _init()
   eventpump()
@@ -334,7 +335,13 @@ function draw_gameover()
   
   local x = 0.5 * scrnw
   local y = 0.4 * scrnh
-  draw_text("You got shot.", x, y, 1, 3, 2, 0)
+  
+  draw_text("You got shot.", x, y-10, 1, 3, 1, 0)
+  
+  local player = player_list[my_id]
+  if player then
+    draw_text("Score: "..player.score, x, y+10, 1, 3, 1, 0) -- doesn't work? where is the score stored??
+  end
 end
 
 
@@ -345,7 +352,7 @@ function draw_connection()
   local scrnw,scrnh = screen_size()
   local x,y = 2, 0.5*scrnh
   
-  local c0,c1,c2 = 3,2,0
+  local c0,c1,c2 = 3,1,0
   
   if client.connected then
     draw_text("Connected!", x, y-4, 0, c0,c1,c2)
@@ -385,7 +392,7 @@ function define_menus()
   local menus={
     mainmenu={
       {"Play", function() menu_back() connecting = true end},
-      {"Player Name", function(str) my_name = str end, "text_field", 8, my_name},
+      {"Player Name", function(str) my_name = str end, "text_field", 9, my_name},
       {"Settings", function() menu("settings") end},
 --      {"Join the Castle Discord!", function() love.system.openURL("https://discordapp.com/invite/4C7yEEC") end}
     },
@@ -407,7 +414,7 @@ function define_menus()
       {"Back to Main Menu", function() menu_back() main_menu() in_pause = false end},
     },
     gameover={
-      {"Restart", function() restarting = true end},
+      {"Restart", function() menu_back() restarting = true end},
       {"Back to Main Menu", main_menu}
     }
   }

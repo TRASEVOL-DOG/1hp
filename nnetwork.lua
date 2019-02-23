@@ -5,6 +5,7 @@ my_id = nil
 
 connecting = false
 restarting = false
+connected = false
 
 local shot_id, shot_ids
 
@@ -47,9 +48,11 @@ function client_input(diff)
     local timestamp = client.share[1][client.id]
     if timestamp then
       delay = (love.timer.getTime() - timestamp) / 2
+      connected = true
     elseif restarting then
       restarting = false
       connecting = true
+      connected = false
     end
   end
   

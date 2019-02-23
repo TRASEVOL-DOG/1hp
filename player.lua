@@ -37,7 +37,8 @@ function create_player(id,x,y)
     shot_input          = false,
     diff_x              = 0,
     diff_y              = 0,
-    moved_t             = 0
+    moved_t             = 0,
+    server_death        = false
     --
   }
   
@@ -72,7 +73,7 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt - delta_time
   
-  if s.id == my_id and s.server_death and s.animt < -1 and querry_menu() == nil then
+  if s.id == my_id and s.server_death and s.animt < -1.5 and querry_menu() == nil and not (restarting or not connected) then
     game_over()
   end
   
@@ -332,7 +333,7 @@ function draw_player(s)
   if state == "dead" then
     draw_text(str, x, y+6, 1, 2, 1, 0)
   else
-    draw_text(str, x, y+6, 1, 3, 2, 0)
+    draw_text(str, x, y+6, 1, 3, 1, 0)
   end
 end
 
@@ -346,6 +347,7 @@ end
 
 function resurrect(s)
   s.alive = true
+  s.server_death = false
 end
 
 function add_score(s)
