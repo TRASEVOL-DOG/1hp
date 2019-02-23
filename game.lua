@@ -132,7 +132,7 @@ end
 function draw_cursor(s)
   local sp = 130+ceil(s.sprite_t)*2
   local camx, camy = get_camera_pos()
-  
+
   spr(sp, s.x-camx, s.y-camy, 2, 2)
 end
 

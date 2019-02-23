@@ -28,7 +28,7 @@ anim_info = {
     hurt = {
       sheet = "sprites",
       dt = 0.035,
-      sprites = {202,201,201,201,202,202}
+      sprites = {202,201,201,201,202,201,202}
     }
   },
   wind = {
