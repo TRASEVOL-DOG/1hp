@@ -157,7 +157,7 @@ end
 
 function apply_camera()
   local shk = cam.shkp/100
-  camera(cam.x+cam.shkx*shk, cam.y+cam.shky*shk)
+  camera(round(cam.x+cam.shkx*shk), round(cam.y+cam.shky*shk))
 end
 
 function get_camera_pos()
@@ -292,6 +292,7 @@ function define_menus()
     },
     settings={
       {"Fullscreen", fullscreen},
+      {"Screenshake", function(v) if cam then cam.shkp = v add_shake(4) return cam.shkp end return 100 end,"slider",200},
       {"Master Volume", master_volume,"slider",100},
       {"Music Volume", music_volume,"slider",100},
       {"Sfx Volume", sfx_volume,"slider",100},
@@ -308,6 +309,10 @@ function define_menus()
       {"Back to Main Menu", main_menu}
     }
   }
+  
+  set_menu_linespace("settings", 10)
+  
+  menu_position("mainmenu",0.5,0.5)
   
   if not (castle or network) then
     add(menus.mainmenu, {"Quit", function() love.event.push("quit") end})
