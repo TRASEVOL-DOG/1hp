@@ -7,6 +7,7 @@ function create_player(id,x,y)
   
   local s = {
     id                  = id,
+    name                = "",
   
     animt               = 0,
     anim_state          = "idle",

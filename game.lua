@@ -281,7 +281,7 @@ function define_menus()
   local menus={
     mainmenu={
       {"Play", function() menu_back() connecting = true end},
-      {"Player Name", function(str) end, "text_field", 8, my_name},
+      {"Player Name", function(str)my_name = str end, "text_field", 8, my_name},
       {"Settings", function() menu("settings") end},
 --      {"Join the Castle Discord!", function() love.system.openURL("https://discordapp.com/invite/4C7yEEC") end}
     },

@@ -165,14 +165,14 @@ end
 
 function get_length_leaderboard()
   local maxi = 0
-  
-  for i = 1, #leaderboard.list do
-    local name = leaderboard.list[i].name or 0
-    local length = str_width(name)
-    if length > maxi then
-      maxi = length
-    end  
+  if (graphics) then
+    for i = 1, #leaderboard.list do
+      local name = leaderboard.list[i].name or ""
+      local length = str_width(name)
+      if length > maxi then
+        maxi = length
+      end  
+    end
   end
-  
   return maxi
 end
