@@ -103,7 +103,14 @@ function _draw()
   
   draw_leaderboard()
   
-  if in_pause then draw_pause_background() end
+  local menu = querry_menu()
+  if menu == "mainmenu" then
+    draw_title()
+  elseif menu == "gameover" then
+    draw_gameover()
+  elseif in_pause then
+    draw_pause_background()
+  end
   
   draw_menu()
   
@@ -216,13 +223,18 @@ end
 
 function main_menu()
   local scrnw, scrnh = screen_size()
-  menu_position(scrnw/2, scrnh/2)
   menu("mainmenu")
+end
+
+function draw_title()
+  local scrnw, scrnh = screen_size()
+  
+  local x = 0.5 * scrnw
+  local y = 0.2 * scrnh
 end
 
 function pause_menu() -- not an actual pause - access to settings & restart & main menu
   local scrnw, scrnh = screen_size()
-  menu_position(scrnw/2, scrnh/2)
   menu("pause")
   in_pause = true
 end
@@ -239,10 +251,35 @@ function game_over()
   menu_back()
   menu_back()
   
+  add_shake(8)
   local scrnw, scrnh = screen_size()
-  menu_position(scrnw/2, scrnh/2)
   menu("gameover")
   in_pause = false
+end
+
+function draw_gameover()
+  local scrnw, scrnh = screen_size()
+  
+  font("big")
+  
+  local str = "* G A M E   O V E R *"
+  local w = str_width(str)
+  
+  local x = scrnw/2-w/2
+  local y = 0.25 * scrnh
+  
+  for i = 1,#str do
+    local st = str:sub(i,i)
+    if st ~= ' ' then
+      local yy = y + (4+2*sin(t*0.41+i*0.13))*cos(t*0.25+i*0.1)
+      draw_text(st, x, yy, 0, 0,3,3)
+    end
+    x = x + str_width(st)
+  end
+  
+  local x = 0.5 * scrnw
+  local y = 0.4 * scrnh
+  draw_text("You got shot.", x, y, 1, 3, 2, 0)
 end
 
 
@@ -312,7 +349,8 @@ function define_menus()
   
   set_menu_linespace("settings", 10)
   
-  menu_position("mainmenu",0.5,0.5)
+  menu_position("mainmenu",0.5,0.6)
+  menu_position("gameover",0.5,0.75)
   
   if not (castle or network) then
     add(menus.mainmenu, {"Quit", function() love.event.push("quit") end})

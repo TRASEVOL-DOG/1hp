@@ -72,6 +72,10 @@ function update_player(s)
   -- change anime time
   s.animt = s.animt - delta_time
   
+  if s.id == my_id and s.server_death and s.animt < -1 and querry_menu() == nil then
+    game_over()
+  end
+  
   if s.id == my_id and not in_pause then
   
     s.dx_input = 0
@@ -325,7 +329,11 @@ function draw_player(s)
   
   
   local str = s.name or ""
-  draw_text(str, x, y+6, 1, 3, 2, 0)
+  if state == "dead" then
+    draw_text(str, x, y+6, 1, 2, 1, 0)
+  else
+    draw_text(str, x, y+6, 1, 3, 2, 0)
+  end
 end
 
 function kill_player(s)

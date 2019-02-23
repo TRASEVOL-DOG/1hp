@@ -158,6 +158,8 @@ function sync_players(player_data)
       resurrect(p)
     end
     
+    p.server_death = not p_d[5]
+    
     p.angle = p_d[6]
     p.score = p_d[7]
     p.name = p_d[8]
