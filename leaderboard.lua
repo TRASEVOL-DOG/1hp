@@ -92,7 +92,7 @@ function draw_leaderboard()
   for i = 1, size do
   
     local player = leaderboard.list[i]
-    local c = my_place == i and 2 or 0
+    local c = not ( my_place == i )
     local str = player.rank .. "." .. player.name .. "(" .. player.score .. ")"
     
     if leaderboard.is_large then    
@@ -194,7 +194,7 @@ function get_most_killed()
     for i, v in pairs(death_history.kills) do
       if v.killer == my_id and v.count > count then
         count = v.count
-        debuggg = "count found"
+        -- debuggg = "count found"
         local p = player_list[v.victim]
         if p then
           killed_name = p.name
@@ -206,10 +206,9 @@ function get_most_killed()
 end
 
 
-function draw_text_oultined(str, x, y, c1)
+function draw_text_oultined(str, x, y, c1, me)
   y = y + 5
-  draw_text(str, x, y, 0, 0,2,3)
-  draw_text(str, x, y, 0, 1,2,3)
+  if c1 then draw_text(str, x, y, 0, 0,2,3) else draw_text(str, x, y, 0, 1,2,3) end
 end
 
 function get_length_leaderboard()

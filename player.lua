@@ -17,12 +17,14 @@ function create_player(id,x,y)
     animt               = 0,
     anim_state          = "idle",
     update              = update_player,
+    update_movement     = update_mov,
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
     t_death_anim        = .245 * 2,
     score               = 0,
     bounce              = false,
+    last_killer_name    = "",
     
     w                   = 6,
     h                   = 4,
@@ -85,6 +87,13 @@ function update_player(s)
   if s.id == my_id and s.server_death and s.animt < -1.5 and querry_menu() == nil and not (restarting or not connected) then
     game_over()
   end
+
+  s:update_movement()
+  
+  return
+end
+
+function update_mov(s)
   
   if s.id == my_id and not in_pause then
   
@@ -240,6 +249,49 @@ function update_player(s)
   end
 end
 
+
+function update_move_player_like_bullet(s)
+  -- debuggg = "itworksxxxxxxxxxxxxxx"
+  if not server_only then cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)} end
+    
+  s.speed = dist(s.v.x, s.v.y)
+  
+  -- client syncing stuff
+  s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
+  s.diff_y = lerp(s.diff_y, 0, 20*delta_time)
+  s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
+  
+  -- actual move update
+  local nx = s.x + s.v.x * s.speed * delta_time * 10
+  local col = check_mapcol(s,nx)
+  if col then
+    local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
+    s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
+    s.v.x = s.v.x *-1
+    s.speed = s.speed * .9 -- Remy was here: made bullet lose lifetime on bounce
+  else
+    s.x = nx
+  end
+  
+  local ny = s.y + s.v.y * s.speed * delta_time * 10
+  local col = check_mapcol(s,s.x,ny)
+  if col then
+    local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
+    s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
+    s.v.y = s.v.y *-1
+    s.speed = s.speed * .9
+  else
+    s.y = ny
+  end
+  
+  -- more client syncing bullshit
+  s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
+  
+  s.v.x = s.v.x * .96 -- lerp(s.v.x, 0, .1*delta_time)
+  s.v.y = s.v.y * .96-- lerp(s.v.y, 0, .1*delta_time)
+  
+end
+
 function update_move_player(s)
   -- client syncing stuff
   local apply_diff = (s.id == my_id and abs(s.dx_input) + abs(s.dy_input) > 0)
@@ -253,7 +305,7 @@ function update_move_player(s)
   if col then
     local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
     s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
-    if s.bounce then s.v.y = s.v.y *-1 end   
+    
     col = check_mapcol(s,nx,nil,true) or col
     s.v.y = s.v.y - 1* col.dir_y * s.acceleration * delta_time * 10
   else
@@ -265,8 +317,8 @@ function update_move_player(s)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
     s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
-    if s.bounce then s.v.x = s.v.x *-1 end 
     col = check_mapcol(s,nil,ny,true) or col
+    
     s.v.x = s.v.x - 1* col.dir_x * s.acceleration * delta_time * 10
   else
     s.y = ny
@@ -348,10 +400,9 @@ end
 
 function kill_player(s)
   
-  s.score = 0
   s.alive = false
   s.animt = s.t_death_anim
-  
+  s.update_movement = update_move_player_like_bullet
 end
 
 function send_player_off(s, vx, vy) -- bullet to player vector
@@ -360,8 +411,8 @@ function send_player_off(s, vx, vy) -- bullet to player vector
   local xsign = sgn(vx)
   local ysign = sgn(vy)
 
-  s.v.x = 20 * vx * delta_time * 10
-  s.v.y = 20 * vy * delta_time * 10
+  s.v.x = 8 * vx * delta_time * 10
+  s.v.y = 8 * -vy * delta_time * 10
   
   
   
@@ -370,6 +421,7 @@ end
 function resurrect(s)
   s.alive = true
   s.server_death = false
+  s.update_mov = update_mov
 end
 
 function killed_and_killer(victim, killer) -- two players
@@ -385,7 +437,6 @@ function killed_and_killer(victim, killer) -- two players
     end
     
     lcount = lcount
-    debuggg = debuggg..lcount
     death = { victim = victim.id , killer = killer.id, count = lcount}
     add( death_history.kills, death)
     
@@ -415,8 +466,7 @@ function killed_and_killer(victim, killer) -- two players
     end
     if not found then death_history.last_killer[victim.id] = death end
     
-    if player_list[my_id] then debuggg = player_list[my_id].score end
-    
+    victim.last_killer_name = player_list[killer.id].name or "someone"
     add_score(killer)
     kill_player(victim)
     
