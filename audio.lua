@@ -55,16 +55,16 @@ function sfx(name,x,y,pitch)
   local s=sfxs[name]
   if not s then return end
   
-  local x,y=x or 0, y or 0
-  local k=200
-  local scrnw,scrnh = screen_size()
-  x,y=(x-cam.x-scrnw/2)/k,(y-cam.y-scrnh/2)/k
-  
   if pitch then
     s:setPitch(pitch)
   end
   
-  s:setPosition(x,y,1)
+  if x and y then
+    local k=200
+    local scrnw,scrnh = screen_size()
+    x,y=(x-cam.x-scrnw/2)/k,(y-cam.y-scrnh/2)/k
+    s:setPosition(x,y,1)
+  end
   
   if s:isPlaying() then
     s:seek(0)
