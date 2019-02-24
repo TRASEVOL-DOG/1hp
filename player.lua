@@ -73,7 +73,7 @@ function create_player(id,x,y)
   
   
   register_object(s)
-  if my_id == s.id then sfx("startplay", s.x, s.y)
+  if my_id == s.id then sfx("startplay", s.x, s.y) end
   
   return s
 end
