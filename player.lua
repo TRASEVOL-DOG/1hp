@@ -388,14 +388,6 @@ function draw_player(s)
     --end
     all_colors_to()
   end
-  
-  
-  local str = s.name or ""
-  if state == "dead" then
-    draw_text(str, x, y+6, 1, 2, 1, 0)
-  else
-    draw_text(str, x, y+6, 1, 3, 1, 0)
-  end
 end
 
 function kill_player(s)
@@ -478,4 +470,18 @@ end
 
 function add_score(s)
   s.score = s.score + 1
+end
+
+function draw_player_names()
+  for s in group("player") do
+    local x = s.x + s.diff_x
+    local y = s.y + s.diff_y
+  
+    local str = s.name or ""
+    if not s.alive and s.animt < 0 then
+      draw_text(str, x, y+6, 1, 2, 1, 0)
+    else
+      draw_text(str, x, y+6, 1, 3, 1, 0)
+    end
+  end
 end

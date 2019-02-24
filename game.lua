@@ -102,6 +102,8 @@ function _draw()
 
   draw_objects()
   
+  draw_player_names()
+  
   camera()
 
  draw_debug()
