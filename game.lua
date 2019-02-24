@@ -321,7 +321,7 @@ function game_over()
   menu_back()
   
   add_shake(8)
-  sfx("game_over", s.x, s.y)
+  sfx("game_over")
   local scrnw, scrnh = screen_size()
   menu("gameover")
   in_pause = false
