@@ -33,7 +33,8 @@ input.layout={
   escape=7,
   ["return"]=8,
   v=9,
-  lshift=10
+  lshift=10,
+  r=11
 }
 
 function init_input_mgr()

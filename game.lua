@@ -21,7 +21,6 @@ require("bullet")
 require("wind")
 require("leaderboard")
 
-my_name = "Traveller"
 score = 0
 
 function _init()
@@ -74,14 +73,19 @@ function _update(dt)
   
   update_leaderboard()
   
+  local curmenu = querry_menu()
   if btnp(7) or btnp(8) then
-    local curmenu = querry_menu()
     if not curmenu then
       pause_menu()
     elseif curmenu == "pause" or curmenu == "settings" then
       menu_back()
       in_pause = false
     end
+  end
+  
+  if btnp(11) and curmenu == "mainmenu" then
+    my_name = generate_name()
+    menus["mainmenu"][2].txt = my_name
   end
   
   update_menu()
@@ -442,6 +446,10 @@ function define_menus()
   
   return menus
 end
+
+
+function generate_name() return pick{"Roll","Miss","Skul","Cool","Nice","Cute","Good","Ever","Rain","Dead","Bone","Lazy","Fast","Slow","Shot","Coin","Rage","Flat","Love","Meat","Sexy","Warm","Moon","Fate","Heat","High","Hell","Lead","Gold","Bull","Wolf","Game","Gunn","Play","Cuts","Stab","Kink","King","Funk","Bite","Beat","Evil","Ride","Rude","Star","Sand","Badd","Snek","Hate","Work","Load","Coal","Hard","Soap","Sire","Fire","Fear","Road","Pain","Junk"}.." "..pick{"Boii","Boys","Miss","Cops","Skul","Thug","Cats","Puss","Dogs","Pups","Bird","Cows","Rats","Suns","Bone","Burn","Shot","Gunz","Coin","Rage","Love","Meat","Hero","Hawk","Moon","Fate","Heat","Hell","Lead","Gold","Food","Hand","Limb","Bull","Wolf","Game","Gunn","Cuts","Stab","Kink","King","Toad","Punk","Pack","Digg","Beer","Wind","Bear","Wall","Trip","Fool","Soul","Evil","Star","Sand","Snek","Hats","Work","Load","Coal","Hugz","Joke","Papa","Mama","Mood","Fire","Fear","Cook","Rope","Mark","Pain","Junk"} end
+my_name = generate_name()
 
 
 function chance(a) return rnd(100)<a end
