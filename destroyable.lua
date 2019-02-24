@@ -86,9 +86,9 @@ end
 
 function kill_destroyable(s, killer_id)
   if s.alive then
+    sfx("cactus_hit", s.x, s.y)
     s.white_frame = 0.05
     s.white_skin = s.skin
-  
     s.alive = false
     s.skin = (s.skin < 52) and 54 or 55
     s.t_respawn = 10 + rnd(5)

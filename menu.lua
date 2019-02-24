@@ -96,7 +96,7 @@ function update_menu(x,y)
         oy=oy+o.h+m.linespace
         if cury<oy then
           if m.chosen~=o then
---            sfx("select")
+           sfx("select")
           end
           m.chosen=o
           break
@@ -107,7 +107,7 @@ function update_menu(x,y)
     if mouse_btn(0) and m.chosen and menuchange==0 then
       local o=m.chosen
       if o.typ=="button" and mouse_btnp(0) then
---        sfx("confirm")
+       sfx("confirm")
         o.call()
       elseif o.typ=="slider" then
         local v
@@ -123,7 +123,7 @@ function update_menu(x,y)
         o.call(v)
         o.slidv=v
       elseif o.typ=="text_field" and mouse_btnp(0) then
---        sfx("confirm")
+       sfx("confirm")
         if (menulock) then
           menulock = false
           love.keyboard.setTextInput(false)

@@ -22,7 +22,7 @@ require("wind")
 require("leaderboard")
 
 score = 0
-
+wind_timer = 2 + rnd(1)
 function _init()
   eventpump()
   
@@ -54,6 +54,13 @@ function _init()
 end
 
 function _update(dt)
+
+  wind_timer = wind_timer - delta_time
+  if wind_timer < 0 then
+    sfx(pick({"wind_a","wind_b","wind_c"}))
+    wind_timer = 2+rnd(1)
+  end
+
   if btnp(6) then
     refresh_spritesheets()
   end
@@ -314,6 +321,7 @@ function game_over()
   menu_back()
   
   add_shake(8)
+  sfx("game_over", s.x, s.y)
   local scrnw, scrnh = screen_size()
   menu("gameover")
   in_pause = false

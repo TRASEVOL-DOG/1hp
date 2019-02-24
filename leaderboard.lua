@@ -149,6 +149,7 @@ function update_leaderboard()
 
   if btnp(10) then 
     leaderboard.is_large = not leaderboard.is_large 
+    sfx("tab")
   end
   
   leaderboard.list = get_list_leaderboard()

@@ -25,6 +25,24 @@ function init_audio()
 --    slider=      "sliderset.ogg",
 --    dog=               "dog.ogg"
   }
+  local sfx_list={
+   menu_select,
+   menu_confirm,
+   menu_write,
+   tab  ,
+   shoot,
+   enemy_shoot,
+   steps,
+   get_hit,
+   die,
+   gameover,
+   startplay, --(client player appears)
+   cactus_hit,
+   bullet_wall_bounce,
+   wind_a,
+   wind_b,
+   wind_c
+  }
   
   musics={}
   sfxs={}
