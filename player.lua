@@ -20,8 +20,9 @@ function create_player(id,x,y)
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
-    t_death_anim        = .245,
+    t_death_anim        = .245 * 2,
     score               = 0,
+    bounce              = false,
     
     w                   = 6,
     h                   = 4,
@@ -252,7 +253,7 @@ function update_move_player(s)
   if col then
     local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
     s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
-    
+    if s.bounce then s.v.y = s.v.y *-1 end   
     col = check_mapcol(s,nx,nil,true) or col
     s.v.y = s.v.y - 1* col.dir_y * s.acceleration * delta_time * 10
   else
@@ -264,7 +265,7 @@ function update_move_player(s)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
     s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
-    
+    if s.bounce then s.v.x = s.v.x *-1 end 
     col = check_mapcol(s,nil,ny,true) or col
     s.v.x = s.v.x - 1* col.dir_x * s.acceleration * delta_time * 10
   else
@@ -346,23 +347,30 @@ function draw_player(s)
 end
 
 function kill_player(s)
-
+  
   s.score = 0
   s.alive = false
   s.animt = s.t_death_anim
   
 end
 
+function send_player_off(s, vx, vy) -- bullet to player vector
+
+  s.bounce = true
+  local xsign = sgn(vx)
+  local ysign = sgn(vy)
+
+  s.v.x = 20 * vx * delta_time * 10
+  s.v.y = 20 * vy * delta_time * 10
+  
+  
+  
+end
+    
 function resurrect(s)
   s.alive = true
   s.server_death = false
 end
-
--- death_history = {
-                  -- kills = {}, -- { killed = killed.name , killer = killed.name } 
-                  -- last_kill_for_player = {} -- { killed = killed.name , killer = killed.name }
-                  -- last_killed_by_player = {} -- { killed = killed.name , killer = killed.name }
-                -- }
 
 function killed_and_killer(victim, killer) -- two players
 

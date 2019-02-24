@@ -336,7 +336,13 @@ function draw_gameover()
   local x = 0.5 * scrnw
   local y = 0.4 * scrnh
   
-  draw_text("You got shot.", x, y-10, 1, 3, 1, 0)
+  local nmbr =""
+  local last_kill = death_history.last_killer[my_id]
+  if     last_kill.count == 1 or last_kill.count == 21 then nmbr = "st" 
+  elseif last_kill.count == 2 or last_kill.count == 22 then nmbr = "nd" 
+  elseif last_kill.count == 3 or last_kill.count == 23 then nmbr = "rd"
+  else nmbr = last_kill.count + "th" end
+  draw_text("You got shot by ".. player_list[last_kill.killer].name.." for the "..last_kill.count.. nmbr .. " time.", x, y-10, 1, 3, 1, 0)
   
   local player = player_list[my_id]
   if player then

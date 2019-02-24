@@ -134,6 +134,7 @@ function update_bullet(s)
   if killed and killed.id ~= s.from and killed.alive then
     local killer = player_list[s.from]      
     killed_and_killer(killed, killer)
+    send_player_off(killed, killed.x - s.x, killed.y - s.y )
     kill_bullet(s)
   end
   
