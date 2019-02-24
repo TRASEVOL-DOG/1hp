@@ -403,6 +403,11 @@ function kill_player(s)
   s.alive = false
   s.animt = s.t_death_anim
   s.update_movement = update_move_player_like_bullet
+  
+  if s.id == my_id then
+    add_shake(5)
+  end
+  
 end
 
 function send_player_off(s, vx, vy) -- bullet to player vector
@@ -413,8 +418,6 @@ function send_player_off(s, vx, vy) -- bullet to player vector
 
   s.v.x = 8 * vx * delta_time * 10
   s.v.y = 8 * -vy * delta_time * 10
-  
-  
   
 end
     
