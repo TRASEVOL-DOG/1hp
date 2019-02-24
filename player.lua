@@ -21,6 +21,7 @@ function create_player(id,x,y)
     draw                = draw_player,
     regs                = {"to_update", "to_draw0", "player"},
     alive               = true,
+    dead_sfx_player     = false,
     t_death_anim        = .245 * 2,
     score               = 0,
     bounce              = false,
@@ -72,6 +73,7 @@ function create_player(id,x,y)
   
   
   register_object(s)
+  if my_id == s.id then sfx("startplay", s.x, s.y)
   
   return s
 end
@@ -86,6 +88,16 @@ function update_player(s)
   
   if s.id == my_id and s.server_death and s.animt < -1.5 and querry_menu() == nil and not (restarting or not connected) then
     game_over()
+  end
+  
+  if s.id == my_id and s.server_death and s.animt < 0 then
+    if not s.dead_sfx_played then
+      s.dead_sfx_played = true
+      sfx("die", s.x, s.y)
+    end
+    if s.animt < -1.5 and querry_menu() == nil and not (restarting or not connected) then
+      game_over()
+    end
   end
 
   s:update_movement()
@@ -249,7 +261,6 @@ function update_mov(s)
   end
 end
 
-
 function update_move_player_like_bullet(s)
   -- debuggg = "itworksxxxxxxxxxxxxxx"
   if not server_only then cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)} end
@@ -403,6 +414,7 @@ function kill_player(s)
   s.alive = false
   s.animt = s.t_death_anim
   s.update_movement = update_move_player_like_bullet
+  sfx("get_hit", s.x, s.y) 
 end
 
 function send_player_off(s, vx, vy) -- bullet to player vector
