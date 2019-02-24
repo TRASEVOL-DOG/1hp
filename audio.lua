@@ -57,7 +57,8 @@ function sfx(name,x,y,pitch)
   
   local x,y=x or 0, y or 0
   local k=200
-  x,y=(x-cam.x)/k,(y-cam.y)/k
+  local scrnw,scrnh = screen_size()
+  x,y=(x-cam.x-scrnw/2)/k,(y-cam.y-scrnh/2)/k
   
   if pitch then
     s:setPitch(pitch)
