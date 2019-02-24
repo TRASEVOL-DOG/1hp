@@ -53,6 +53,8 @@ function sfx(name,x,y,pitch)
   if server_only then return end
 
   local s=sfxs[name]
+  if not s then return end
+  
   local x,y=x or 0, y or 0
   local k=200
   x,y=(x-cam.x)/k,(y-cam.y)/k
@@ -83,7 +85,9 @@ function music(name)
     return
   end
   
-  love.audio.play(musics[name])
+  local m = musics[name]
+  if not m then return end
+  love.audio.play(m)
 end
 
 function music_lowpass(enable)
