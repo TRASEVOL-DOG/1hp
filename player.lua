@@ -73,7 +73,7 @@ function create_player(id,x,y)
   
   
   register_object(s)
-  if my_id == s.id then sfx("startplay", s.x, s.y)
+  if my_id == s.id then sfx("startplay", s.x, s.y) end
   
   return s
 end
@@ -108,6 +108,12 @@ end
 function update_mov(s)
   
   if s.id == my_id and not in_pause then
+    if s.alive and s.speed > 0.5 then
+      local a,b,c = anim_step("player", "run", s.animt)
+      if b and a%8 == 1 then
+        sfx("steps", s.x, s.y)
+      end
+    end
   
     s.dx_input = 0
     s.dy_input = 0
@@ -497,3 +503,4 @@ function draw_player_names()
     end
   end
 end
+
