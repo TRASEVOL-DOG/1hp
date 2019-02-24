@@ -63,6 +63,21 @@ end
 function draw_objects()
   for i=0,4 do
     local dobjs=objs["to_draw"..i]
+    
+    --sorting objects by depth
+    for i=2,#dobjs do
+     if dobjs[i-1].y>dobjs[i].y then
+      local k=i
+      while(k>1 and dobjs[k-1].y>dobjs[k].y) do
+       local s=dobjs[k]
+       dobjs[k]=dobjs[k-1]
+       dobjs[k-1]=s
+       k=k-1
+      end
+     end
+    end
+    
+    --actually drawing
     for obj in all(dobjs) do
       obj:draw()
     end

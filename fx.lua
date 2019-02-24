@@ -38,25 +38,25 @@ function update_smoke(s)
   end
 end
 
-function add_shake(p)
-  local a=rnd(1)
-  shkx=shkx+p*cos(a)
-  shky=shky+p*sin(a)
-end
-
-shkt = 0
-function update_shake()
-  shkt = shkt - love.timer.getDelta()
-  if shkt < 0 then
-    if abs(shkx)<0.5 and abs(shky)<0.5 then
-      shkx,shky=0,0
-    end
-    
-    shkx=-(0.5+rnd(0.2))*shkx
-    shky=-(0.5+rnd(0.2))*shky
-    shkt = 0.033
-  end
-end
+--function add_shake(p)
+--  local a=rnd(1)
+--  shkx=shkx+p*cos(a)
+--  shky=shky+p*sin(a)
+--end
+--
+--shkt = 0
+--function update_shake()
+--  shkt = shkt - love.timer.getDelta()
+--  if shkt < 0 then
+--    if abs(shkx)<0.5 and abs(shky)<0.5 then
+--      shkx,shky=0,0
+--    end
+--    
+--    shkx=-(0.5+rnd(0.2))*shkx
+--    shky=-(0.5+rnd(0.2))*shky
+--    shkt = 0.033
+--  end
+--end
 
 
 function draw_floatingtxt(s)
@@ -108,9 +108,9 @@ function draw_explosion(s)
 end
 
 function draw_smoke(s)
-  if s.x+s.r<xmod or s.x-s.r>xmod+screen_width or s.y+s.r<ymod or s.y-s.r>ymod+screen_height then
-    return
-  end
+--  if s.x+s.r<xmod or s.x-s.r>xmod+screen_width or s.y+s.r<ymod or s.y-s.r>ymod+screen_height then
+--    return
+--  end
   circfill(s.x,s.y,s.r,s.c)
 end
 
@@ -165,13 +165,13 @@ function create_smoke(x,y,spd,r,c,a)
     vx=spd*cos(a),
     vy=spd*sin(a),
     r=r or 1+rnd(3),
-    c=c or 2,
+    c=c or (-1+irnd(2)),
     update=update_smoke,
     draw=draw_smoke,
-    regs={"to_update","to_draw1"}
+    regs={"to_update","to_draw4"}
   }
   
-  if rnd(2)<1 then s.c=drk[s.c] end
+--  if rnd(2)<1 then s.c=drk[s.c] end
   
   register_object(s)
   

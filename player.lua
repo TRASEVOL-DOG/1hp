@@ -108,6 +108,12 @@ end
 function update_mov(s)
   
   if s.id == my_id and not in_pause then
+    if s.alive and s.speed > 0.5 then
+      local a,b,c = anim_step("player", "run", s.animt)
+      if b and a%8 == 1 then
+        sfx("steps", s.x, s.y)
+      end
+    end
   
     s.dx_input = 0
     s.dy_input = 0
@@ -399,14 +405,6 @@ function draw_player(s)
     --end
     all_colors_to()
   end
-  
-  
-  local str = s.name or ""
-  if state == "dead" then
-    draw_text(str, x, y+6, 1, 2, 1, 0)
-  else
-    draw_text(str, x, y+6, 1, 3, 1, 0)
-  end
 end
 
 function kill_player(s)
@@ -414,6 +412,11 @@ function kill_player(s)
   s.alive = false
   s.animt = s.t_death_anim
   s.update_movement = update_move_player_like_bullet
+
+  if s.id == my_id then
+    add_shake(5)
+  end
+  
   sfx("get_hit", s.x, s.y) 
 end
 
@@ -425,8 +428,6 @@ function send_player_off(s, vx, vy) -- bullet to player vector
 
   s.v.x = 8 * vx * delta_time * 10
   s.v.y = 8 * -vy * delta_time * 10
-  
-  
   
 end
     
@@ -488,3 +489,18 @@ end
 function add_score(s)
   s.score = s.score + 1
 end
+
+function draw_player_names()
+  for s in group("player") do
+    local x = s.x + s.diff_x
+    local y = s.y + s.diff_y
+  
+    local str = s.name or ""
+    if not s.alive and s.animt < 0 then
+      draw_text(str, x, y+6, 1, 2, 1, 0)
+    else
+      draw_text(str, x, y+6, 1, 3, 1, 0)
+    end
+  end
+end
+
