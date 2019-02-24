@@ -95,9 +95,12 @@ function create_bullet(player_id, id)
   
   s.timer_despawn = s.time_despawn
   register_object(s)
-  if bullet.from == my_id then 
+  
+  if s.from == my_id then 
     sfx("shoot", s.x, s.y) 
-  else sfx("enemy_shoot", s.x, s.y)  end
+  else
+    sfx("enemy_shoot", s.x, s.y)
+  end
   
   return s
 end
