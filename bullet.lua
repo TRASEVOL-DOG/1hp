@@ -139,9 +139,9 @@ function update_bullet(s)
   local killed = collide_objgroup(s,"player")
   if killed and killed.id ~= s.from and killed.alive then
     local killer = player_list[s.from]
-    killed_and_killer(killed, killer)
     send_player_off(killed, s.v.x, s.v.y )
-    debuggg = "did colision, found killer" .. s.from .." xxxxxx"
+    -- debuggg = "did colision, found killer" .. s.from .." xxxxxx"
+    kill_player(killed, killer.id)
     kill_bullet(s)
   end
   

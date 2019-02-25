@@ -26,6 +26,7 @@ function create_player(id,x,y)
     score               = 0,
     bounce              = false,
     last_killer_name    = "accident",
+    last_killer_id      = "accident",
     
     w                   = 6,
     h                   = 4,
@@ -412,12 +413,20 @@ function draw_player(s)
   end
 end
 
-function kill_player(s)
+function kill_player(s, id_killer)
   
   s.alive = false
   s.animt = s.t_death_anim
   s.update_movement = update_move_player_like_bullet
-
+  
+  if id_killer then
+    local p = player_list[id_killer]
+    add_death(s, p)
+    
+    if p then
+      s.last_killer_name = p.name
+    end
+  end
   if s.id == my_id then
     add_shake(5)
     sfx("get_hit_player", s.x, s.y) 
@@ -442,9 +451,8 @@ function resurrect(s)
   s.update_mov = update_mov
 end
 
-function killed_and_killer(victim, killer) -- two players
+function add_death(victim, killer) -- two players
 
-    
   
   if(death_history) then
     local lcount = 1
@@ -486,7 +494,6 @@ function killed_and_killer(victim, killer) -- two players
     end
     if not found then death_history.last_killer[victim.id] = death end
     add_score(killer)
-    kill_player(victim)
     
   end
 end
