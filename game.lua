@@ -138,7 +138,7 @@ function _draw()
   
   draw_menu()
   
-  draw_debug()
+  -- draw_debug()
   
   cursor:draw()
 end
