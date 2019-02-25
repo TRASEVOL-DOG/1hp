@@ -268,7 +268,6 @@ function update_mov(s)
 end
 
 function update_move_player_like_bullet(s)
-  -- debuggg = "itworksxxxxxxxxxxxxxx"
   if not server_only and s.id == my_id then cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)} end
     
   s.speed = dist(s.v.x, s.v.y)

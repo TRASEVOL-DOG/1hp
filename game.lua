@@ -22,7 +22,7 @@ require("wind")
 require("leaderboard")
 
 score = 0
-wind_timer = 2 + rnd(1)
+
 function _init()
   eventpump()
   
@@ -53,6 +53,7 @@ function _init()
   end
 end
 
+wind_timer = 2 + rnd(1)
 function _update(dt)
 
   wind_timer = wind_timer - delta_time
@@ -321,7 +322,7 @@ function game_over()
   menu_back()
   
   add_shake(8)
-  sfx("game_over")
+  sfx("gameover")
   local scrnw, scrnh = screen_size()
   menu("gameover")
   in_pause = false

@@ -117,7 +117,7 @@ function update_menu(x,y)
         v=round(v)
         
         if v~=o.slidv or mouse_btnp(0) then
---          sfx("slider")
+          sfx("slider")
         end
         
         o.call(v)
@@ -137,7 +137,7 @@ function update_menu(x,y)
     if m.chosen and m.chosen.typ == "text_field" then
       if menulock then
         if btnp(8) or btnp(7) then
---          sfx("confirm")
+          sfx("confirm")
           menulock = false
           love.keyboard.setTextInput(false)
         end
