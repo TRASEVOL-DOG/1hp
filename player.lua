@@ -417,6 +417,7 @@ function kill_player(s)
   s.alive = false
   s.animt = s.t_death_anim
   s.update_movement = update_move_player_like_bullet
+  s.last_killer_name = player_list[killer.id].name or "someone"
 
   if s.id == my_id then
     add_shake(5)
@@ -445,7 +446,6 @@ end
 function killed_and_killer(victim, killer) -- two players
 
     
-  victim.last_killer_name = player_list[killer.id].name or "someone"
   
   if(death_history) then
     local lcount = 1
