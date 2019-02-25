@@ -96,6 +96,7 @@ function client_output()
     client.home[6] = delay
     
     client.home[7] = my_name
+    
   end
 end
 
