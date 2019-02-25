@@ -25,7 +25,7 @@ function create_player(id,x,y)
     t_death_anim        = .245 * 2,
     score               = 0,
     bounce              = false,
-    last_killer_name    = "someone",
+    last_killer_name    = "accident",
     
     w                   = 6,
     h                   = 4,
@@ -185,9 +185,9 @@ function update_mov(s)
        
     -- Collisions
           
-    -- local other_player = collide_objgroup(s,"player")
-    -- if(other_player) then
-      -- s.v.x = sgn(s.x - other_player.x) * 10
+    -- local bullet = collide_objgroup(s,"bullets")
+    -- if(bullet) then
+      -- s.last_killer_name = player_list[bullet.from].name
     -- end
     local destroyable = collide_objgroup(s,"destroyable")
     if destroyable and destroyable.alive then  -- Remy was here: made this use delta time (and acceleration)
@@ -417,7 +417,6 @@ function kill_player(s)
   s.alive = false
   s.animt = s.t_death_anim
   s.update_movement = update_move_player_like_bullet
-  s.last_killer_name = player_list[killer.id].name or "someone"
 
   if s.id == my_id then
     add_shake(5)
