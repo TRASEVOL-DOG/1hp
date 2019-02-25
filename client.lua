@@ -1,8 +1,8 @@
---if castle then
---  cs = require("https://raw.githubusercontent.com/castle-games/share.lua/master/cs.lua")
---else
+if castle then
+  cs = require("https://raw.githubusercontent.com/castle-games/share.lua/master/cs.lua")
+else
   cs = require("cs")
---end
+end
 client = cs.client
 
 if USE_CASTLE_CONFIG then
