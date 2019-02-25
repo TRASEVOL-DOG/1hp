@@ -281,7 +281,7 @@ function server_output()
       p.angle,
       p.score,
       p.name,
-      p.last_killer_name
+      p.last_killer_id
     }
   end
   
