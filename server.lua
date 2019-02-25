@@ -73,7 +73,7 @@ function server.load()
   end
   
   
-  server_only = false
+--  server_only = false
   
   server_init = true
   castle_print("Server init done!")
@@ -100,7 +100,7 @@ function server.update(dt)
   
 --  castle_print("server update")
 
-  server_only = true
+--  server_only = true
   delta_time = dt
   dt30f = dt*30
   
@@ -120,7 +120,7 @@ function server.update(dt)
 --    love[sys] = syssav[sys]
 --  end
   
-  server_only = false
+--  server_only = false
   
   if ROLE then server.postupdate() end
 end

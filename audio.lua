@@ -26,22 +26,25 @@ function init_audio()
 --    dog=               "dog.ogg"
   }
   local sfx_list={
-   menu_select,
-   menu_confirm,
-   menu_write,
-   tab  ,
-   shoot,
-   enemy_shoot,
-   steps,
-   get_hit,
-   die,
-   gameover,
-   startplay, --(client player appears)
-   cactus_hit,
-   bullet_wall_bounce,
-   wind_a,
-   wind_b,
-   wind_c
+   menu_select        = "select.ogg",
+   menu_confirm       = "confirm.ogg",
+   menu_slider        = "sliderset.ogg",
+   tab                = "tab.ogg",
+   shoot              = "shoot.ogg",
+   enemy_shoot        = "enemy_shoot.ogg",
+   cant_shoot         = "cant_shoot.ogg",
+   steps              = "step.ogg",
+   get_hit            = "get_hit.ogg",
+   get_hit_player     = "get_hit_player.ogg",
+   gameover           = "gameover.ogg",
+   startplay          = "startplay.ogg",
+   cactus_hit         = "cactus_hit.ogg",
+   bullet_wall_bounce = "bullet_bounce.ogg",
+   wind_a             = "wind_a.ogg",
+   wind_b             = "wind_b.ogg",
+   wind_c             = "wind_c.ogg",
+   wind_d             = "wind_d.ogg",
+   wind_e             = "wind_e.ogg"
   }
   
   musics={}
@@ -67,7 +70,7 @@ function init_audio()
 end
 
 
-function sfx(name,x,y,pitch)
+function sfx(name,x,y,pitch,volume)
   if server_only then return end
 
   local s=sfxs[name]
@@ -77,8 +80,12 @@ function sfx(name,x,y,pitch)
     s:setPitch(pitch)
   end
   
+  if volume then
+    s:setVolume(volume/100 * sfx_vol/100)
+  end
+  
   if x and y then
-    local k=200
+    local k=50
     local scrnw,scrnh = screen_size()
     x,y=(x-cam.x-scrnw/2)/k,(y-cam.y-scrnh/2)/k
     s:setPosition(x,y,1)

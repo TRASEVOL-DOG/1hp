@@ -22,7 +22,8 @@ require("wind")
 require("leaderboard")
 
 score = 0
-wind_timer = 2 + rnd(1)
+show_connection_status = false
+
 function _init()
   eventpump()
   
@@ -53,17 +54,18 @@ function _init()
   end
 end
 
+wind_timer = 0
 function _update(dt)
 
   wind_timer = wind_timer - delta_time
   if wind_timer < 0 then
-    sfx(pick({"wind_a","wind_b","wind_c"}))
-    wind_timer = 2+rnd(1)
+    sfx(pick({"wind_a","wind_b","wind_c","wind_d","wind_e"}), nil, nil, 0.9+rnd(0.2), 30+rnd(20))
+    wind_timer = 3+rnd(2)
   end
 
-  if btnp(6) then
-    refresh_spritesheets()
-  end
+--  if btnp(6) then
+--    refresh_spritesheets()
+--  end
   
   if btnp(5) then
     debug_mode = not debug_mode
@@ -79,6 +81,8 @@ function _update(dt)
   update_objects()
   
   update_leaderboard()
+  
+  if btnp(12) then show_connection_status = not show_connection_status end
   
   local curmenu = querry_menu()
   if btnp(7) or btnp(8) then
@@ -113,8 +117,6 @@ function _draw()
   
   camera()
 
- draw_debug()
-  
   local menu = querry_menu()
   
   if not menu or menu == "gameover" then
@@ -130,7 +132,13 @@ function _draw()
     draw_pause_background()
   end
   
+  if show_connection_status then
+    draw_connection(true)
+  end
+  
   draw_menu()
+  
+  draw_debug()
   
   cursor:draw()
 end
@@ -321,8 +329,8 @@ function game_over()
   menu_back()
   
   add_shake(8)
-  
-  sfx("game_over")
+    
+  sfx("gameover")
   local scrnw, scrnh = screen_size()
   menu("gameover")
   in_pause = false
@@ -364,7 +372,7 @@ function draw_gameover()
     msg = " for the "..last_kill.count.. msg .. " time"
   end
   if player then
-    draw_text("You got shot by ".. player.last_killer_name .. msg..".", x, y-10, 1, 3, 1, 0)
+    draw_text("You got shot by ".. player.last_killer_name .. msg ..".", x, y-10, 1, 3, 1, 0)
   
     draw_text("Score: "..player.score, x, y+10, 1, 3, 1, 0) -- doesn't work? where is the score stored??
   end
@@ -372,7 +380,7 @@ end
 
 
 
-function draw_connection()
+function draw_connection(tool_tip)
   font("small")
   
   local scrnw,scrnh = screen_size()
@@ -383,6 +391,9 @@ function draw_connection()
   if client.connected then
     draw_text("Connected!", x, y-4, 0, c0,c1,c2)
     draw_text("Ping: "..client.getPing(), x, y+4, 0, c0,c1,c2)
+    if tool_tip then
+      draw_text("[Press 'N' to hide]", x, y+14, 0, c0,c1,c2)
+    end
   else
     draw_text("Not Connected.", x, y-4, 0, c0,c1,c2)
     if castle and castle.isLoggedIn then

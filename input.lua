@@ -26,7 +26,7 @@ input.layout={
   s=3,
   
   -- z=4,
-  x=5,
+  rshift=5,
   tab=10,
   p=6,
   
@@ -34,7 +34,8 @@ input.layout={
   ["return"]=8,
   v=9,
   lshift=10,
-  r=11
+  r=11,
+  n=12
 }
 
 function init_input_mgr()

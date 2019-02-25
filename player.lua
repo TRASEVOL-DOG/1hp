@@ -25,7 +25,7 @@ function create_player(id,x,y)
     t_death_anim        = .245 * 2,
     score               = 0,
     bounce              = false,
-    last_killer_name    = "",
+    last_killer_name    = "someone",
     
     w                   = 6,
     h                   = 4,
@@ -91,10 +91,10 @@ function update_player(s)
   end
   
   if s.id == my_id and s.server_death and s.animt < 0 then
-    if not s.dead_sfx_played then
-      s.dead_sfx_played = true
-      sfx("die", s.x, s.y)
-    end
+   -- if not s.dead_sfx_played then
+   --   s.dead_sfx_played = true
+   --   sfx("die", s.x, s.y)
+   -- end -- no death sfx after all :(
     if s.animt < -1.5 and querry_menu() == nil and not (restarting or not connected) then
       game_over()
     end
@@ -111,7 +111,7 @@ function update_mov(s)
     if s.alive and s.speed > 0.5 then
       local a,b,c = anim_step("player", "run", s.animt)
       if b and a%8 == 1 then
-        sfx("steps", s.x, s.y)
+        sfx("steps", s.x, s.y, 1+rnd(0.2))
       end
     end
   
@@ -259,19 +259,20 @@ function update_mov(s)
   update_move_player(s)
   
   if server_only or s.id == my_id then
-    if s.shot_input and s.timer_fire < 0 then  -- Remy was here: moved the timer check here, also the screen-shake
-      local p = create_bullet(s.id)
-      s.timer_fire = s.time_fire
-      add_shake()
+    if s.shot_input and s.timer_fire < 0 then
+      if s.timer_fire < 0 then
+        local p = create_bullet(s.id)
+        s.timer_fire = s.time_fire
+        add_shake()
+      else
+        sfx("cant_shoot", s.x, s.y)
+      end
     end 
   end
 end
 
 function update_move_player_like_bullet(s)
-  -- debuggg = "itworksxxxxxxxxxxxxxx"
   if not server_only and s.id == my_id then cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)} end
-    
-  s.speed = dist(s.v.x, s.v.y)
   
   -- client syncing stuff
   s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
@@ -279,7 +280,7 @@ function update_move_player_like_bullet(s)
   s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
   
   -- actual move update
-  local nx = s.x + s.v.x * s.speed * delta_time * 10
+  local nx = s.x + s.v.x * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
     local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
@@ -290,7 +291,7 @@ function update_move_player_like_bullet(s)
     s.x = nx
   end
   
-  local ny = s.y + s.v.y * s.speed * delta_time * 10
+  local ny = s.y + s.v.y * delta_time * 10
   local col = check_mapcol(s,s.x,ny)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
@@ -304,9 +305,13 @@ function update_move_player_like_bullet(s)
   -- more client syncing bullshit
   s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
   
-  s.v.x = s.v.x * .96 -- lerp(s.v.x, 0, .1*delta_time)
-  s.v.y = s.v.y * .96-- lerp(s.v.y, 0, .1*delta_time)
-  
+  s.speed = dist(s.v.x, s.v.y)
+  if s.speed > 0 then
+    local nspeed = max(s.speed - 10*delta_time, 0)
+    s.v.x = lerp(s.v.x/s.speed*nspeed, 0, 0.8*delta_time)
+    s.v.y = lerp(s.v.y/s.speed*nspeed, 0, 0.8*delta_time)
+    s.speed = nspeed
+  end
 end
 
 function update_move_player(s)
@@ -415,19 +420,19 @@ function kill_player(s)
 
   if s.id == my_id then
     add_shake(5)
+    sfx("get_hit_player", s.x, s.y) 
+  else
+    sfx("get_hit", s.x, s.y) 
   end
   
-  sfx("get_hit", s.x, s.y) 
 end
 
 function send_player_off(s, vx, vy) -- bullet to player vector
 
   s.bounce = true
-  local xsign = sgn(vx)
-  local ysign = sgn(vy)
 
-  s.v.x = 8 * vx * delta_time * 10
-  s.v.y = 8 * -vy * delta_time * 10
+  s.v.x = 30 * vx
+  s.v.y = 30 * vy
   
 end
     
@@ -439,6 +444,9 @@ end
 
 function killed_and_killer(victim, killer) -- two players
 
+    
+  victim.last_killer_name = player_list[killer.id].name or "someone"
+  
   if(death_history) then
     local lcount = 1
     local death = {}
@@ -478,8 +486,6 @@ function killed_and_killer(victim, killer) -- two players
       end
     end
     if not found then death_history.last_killer[victim.id] = death end
-    
-    victim.last_killer_name = player_list[killer.id].name or "someone"
     add_score(killer)
     kill_player(victim)
     
