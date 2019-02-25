@@ -157,7 +157,7 @@ function sync_players(player_data)
     --end
     
     if p.alive and not p_d[5] then
-      kill_player(p)
+      kill_player(p, p_d[9])
     elseif not p.alive and p_d[5] then
       resurrect(p)
     end
@@ -280,7 +280,8 @@ function server_output()
       p.alive,
       p.angle,
       p.score,
-      p.name
+      p.name,
+      p.last_killer_id
     }
   end
   
