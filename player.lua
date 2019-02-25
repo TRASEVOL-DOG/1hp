@@ -269,8 +269,6 @@ end
 
 function update_move_player_like_bullet(s)
   if not server_only and s.id == my_id then cam.follow = {x = lerp(s.x+s.diff_x, cursor.x, .25), y = lerp(s.y+s.diff_y, cursor.y, .25)} end
-    
-  s.speed = dist(s.v.x, s.v.y)
   
   -- client syncing stuff
   s.diff_x = lerp(s.diff_x, 0, 20*delta_time)
@@ -278,7 +276,7 @@ function update_move_player_like_bullet(s)
   s.x, s.y = s.x + s.diff_x, s.y + s.diff_y
   
   -- actual move update
-  local nx = s.x + s.v.x * s.speed * delta_time * 10
+  local nx = s.x + s.v.x * delta_time * 10
   local col = check_mapcol(s,nx)
   if col then
     local tx = flr((nx + col.dir_x * s.w * 0.5) / 8)
@@ -289,7 +287,7 @@ function update_move_player_like_bullet(s)
     s.x = nx
   end
   
-  local ny = s.y + s.v.y * s.speed * delta_time * 10
+  local ny = s.y + s.v.y * delta_time * 10
   local col = check_mapcol(s,s.x,ny)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
@@ -303,9 +301,13 @@ function update_move_player_like_bullet(s)
   -- more client syncing bullshit
   s.x, s.y = s.x - s.diff_x, s.y - s.diff_y
   
-  s.v.x = s.v.x * .96 -- lerp(s.v.x, 0, .1*delta_time)
-  s.v.y = s.v.y * .96-- lerp(s.v.y, 0, .1*delta_time)
-  
+  s.speed = dist(s.v.x, s.v.y)
+  if s.speed > 0 then
+    local nspeed = max(s.speed - 10*delta_time, 0)
+    s.v.x = lerp(s.v.x/s.speed*nspeed, 0, 0.8*delta_time)
+    s.v.y = lerp(s.v.y/s.speed*nspeed, 0, 0.8*delta_time)
+    s.speed = nspeed
+  end
 end
 
 function update_move_player(s)
@@ -422,11 +424,9 @@ end
 function send_player_off(s, vx, vy) -- bullet to player vector
 
   s.bounce = true
-  local xsign = sgn(vx)
-  local ysign = sgn(vy)
 
-  s.v.x = 8 * vx * delta_time * 10
-  s.v.y = 8 * -vy * delta_time * 10
+  s.v.x = 30 * vx
+  s.v.y = 30 * vy
   
 end
     

@@ -22,6 +22,7 @@ require("wind")
 require("leaderboard")
 
 score = 0
+show_connection_status = false
 
 function _init()
   eventpump()
@@ -81,6 +82,8 @@ function _update(dt)
   
   update_leaderboard()
   
+  if btnp(12) then show_connection_status = not show_connection_status end
+  
   local curmenu = querry_menu()
   if btnp(7) or btnp(8) then
     if not curmenu then
@@ -114,8 +117,6 @@ function _draw()
   
   camera()
 
- draw_debug()
-  
   local menu = querry_menu()
   
   if not menu or menu == "gameover" then
@@ -131,7 +132,13 @@ function _draw()
     draw_pause_background()
   end
   
+  if show_connection_status then
+    draw_connection(true)
+  end
+  
   draw_menu()
+  
+  --draw_debug()
   
   cursor:draw()
 end
@@ -372,7 +379,7 @@ end
 
 
 
-function draw_connection()
+function draw_connection(tool_tip)
   font("small")
   
   local scrnw,scrnh = screen_size()
@@ -383,6 +390,9 @@ function draw_connection()
   if client.connected then
     draw_text("Connected!", x, y-4, 0, c0,c1,c2)
     draw_text("Ping: "..client.getPing(), x, y+4, 0, c0,c1,c2)
+    if tool_tip then
+      draw_text("[Press 'N' to hide]", x, y+14, 0, c0,c1,c2)
+    end
   else
     draw_text("Not Connected.", x, y-4, 0, c0,c1,c2)
     if castle and castle.isLoggedIn then
