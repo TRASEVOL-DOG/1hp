@@ -97,7 +97,7 @@ function create_bullet(player_id, id)
   register_object(s)
   
   if s.from == my_id then 
-    sfx("shoot", s.x, s.y) 
+    sfx("shoot", s.x, s.y, 0.95+rnd(0.1)) 
   else
     sfx("enemy_shoot", s.x, s.y)
   end
@@ -173,7 +173,7 @@ function update_move_bullet(s)
     s.v.x = s.v.x *-1
     s.speed = s.speed * ( 1 - s.speed_lost_rebound )
     s.timer_despawn = s.timer_despawn * ( 1 - s.speed_lost_rebound ) -- Remy was here: made bullet lose lifetime on bounce
-    sfx("bullet_wall_bounce", s.x, s.y)
+    sfx("bullet_wall_bounce", s.x, s.y, 0.9+rnd(0.2))
   else
     s.x = nx
   end
@@ -186,7 +186,7 @@ function update_move_bullet(s)
     s.v.y = s.v.y *-1
     s.speed = s.speed * ( 1 - s.speed_lost_rebound )
     s.timer_despawn = s.timer_despawn * ( 1 - s.speed_lost_rebound )
-    sfx("bullet_wall_bounce", s.x, s.y)
+    sfx("bullet_wall_bounce", s.x, s.y, 0.9+rnd(0.2))
   else
     s.y = ny
   end

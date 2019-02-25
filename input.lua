@@ -26,7 +26,7 @@ input.layout={
   s=3,
   
   -- z=4,
-  x=5,
+  rshift=5,
   tab=10,
   p=6,
   

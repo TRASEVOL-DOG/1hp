@@ -91,10 +91,10 @@ function update_player(s)
   end
   
   if s.id == my_id and s.server_death and s.animt < 0 then
-    if not s.dead_sfx_played then
-      s.dead_sfx_played = true
-      sfx("die", s.x, s.y)
-    end
+   -- if not s.dead_sfx_played then
+   --   s.dead_sfx_played = true
+   --   sfx("die", s.x, s.y)
+   -- end -- no death sfx after all :(
     if s.animt < -1.5 and querry_menu() == nil and not (restarting or not connected) then
       game_over()
     end
@@ -111,7 +111,7 @@ function update_mov(s)
     if s.alive and s.speed > 0.5 then
       local a,b,c = anim_step("player", "run", s.animt)
       if b and a%8 == 1 then
-        sfx("steps", s.x, s.y)
+        sfx("steps", s.x, s.y, 1+rnd(0.2))
       end
     end
   
@@ -259,10 +259,14 @@ function update_mov(s)
   update_move_player(s)
   
   if server_only or s.id == my_id then
-    if s.shot_input and s.timer_fire < 0 then  -- Remy was here: moved the timer check here, also the screen-shake
-      local p = create_bullet(s.id)
-      s.timer_fire = s.time_fire
-      add_shake()
+    if s.shot_input and s.timer_fire < 0 then
+      if s.timer_fire < 0 then
+        local p = create_bullet(s.id)
+        s.timer_fire = s.time_fire
+        add_shake()
+      else
+        sfx("cant_shoot", s.x, s.y)
+      end
     end 
   end
 end
@@ -416,9 +420,11 @@ function kill_player(s)
 
   if s.id == my_id then
     add_shake(5)
+    sfx("get_hit_player", s.x, s.y) 
+  else
+    sfx("get_hit", s.x, s.y) 
   end
   
-  sfx("get_hit", s.x, s.y) 
 end
 
 function send_player_off(s, vx, vy) -- bullet to player vector

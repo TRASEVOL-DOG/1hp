@@ -54,18 +54,18 @@ function _init()
   end
 end
 
-wind_timer = 2 + rnd(1)
+wind_timer = 0
 function _update(dt)
 
   wind_timer = wind_timer - delta_time
   if wind_timer < 0 then
-    sfx(pick({"wind_a","wind_b","wind_c"}))
-    wind_timer = 2+rnd(1)
+    sfx(pick({"wind_a","wind_b","wind_c","wind_d","wind_e"}), nil, nil, 0.9+rnd(0.2), 30+rnd(20))
+    wind_timer = 3+rnd(2)
   end
 
-  if btnp(6) then
-    refresh_spritesheets()
-  end
+--  if btnp(6) then
+--    refresh_spritesheets()
+--  end
   
   if btnp(5) then
     debug_mode = not debug_mode
