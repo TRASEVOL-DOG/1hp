@@ -9,7 +9,7 @@ description: |
  
  Controls:
  - W,A,S,D or the arrow keys to move.
- - mouse to aim
+ - mouse to aim 
  - left click to shoot
  
  - in main menu, R to generate a new name
