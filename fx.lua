@@ -30,9 +30,9 @@ function update_smoke(s)
   s.y=s.y+s.vy*dt30f
   
   s.vx=lerp(s.vx, 0,0.1*dt30f)
-  s.vy=lerp(s.vy,-1,0.1*dt30f)
+  s.vy=lerp(s.vy,-0.25,0.1*dt30f)
   
-  s.r=s.r-0.05*dt30f
+  s.r=s.r-0.025*dt30f
   if s.r<0 then
     deregister_object(s)
   end

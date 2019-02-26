@@ -76,11 +76,16 @@ function create_player(id,x,y)
   register_object(s)
   if my_id == s.id then sfx("startplay", s.x, s.y) end
   
+  if not server_only then
+    for i=1,16 do
+      create_smoke(s.x, s.y, 0.75, 1+rnd(1.5), pick{1,2,3})
+    end
+  end
+  
   return s
 end
 
 function update_player(s)
-  
   -- cooldown firing gun
   s.timer_fire = s.timer_fire - delta_time
   

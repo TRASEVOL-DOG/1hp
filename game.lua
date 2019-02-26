@@ -59,8 +59,8 @@ function _update(dt)
 
   wind_timer = wind_timer - delta_time
   if wind_timer < 0 then
-    sfx(pick({"wind_a","wind_b","wind_c","wind_d","wind_e"}), nil, nil, 0.9+rnd(0.2), 30+rnd(20))
-    wind_timer = 3+rnd(2)
+    sfx(pick({"wind_a","wind_b","wind_c","wind_d","wind_e"}), nil, nil, 0.8+rnd(0.4), 20+rnd(30))
+    wind_timer = 2.5+rnd(1.5)
   end
 
 --  if btnp(6) then
@@ -94,7 +94,7 @@ function _update(dt)
     end
   end
   
-  if btnp(11) and curmenu == "mainmenu" then
+  if btnp(11) and curmenu == "mainmenu" and not menulock then
     my_name = generate_name()
     menus["mainmenu"][2].txt = my_name
   end
