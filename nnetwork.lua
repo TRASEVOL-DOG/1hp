@@ -97,6 +97,8 @@ function client_output()
     
     client.home[7] = my_name
     
+    client.home[8] = flr(my_player.x + my_player.diff_x)
+    client.home[9] = flr(my_player.y + my_player.diff_y)
   end
 end
 
@@ -137,24 +139,20 @@ function sync_players(player_data)
     local x = p_d[1] + delay * p_d[3]
     local y = p_d[2] + delay * p_d[4]
     
-    --if id == my_id then
-    --  p.rx = x
-    --  p.ry = y
-    --else
-      if id ~= my_id then
-        p.v.x = p_d[3]
-        p.v.y = p_d[4]
-      end
-      
-      local x = p_d[1] + delay * p_d[3]
-      local y = p_d[2] + delay * p_d[4]
-      
-      p.diff_x = p.diff_x + p.x - x
-      p.diff_y = p.diff_y + p.y - y
-      
-      p.x = x
-      p.y = y
-    --end
+    if check_mapcol(p, x, y) then
+      x, y = p_d[1], p_d[2]
+    end
+
+    if id ~= my_id then
+      p.v.x = p_d[3]
+      p.v.y = p_d[4]
+    end
+    
+    p.diff_x = p.diff_x + p.x - x
+    p.diff_y = p.diff_y + p.y - y
+    
+    p.x = x
+    p.y = y
     
     if p.alive and not p_d[5] then
       kill_player(p, p_d[9])
@@ -236,9 +234,9 @@ function server_input()
       player.dy_input = ho[3] or 0
       
       if ho[4] then
-        if ho[4] > shot_ids[id] then
-          castle_print("Player #"..id.." shot! "..ho[4])
-        end
+        --if ho[4] > shot_ids[id] then
+        --  castle_print("Player #"..id.." shot! "..ho[4])
+        --end
         
         player.shot_input = (ho[4] > shot_ids[id])
       end
@@ -246,9 +244,20 @@ function server_input()
       shot_ids[id] = ho[4] or 0
       player.angle = ho[5] or 0
       
-      player.delay = ho[6]
+      player.delay = ho[6] or 0
       
       player.name = ho[7]
+      
+      if ho[8] and ho[9] then
+        if abs(ho[8]-player.x) > 8 or abs(ho[9]-player.y) > 8 then
+          local x, y = ho[8] + player.delay * player.v.x, ho[9] + player.delay * player.v.y
+          --local x, y = ho[8], ho[9]
+          if not check_mapcol(player,x,y) then
+            castle_print("Taking client values for player #"..id.."'s position.")
+            player.x, player.y = x, y
+          end
+        end
+      end
     else
       forget_player(id)
     end

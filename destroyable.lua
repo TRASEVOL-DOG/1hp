@@ -21,15 +21,15 @@ function create_destroyable(id, x, y)
   
   -- setting position
   if x and y then  -- position is provided by server
-    s.x = x
-    s.y = y
+    s.x = flr(x)
+    s.y = flr(y)
   else             -- seeking position
     q = get_spawn()
     if q == nil then
       return
     end
-    s.x = q.x
-    s.y = q.y
+    s.x = (q.x)
+    s.y = (q.y)
   end
   
   -- setting id

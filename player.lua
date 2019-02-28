@@ -335,7 +335,8 @@ function update_move_player(s)
     s.x = tx * 8 + 4 - col.dir_x * (8 + s.w + 0.5) * 0.5
     
     col = check_mapcol(s,nx,nil,true) or col
-    s.v.y = s.v.y - 1* col.dir_y * s.acceleration * delta_time * 10
+    --s.v.y = s.v.y - 1* col.dir_y * s.acceleration * delta_time * 10
+    s.y = s.y - 1* col.dir_y * delta_time * 20
   else
     s.x = nx
   end
@@ -345,9 +346,10 @@ function update_move_player(s)
   if col then
     local ty = flr((ny + col.dir_y * s.h * 0.5) / 8)
     s.y = ty * 8 + 4 - col.dir_y * (8 + s.h + 0.5) * 0.5
-    col = check_mapcol(s,nil,ny,true) or col
     
-    s.v.x = s.v.x - 1* col.dir_x * s.acceleration * delta_time * 10
+    col = check_mapcol(s,nil,ny,true) or col
+    --s.v.x = s.v.x - 1* col.dir_x * s.acceleration * delta_time * 10
+    s.x = s.x - 1* col.dir_x * delta_time * 20
   else
     s.y = ny
   end
