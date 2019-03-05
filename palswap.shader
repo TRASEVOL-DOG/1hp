@@ -14,7 +14,7 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
   vec4 col=Texel( texture, texture_coords );
   
   int c=0;
-  for (int i=0; i<24; i++){
+  for (int i=0; i<4; i++){
     //if (abs(col.r-opal[i].r)<0.05 && abs(col.g-opal[i].g)<0.05 && abs(col.b-opal[i].b)<0.05){
     //  c=i;
     //  break;
