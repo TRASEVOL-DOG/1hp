@@ -228,6 +228,7 @@ function server_input()
       
       if not player then
         player = create_player(id)
+        player.is_new_t = (ho[6] or 0) * 5
       end
       
       player.dx_input = ho[2] or 0
@@ -248,13 +249,17 @@ function server_input()
       
       player.name = ho[7]
       
-      if ho[8] and ho[9] then
-        if abs(ho[8]-player.x) > 8 or abs(ho[9]-player.y) > 8 then
-          local x, y = ho[8] + player.delay * player.v.x, ho[9] + player.delay * player.v.y
-          --local x, y = ho[8], ho[9]
-          if not check_mapcol(player,x,y) then
-            castle_print("Taking client values for player #"..id.."'s position.")
-            player.x, player.y = x, y
+      if player.is_new_t > 0 then
+        player.is_new_t = player.is_new_t - delta_time
+      else
+        if ho[8] and ho[9] then
+          if abs(ho[8]-player.x) > 8 or abs(ho[9]-player.y) > 8 then
+            local x, y = ho[8] + player.delay * player.v.x, ho[9] + player.delay * player.v.y
+            --local x, y = ho[8], ho[9]
+            if not check_mapcol(player,x,y) then
+              castle_print("Taking client values for player #"..id.."'s position.")
+              player.x, player.y = x, y
+            end
           end
         end
       end
