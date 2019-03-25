@@ -195,7 +195,7 @@ end
 
 function get_camera_pos()
   local shk = cam.shkp/100
-  return cam.x+cam.shkx*shk, cam.y+cam.shky*shk
+  return round(cam.x+cam.shkx*shk), round(cam.y+cam.shky*shk)
 end
 
 function add_shake(p)
