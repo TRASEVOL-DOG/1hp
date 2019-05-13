@@ -1,9 +1,12 @@
 ---
 main: main.lua
 name: Wasteland Standoff ☀️
-username: trasevol-dog
+owner: trasevol-dog
 primaryColor: ff834a
 coverImageUrl: https://raw.githubusercontent.com/trasevol-dog/1hp/master/logo-500.png
+dimensions: full
+multiplayer:
+  enabled: true
 description: |
  🏜 💀 🔫 Up to 16 cowboys killing each other. Be the better one. 🔫 💀 🏜
  
